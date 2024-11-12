@@ -117,18 +117,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 /* Container to keep table within modal boundaries */
 .view-history-table-container {
   max-width: 80%; /* Ensure it stays within modal boundaries */
@@ -274,9 +262,6 @@ p {
 }
 
 
-/* ------------- */
-
-
 
 
 /* Apply styles only to the table inside the add-candidate-container */
@@ -382,17 +367,6 @@ p {
   text-align: center; /* Center the text */
 
 }
-
-
-
-
-
-
-
-
-
-
-
 
 /* Custom Scrollbar Styling */
 .candidate-list-container::-webkit-scrollbar {

@@ -33,7 +33,7 @@ export class HRComponent implements OnInit {
     } else {
       console.error('No HR is logged in!');
     }
-
+  
     // Fetch interview options for dropdowns
     this.dataService.getInterviewOptions().subscribe((data) => {
       this.interviewOptions = data;
@@ -378,8 +378,8 @@ export class HRComponent implements OnInit {
   logout() {
     localStorage.removeItem('loggedInHR');
     localStorage.removeItem('loggedInHRId');
+    localStorage.removeItem('authToken')
     console.log('Logged out successfully.');
-
     // Navigate to login page
     this.router.navigate(['/login']); // Redirect to HR dashboard for other users
   }

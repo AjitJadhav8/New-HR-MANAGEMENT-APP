@@ -17,7 +17,7 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private http: HttpClient, private router: Router,private dataService: DataService) {}
+  constructor(private http: HttpClient, private router: Router, private dataService: DataService) {}
 
   login() {
     const loginData = { name: this.name, password: this.password };
@@ -25,11 +25,16 @@ export class LoginComponent {
     // Use the DataService to make a POST request to the login API
     this.dataService.login(loginData).subscribe({
       next: (response) => {
-        console.log('Login successful:', response);
+        // console.log('API Response:', response);  
+        // console.log('Login successful:', response);
 
-        // Store user data in localStorage
+        console.log('Login successful:');
+
+        // Store the JWT token in localStorage
+        localStorage.setItem('authToken', response.token);
+        // Store user-specific information in localStorage (optional)
         localStorage.setItem('loggedInHR', response.user.name); // Save logged-in HR name to localStorage
-        localStorage.setItem('loggedInHRId', response.user.u_id); // Save logged-in HR ID to localStorage
+        localStorage.setItem('loggedInHRId', response.user.id); // Save logged-in HR ID to localStorage
 
         // Redirect based on user name
         if (this.name === 'Sushil') {
