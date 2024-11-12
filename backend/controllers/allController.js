@@ -126,17 +126,24 @@ exports.getCandidates = (req, res) => {
       ON 
           c.c_id = ir.c_id
       AND 
-          ir.round_number = (
-              SELECT MAX(sub_ir.round_number)
-              FROM interview_rounds sub_ir
-              WHERE sub_ir.c_id = c.c_id
-          )
+        ir.ir_id = (
+        SELECT MAX(sub_ir.ir_id)  -- Select the most recent interview round based on the auto-incremented ir_id
+        FROM interview_rounds sub_ir
+        WHERE sub_ir.c_id = c.c_id
+    )
       WHERE 
           c.u_id = ?
       ORDER BY 
         c.c_id DESC; 
     `;
     
+
+    // AND 
+    // ir.round_number = (
+    //     SELECT MAX(sub_ir.round_number)
+    //     FROM interview_rounds sub_ir
+    //     WHERE sub_ir.c_id = c.c_id
+    // )
     db.query(query, [u_id], (err, results) => {
       if (err) {
         console.error('Database query error:', err);
@@ -358,7 +365,7 @@ exports.deleteInterviewRound = (req, res) => {
         remarks AS Remarks
       FROM interview_rounds
       WHERE c_id = ?
-      ORDER BY round_number;`;
+      ORDER BY ir_id;`;
   
     db.query(query, [c_id], (err, results) => {
       if (err) {
