@@ -27,6 +27,8 @@ const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key';
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+// app.use(cors({origin: '*'}));
+
 app.use('/api', allRoutes); // Use the routes from allRoutes.js
 
 app.listen(port, () => {
