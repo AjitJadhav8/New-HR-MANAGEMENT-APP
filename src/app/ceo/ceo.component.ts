@@ -29,6 +29,8 @@ export class CEOComponent implements OnInit {
       data => {
         // Filter for distinct candidates using the Candidate_ID to avoid duplicates
         this.candidates = this.getDistinctCandidates(data);
+        this.totalCandidates = this.candidates.length; // Update total candidates count
+
         console.log('Filtered candidates:', this.candidates);
       },
       error => {
@@ -71,11 +73,27 @@ export class CEOComponent implements OnInit {
     return data;
   }
 
+  // formatDate(dateString: string): string {
+  //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
+  //   const date = new Date(dateString);
+  //   return date.toLocaleDateString('en-GB', options); // 'en-GB' gives dd-mm-yyyy format
+  // }
+
   formatDate(dateString: string): string {
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
+    if (!dateString) {
+      return '';  // Or another fallback value if the date is missing
+    }
+    
     const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';  // Or another fallback value for invalid date
+    }
+    
+    const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
     return date.toLocaleDateString('en-GB', options); // 'en-GB' gives dd-mm-yyyy format
   }
+  
 
   logout(){
     localStorage.removeItem('loggedInHR');
@@ -129,6 +147,43 @@ export class CEOComponent implements OnInit {
     this.confirmPassword = '';
   }
 
+  
+  currentPage: number = 1;
+  pageSize: number = 30;  // Number of candidates per page
+  totalCandidates: number = 0;
+
+ // Pagination Logic
+ get paginatedCandidates() {
+  const startIndex = (this.currentPage - 1) * this.pageSize;
+  const endIndex = this.currentPage * this.pageSize;
+  return this.candidates.slice(startIndex, endIndex);
+}
+
+// Function to go to the next page
+nextPage() {
+  if (this.currentPage < this.totalPages) {
+    this.currentPage++;
+  }
+}
+
+// Function to go to the previous page
+previousPage() {
+  if (this.currentPage > 1) {
+    this.currentPage--;
+  }
+}
+
+// Function to go to a specific page
+goToPage(page: number) {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+  }
+}
+
+// Calculate the total number of pages
+get totalPages() {
+  return Math.ceil(this.totalCandidates / this.pageSize);
+}
 
 
 

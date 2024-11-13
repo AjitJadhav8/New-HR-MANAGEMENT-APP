@@ -79,14 +79,14 @@ exports.changePassword = (req, res) => {
     });
   };
   
-  // Get interview options for dropdowns
+  // DROPDOWN Get interview options for 
   exports.getInterviewOptions = async (req, res) => {
     try {
-      const [positions] = await db.promise().query("SELECT DISTINCT position FROM candidates");
-      const [roundNumbers] = await db.promise().query("SELECT DISTINCT round_number FROM interview_rounds");
-      const [interviewers] = await db.promise().query("SELECT DISTINCT interviewer FROM interview_rounds");
-      const [remarks] = await db.promise().query("SELECT DISTINCT remarks FROM interview_rounds WHERE remarks IS NOT NULL");
-      const [statuses] = await db.promise().query("SELECT DISTINCT status FROM interview_rounds");
+      const [positions] = await db.promise().query("SELECT DISTINCT position FROM candidates ORDER BY position ASC");
+      const [roundNumbers] = await db.promise().query("SELECT DISTINCT round_number FROM interview_rounds ORDER BY round_number ASC");
+      const [interviewers] = await db.promise().query("SELECT DISTINCT interviewer FROM interview_rounds ORDER BY interviewer ASC");
+      const [remarks] = await db.promise().query("SELECT DISTINCT remarks FROM interview_rounds WHERE remarks IS NOT NULL ORDER BY remarks ASC");
+      const [statuses] = await db.promise().query("SELECT DISTINCT status FROM interview_rounds ORDER BY status ASC");
   
       res.json({
         positions: positions.map(item => item.position),

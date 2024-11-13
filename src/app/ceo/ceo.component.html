@@ -46,23 +46,56 @@
 
 
 <div>
-  <div class="table-container">
+  <!-- <div class="table-container">
     <table class="candidate-table">
       <thead>
         <tr>
+          <th>#</th> 
           <th>Name</th>
           <th>Position</th>
           <th>HR Name</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let candidate of candidates" (click)="openModal(candidate)">
+        <tr *ngFor="let candidate of candidates; let i = index" (click)="openModal(candidate)">
+          <td>{{ i + 1 }}</td> 
           <td>{{ candidate.Candidate_Name }}</td>
           <td>{{ candidate.Position }}</td>
           <td>{{ candidate.HR_Name }}</td>
         </tr>
       </tbody>
     </table>
+  </div> -->
+  <div>
+    <div class="table-container">
+      <table class="candidate-table">
+        <thead>
+          <tr>
+            <th>#</th> <!-- Serial number column -->
+            <th>Name</th>
+            <th>Position</th>
+            <th>HR Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let candidate of paginatedCandidates; let i = index" (click)="openModal(candidate)">
+            <td>{{ i + 1 }}</td> <!-- Displaying serial number, +1 to make it 1-based -->
+            <td>{{ candidate.Candidate_Name }}</td>
+            <td>{{ candidate.Position }}</td>
+            <td>{{ candidate.HR_Name }}</td>
+          </tr>
+        </tbody>
+        
+      </table>
+      
+    </div>
+    <div class="pagination-controls">
+      <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+    <!-- Pagination Controls -->
+    
   </div>
   
 

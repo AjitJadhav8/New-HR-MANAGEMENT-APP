@@ -6,6 +6,11 @@
   padding: 20px;
 }
 
+/* .pagination-controls{
+  
+
+} */
+
 /* Candidate Table Styling */
 .candidate-table {
   width: 60%;
@@ -46,6 +51,25 @@
 .candidate-table tbody td {
   color: #333;
 }
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.pagination-controls button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.pagination-controls span {
+  margin: 0 10px;
+}
+
 
 /* Navbar Styling */
 .navbar-main {
