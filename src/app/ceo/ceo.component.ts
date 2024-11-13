@@ -98,6 +98,8 @@ export class CEOComponent implements OnInit {
   logout(){
     localStorage.removeItem('loggedInHR');
     localStorage.removeItem('loggedInHRId');
+    localStorage.removeItem('authToken');
+
     console.log('Logged out successfully.');
     
     // Navigate to login page

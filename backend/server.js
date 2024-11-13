@@ -31,6 +31,9 @@ app.use(cors());
 
 app.use('/api', allRoutes); // Use the routes from allRoutes.js
 
+
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

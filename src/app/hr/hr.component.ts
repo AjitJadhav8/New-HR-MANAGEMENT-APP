@@ -184,12 +184,6 @@ export class HRComponent implements OnInit {
 
 
 
-
-
-
-
-
-
   newCandidate: { name: string, position: string | undefined, customPosition?: string } = { name: '', position: '', customPosition: '' };
 
 
@@ -378,7 +372,7 @@ export class HRComponent implements OnInit {
   logout() {
     localStorage.removeItem('loggedInHR');
     localStorage.removeItem('loggedInHRId');
-    localStorage.removeItem('authToken')
+    localStorage.removeItem('authToken');
     console.log('Logged out successfully.');
     // Navigate to login page
     this.router.navigate(['/login']); // Redirect to HR dashboard for other users
