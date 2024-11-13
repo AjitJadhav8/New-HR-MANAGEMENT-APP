@@ -1,29 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000'; // Your backend URL
+  private apiUrl = environment.apiUrl;  // Use apiUrl from environment
+
+  // private apiUrl = 'http://localhost:3000'; // Your backend URL
   // private apiUrl = 'http://3.6.117.163:3000'; // Base URL for your API
 
 
   // constructor(private http: HttpClient) {}
-
   // login(credentials: { name: string; password: string }): Observable<any> {
   //   return this.http.post<any>(`${this.apiUrl}/api/login`, credentials);
   // }
-
   // saveToken(token: string): void {
   //   localStorage.setItem('authToken', token);
   // }
-
   // getToken(): string | null {
   //   return localStorage.getItem('authToken');
   // }
-
   // logout(): void {
   //   localStorage.removeItem('authToken');
   // }

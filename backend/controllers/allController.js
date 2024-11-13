@@ -287,7 +287,7 @@ exports.deleteInterviewRound = (req, res) => {
     LEFT JOIN 
         users u ON c.u_id = u.u_id
     ORDER BY 
-        c.c_id;
+        c.c_id DESC;
     `;
   
     db.query(query, (err, results) => {

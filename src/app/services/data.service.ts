@@ -1,12 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'http://localhost:3000'; 
+  private apiUrl = environment.apiUrl;  // Use apiUrl from environment
+
+  // private apiUrl = 'http://localhost:3000'; 
   // private apiUrl = 'http://3.6.117.163:3000'; // Base URL for your API
 
   constructor(private http: HttpClient) {}
@@ -23,9 +26,9 @@ export class DataService {
 
 
     // Login method 
-    login(credentials: { name: string; password: string }): Observable<any> {
-      return this.http.post<any>(`${this.apiUrl}/api/login`, credentials);
-    }
+    // login(credentials: { name: string; password: string }): Observable<any> {
+    //   return this.http.post<any>(`${this.apiUrl}/api/login`, credentials);
+    // }
 
   // ********** Methods for HR Component **********
   getCandidates(u_id: string | null): Observable<any[]> {
@@ -43,14 +46,8 @@ export class DataService {
       candidate: candidateData,
       round: roundData
     };
-
     return this.http.post<any>(`${this.apiUrl}/api/candidates-with-round`, requestData);
   }
-
-
-
-
-
 
 
 
@@ -80,9 +77,8 @@ getInterviewRounds(candidateId: number): Observable<any[]> {
   return this.http.get<any[]>(`${this.apiUrl}/api/interview_rounds/${candidateId}`);
 }
 
-
   // Method to get interview options (positions, round numbers, interviewers, remarks, and statuses)
-  getInterviewOptions(): Observable<any> {
+getInterviewOptions(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/api/interview-options`);
   }
 

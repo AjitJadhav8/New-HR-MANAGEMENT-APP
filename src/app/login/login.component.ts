@@ -3,6 +3,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service'; // Use AuthService
 import { DataService } from '../services/data.service';
 
 @Component({
@@ -17,13 +18,13 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private http: HttpClient, private router: Router, private dataService: DataService) {}
+  constructor(private http: HttpClient, private router: Router, private dataService: DataService,private authService: AuthService) {}
 
   login() {
     const loginData = { name: this.name, password: this.password };
 
     // Use the DataService to make a POST request to the login API
-    this.dataService.login(loginData).subscribe({
+    this.authService.login(loginData).subscribe({
       next: (response) => {
         // console.log('API Response:', response);  
         // console.log('Login successful:', response);
