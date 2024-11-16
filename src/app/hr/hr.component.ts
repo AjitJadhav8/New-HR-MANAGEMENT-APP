@@ -70,6 +70,12 @@ export class HRComponent implements OnInit {
 
 
 
+
+
+
+
+  
+
   showAddRoundSection(candidate: any) {
     this.selectedCandidate = candidate; // Set the selected candidate for the add round form
     this.newRound = {
@@ -79,6 +85,8 @@ export class HRComponent implements OnInit {
       status: '',
       remarks: ''
     };
+    this.getCandidateHistory(candidate.Candidate_ID);
+
     this.showAddRound = true;
     this.toggleAddRoundModal(); // Open the modal
 
@@ -263,9 +271,6 @@ export class HRComponent implements OnInit {
 
   addNewRound() {
 
-
-    
-
     // Prepare final values for each field, using custom fields if selected as "Custom"
     const roundData = {
       round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
@@ -297,7 +302,6 @@ export class HRComponent implements OnInit {
         }
       );
   }
-
 
 
 
@@ -478,6 +482,9 @@ export class HRComponent implements OnInit {
     this.getCandidateHistory(this.selectedCandidate.Candidate_ID);
   }
 
+  lastInterviewDate: string = ''; // Store the last interview date for the selected candidate
+
+
   // Fetches all interview rounds for a selected candidate
   getCandidateHistory(candidateId: number) {
     console.log("Fetching history for candidate ID:", candidateId);
@@ -488,6 +495,13 @@ export class HRComponent implements OnInit {
           ...round,
           Interview_Date: round.Interview_Date ? this.formatLocalDate(round.Interview_Date) : 'N/A'
         }));
+
+                // Get the latest interview date from history and store it
+                const lastRound = this.candidateHistory[this.candidateHistory.length - 1];
+                if (lastRound && lastRound.Interview_Date !== 'N/A') {
+                  this.lastInterviewDate = lastRound.Interview_Date; // Set the last interview date
+                }
+        
         console.log("Formatted candidate history:", this.candidateHistory);
       },
       (error) => {

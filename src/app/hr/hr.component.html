@@ -335,7 +335,7 @@
         <!-- Interview Date Selection -->
         <div>
           <label for="interview_date">Interview Date:</label>
-          <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required />
+          <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
         </div>
 
         <!-- Status Selection -->
