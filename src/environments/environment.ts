@@ -8,4 +8,3 @@ export const environment = {
       // apiUrl = 'http://3.6.117.163:3000'; // Base URL for your API
 
   };
-  

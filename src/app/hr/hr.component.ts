@@ -21,28 +21,30 @@ export class HRComponent implements OnInit {
   selectedCandidate: any = null;
 
   constructor(private http: HttpClient, private router: Router, private dataService: DataService) { }
+  todayDate: string = ''; // Declare todayDate as a string
 
-  ngOnInit(): void {
-    this.loggedInHR = localStorage.getItem('loggedInHR') || '';
-    this.loggedInHRId = localStorage.getItem('loggedInHRId');
-    console.log('Logged in HR:', this.loggedInHR);
-    console.log('Logged in HR ID:', this.loggedInHRId);
+    ngOnInit(): void {
+      this.loggedInHR = localStorage.getItem('loggedInHR') || '';
+      this.loggedInHRId = localStorage.getItem('loggedInHRId');
+      console.log('Logged in HR:', this.loggedInHR);
+      console.log('Logged in HR ID:', this.loggedInHRId);
 
-    if (this.loggedInHRId) {
-      this.getCandidates();
-    } else {
-      console.error('No HR is logged in!');
+      if (this.loggedInHRId) {
+        this.getCandidates();
+      } else {
+        console.error('No HR is logged in!');
+      }
+    
+      // Fetch interview options for dropdowns
+      this.dataService.getInterviewOptions().subscribe((data) => {
+        this.interviewOptions = data;
+        console.log('Interview Options:', this.interviewOptions);
+      });
+      this.getInterviewOptions();
+      const today = new Date();
+      this.todayDate = today.toISOString().split('T')[0];
+
     }
-  
-    // Fetch interview options for dropdowns
-    this.dataService.getInterviewOptions().subscribe((data) => {
-      this.interviewOptions = data;
-      console.log('Interview Options:', this.interviewOptions);
-    });
-    this.getInterviewOptions();
-
-
-  }
 
   getInterviewOptions() {
     this.dataService.getInterviewOptions().subscribe((data) => {
@@ -50,8 +52,6 @@ export class HRComponent implements OnInit {
       console.log('Interview Options:', this.interviewOptions);
     });
   }
-
-
 
 
 
@@ -190,15 +190,36 @@ export class HRComponent implements OnInit {
 
 
   addNewCandidate() {
-      // Check if the interview date is selected
-  if (!this.newRound.interview_date) {
-    this.showAlert('Please select all fields with interview date.', 'error');
-    return; // Stop execution if date is missing
-  }
-    // If position is 'Custom', assign customPosition to position
-    if (this.isCustomPosition) {
-      this.newCandidate.position = this.newCandidate.customPosition || ''; // Ensure position is a string
+    if (!this.newCandidate.name?.trim()) {
+      this.showAlert('Candidate name is required.', 'error');
+      return;
     }
+  
+    if (!this.newCandidate.position?.trim() && !this.newCandidate.customPosition?.trim()) {
+      this.showAlert('Position or Custom Position is required.', 'error');
+      return;
+    }
+  
+    if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
+      this.showAlert('Round number or Custom Round Number is required.', 'error');
+      return;
+    }
+  
+    const today = new Date().setHours(0, 0, 0, 0);
+    const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0);
+    if (isNaN(interviewDate) || interviewDate < today) {
+      this.showAlert('Please select a valid future interview date.', 'error');
+      return;
+    }
+  
+    if (!this.newRound.status?.trim() && !this.newRound.customStatus?.trim()) {
+      this.showAlert('Status or Custom Status is required.', 'error');
+      return;
+    }
+  
+    // If position is 'Custom', assign customPosition to position
+    this.newCandidate.position = this.isCustomPosition ? this.newCandidate.customPosition || '' : this.newCandidate.position;
+  
 
     // Prepare candidate data
     const candidateData = {
@@ -227,6 +248,9 @@ export class HRComponent implements OnInit {
 
         // Show success alert
         this.showAlert('Candidate and Interview Round added successfully!', 'success');
+        setTimeout(() => {
+          this.isModalOpen = false; // Close the modal
+        }, 2000);
       },
       error => {
         console.error('Error adding candidate with round:', error);
@@ -238,6 +262,10 @@ export class HRComponent implements OnInit {
 
 
   addNewRound() {
+
+
+    
+
     // Prepare final values for each field, using custom fields if selected as "Custom"
     const roundData = {
       round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
@@ -258,6 +286,9 @@ export class HRComponent implements OnInit {
           this.getInterviewOptions(); // Refetch interview options for dropdowns
 
           this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '', customInterviewer: '', customStatus: '' }; // Reset form
+          setTimeout(() => {
+            this.showAddRoundModal = false;
+          }, 2000); 
         },
         error => {
           console.error('Error adding round:', error);
@@ -507,7 +538,17 @@ export class HRComponent implements OnInit {
   // Call this function where needed, e.g., after adding a new candidate
 
 
+  isModalOpen: boolean = false; // Modal open state
 
+  // This function will be called when the button is clicked to open the modal
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  // This function will be called to close the modal
+  closeModal() {
+    this.isModalOpen = false;
+  }
 
 
 }

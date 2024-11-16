@@ -6,9 +6,9 @@ import { authGuard } from './auth.guard';
 
 export const routes: Routes = [
     
-    { path: '', redirectTo: 'login', pathMatch: 'full' }, // Default route redirects to 'login'
+    { path: '', redirectTo: 'login', pathMatch: 'full' }, // Default route redirects to 'login', base url
     { path: 'login', component: LoginComponent },          // Route for login
     { path: 'hr-dashboard', component: HRComponent, canActivate: [authGuard] }, // Protect HR dashboard
     { path: 'ceo', component: CEOComponent, canActivate: [authGuard] }, // Protect CEO dashboard
-    { path: '**', redirectTo: 'login' } // Wildcard route redirects to 'login' 
+    { path: '**', redirectTo: 'login' } // Catches any undefined routes and redirects users to the login page.
 ];

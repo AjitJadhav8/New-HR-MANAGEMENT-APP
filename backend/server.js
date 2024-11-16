@@ -31,7 +31,14 @@ app.use(cors());
 
 app.use('/api', allRoutes); // Use the routes from allRoutes.js
 
+const path = require('path');
 
+// Serve static files from Angular's build folder
+// app.use(express.static(path.join(__dirname, '../dist/hr-management-app/browser'))); // Update with your Angular build path
+
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../dist/hr-management-app/browser/index.html')); // Update path if necessary
+// });
 
 
 app.listen(port, () => {

@@ -324,7 +324,7 @@ exports.deleteInterviewRound = (req, res) => {
     WHERE 
       c.c_id = ?
     ORDER BY 
-      ir.round_number;
+      ir.round_number DESC;
     `;
   
     db.query(query, [id], (err, results) => {
