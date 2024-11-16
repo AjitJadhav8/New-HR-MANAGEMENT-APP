@@ -218,18 +218,10 @@
 
 
 
-
-
-
-
-
-
-
-
-
-  <div  class="view-history-table-container">
+<!-- candidate list -->
+  <div  class="view-history-table-container1">
     <h2>Candidate List</h2>
-    <div class="view-history-table">
+    <div class="view-history-table1">
       <table>
         <thead>
           <tr>
@@ -253,7 +245,7 @@
             <td>{{ candidate.Interviewer || 'N/A' }}</td>
             <td>{{ candidate.Interview_Date || 'N/A' }}</td>
             <td>{{ candidate.Status || 'N/A' }}</td>
-            <td>{{ candidate.Remarks || 'N/A' }}</td>
+            <td class="remarks">{{ candidate.Remarks || 'N/A' }}</td>
             <td>
               <button (click)="showAddRoundSection(candidate)">Add Round</button>
               <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
@@ -400,7 +392,7 @@
 
   <!-- Interview History Modal -->
   <div *ngIf="showHistory" class="modal">
-    <div class="modal-content view-history-table-container">
+    <div class="modal-content-history view-history-table-container">
       <span class="close-btn" (click)="closeHistoryModal()">&larr;</span>
       <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
       <table class="view-history-table">

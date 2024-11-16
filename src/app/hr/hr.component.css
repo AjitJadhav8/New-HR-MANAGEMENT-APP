@@ -32,7 +32,17 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
 }
-
+.modal-content-history {
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  width: 80%;
+  max-height: 90vh; /* Set a max height (80% of viewport height) */
+  overflow-y: auto; /* Enable vertical scroll if content overflows */
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
 
 
 
@@ -43,13 +53,7 @@
 }
 
 /* Close Button */
-.close {
-  position: absolute;
-  top: 5px;
-  right: 15px;
-  font-size: 24px;
-  cursor: pointer;
-}
+
 
 /* Form Styling */
 .modal-content form {
@@ -116,9 +120,8 @@
 
 
 
-/* Container to keep table within modal boundaries */
 .view-history-table-container {
-  width: auto; /* Ensure it stays within modal boundaries */
+  width: 100%; /* Ensure it stays within modal boundaries */
   overflow-x: auto; /* Horizontal scroll if necessary */
   padding: 10px; /* Add padding for spacing inside the modal */
   box-sizing: border-box;
@@ -150,39 +153,133 @@
   background-color: #ffffff;
 }
 
-/* Styling for table cells */
 .view-history-table tbody td {
   padding: 3px;
   border: 1px solid #ddd;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap; /* Keep text on a single line */
+  white-space: nowrap; 
 }
 
-/* Optional: Adjust scrollbar */
 .view-history-table-container::-webkit-scrollbar {
   height: 6px;
 }
 
 
 
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px; /* Positioned to the left instead of right */
-  font-size: 20px;
-  cursor: pointer;
+
+
+
+
+
+.view-history-table-container1 {
+  width: auto; /* Ensure it stays within modal boundaries */
+  overflow-x: auto; /* Horizontal scroll if necessary */
+  padding: 10px; /* Add padding for spacing inside the modal */
+  box-sizing: border-box;
 }
+
+/* View History Table Styling */
+.view-history-table1 {
+  width: 100%;
+  table-layout: fixed; /* Force columns to fit within the table width */
+  border-collapse: collapse;
+  background-color: white;
+}
+
+/* Styling for table header */
+.view-history-table1 thead th {
+  background-color: #343a40;
+  color: white;
+  padding: 8px;
+  text-align: left;
+  white-space: nowrap; /* Prevents header text from wrapping */
+}
+
+/* Styling for table rows */
+.view-history-table1 tbody tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.view-history-table1 tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.view-history-table1 tbody td {
+  padding: 3px;
+  border: 1px solid #ddd;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; 
+}
+
+
+/* Apply ellipsis for Remarks */
+.view-history-table1 tbody td.remarks {
+  max-width: 150px; /* Adjust the width as per your table layout */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Hover effect to display full text */
+.view-history-table1 tbody td.remarks:hover {
+  overflow: visible;
+  white-space: normal;
+  background-color: #f5f5f5; /* Optional background on hover */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Optional shadow on hover */
+  z-index: 1; /* Ensure it appears above other content */
+}
+
+
+.view-history-table-container1::-webkit-scrollbar {
+  height: 6px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Close Button */
+.close-btn, .close {
+  position: absolute;
+  top: 15px; /* Adjusted for better vertical alignment */
+  right: 15px; /* Position it in the top-right corner */
+  font-size: 28px; /* Increased font size for better visibility */
+  cursor: pointer;
+  color: #026faa; /* Color to match your theme */
+  transition: color 0.3s ease, transform 0.2s ease; /* Smooth transition for color and scale */
+}
+
+/* Hover effect for close button */
+.close-btn:hover, .close:hover {
+  color: #005a8a; /* Darker color on hover */
+  transform: scale(1.1); /* Slightly enlarge the button on hover */
+}
+
+/* Focus effect for accessibility */
+.close-btn:focus, .close:focus {
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 5px rgba(2, 111, 170, 0.5); /* Add a glowing effect on focus */
+}
+
+/* Active effect (when the button is clicked) */
+.close-btn:active, .close:active {
+  transform: scale(0.95); /* Slightly shrink the button when clicked */
+}
+
 
 
 /* Close button */
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  cursor: pointer;
-}
 
 .alert {
   padding: 0;

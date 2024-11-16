@@ -69,28 +69,51 @@ export class HRComponent implements OnInit {
   showActionModal: boolean = false;  // Add this line to declare the flag
 
 
+// Method to get the last interview round for the selected candidate
+getLastRoundData(candidateId: number) {
+  this.dataService.getInterviewRounds(candidateId).subscribe(
+    (history) => {
+      if (history.length > 0) {
+        const lastRound = history[history.length - 1]; // Last round data
+        this.newRound.interviewer = lastRound.Interviewer;  // Prefill the interviewer
+        this.newRound.status = lastRound.Status;            // Prefill the status
+        this.newRound.remarks = lastRound.Remarks;          // Prefill the remarks
+        this.newRound.round_number = lastRound.Round_Number; // Prefill round number
+
+      }else {
+        this.newRound.round_number = '1';  // If no previous rounds, set to '1'
+      }
+    },
+    (error) => {
+      console.error('Error fetching last round data:', error);
+    }
+  );
+}
 
 
 
 
 
-  
 
   showAddRoundSection(candidate: any) {
     this.selectedCandidate = candidate; // Set the selected candidate for the add round form
     this.newRound = {
-      round_number: candidate.Round_Number ? (parseInt(candidate.Round_Number, 10) + 1).toString() : '1',
+      round_number: '', // Allow user to input the round number manually
       interviewer: '',
       interview_date: '',
       status: '',
       remarks: ''
     };
     this.getCandidateHistory(candidate.Candidate_ID);
+    this.getLastRoundData(candidate.Candidate_ID);
 
     this.showAddRound = true;
     this.toggleAddRoundModal(); // Open the modal
 
   }
+
+
+
   toggleAddRoundModal() {
     this.showAddRoundModal = !this.showAddRoundModal; // Toggle modal visibility
   }
@@ -271,6 +294,29 @@ export class HRComponent implements OnInit {
 
   addNewRound() {
 
+    if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
+      this.showAlert('Round number or Custom Round Number is required.', 'error');
+      return;
+    }
+    
+
+      // Check if interviewer name is selected
+  if (!this.newRound.interviewer || this.newRound.interviewer === 'Custom' && !this.newRound.customInterviewer) {
+    this.showAlert('Please select or enter an interviewer name.', 'alert-danger');
+    return; // Prevent form submission if interviewer name is not selected
+  }
+
+  // Check if status is selected
+  if (!this.newRound.status || this.newRound.status === 'Custom' && !this.newRound.customStatus) {
+    this.showAlert('Please select or enter a status.', 'alert-danger');
+    return; // Prevent form submission if status is not selected
+  }
+
+
+    if (!this.newRound.interview_date) {
+      this.showAlert('Please select an interview date.', 'alert-danger');
+      return; // Prevent form submission if date is not selected
+    }
     // Prepare final values for each field, using custom fields if selected as "Custom"
     const roundData = {
       round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
@@ -297,8 +343,7 @@ export class HRComponent implements OnInit {
         },
         error => {
           console.error('Error adding round:', error);
-          this.showAlert('Error adding interview round. Please try again.', 'alert-danger'); // Error alert
-
+          this.showAlert('Please Fill All the fields Including Date.', 'alert-danger'); // Error alert
         }
       );
   }
