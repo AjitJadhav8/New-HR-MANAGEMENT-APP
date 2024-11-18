@@ -18,30 +18,36 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private http: HttpClient, private router: Router, private dataService: DataService,private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private dataService: DataService,
+    private authService: AuthService
+  ) {}
 
   login() {
     const loginData = { name: this.name, password: this.password };
 
-    // Use the DataService to make a POST request to the login API
+    // Use the AuthService to make a POST request to the login API
     this.authService.login(loginData).subscribe({
       next: (response) => {
-        // console.log('API Response:', response);  
-        // console.log('Login successful:', response);
-
-        console.log('Login successful:');
+        console.log('Login successful:', response);
 
         // Store the JWT token in localStorage
         localStorage.setItem('authToken', response.token);
-        // Store user-specific information in localStorage (optional)
-        localStorage.setItem('loggedInHR', response.user.name); // Save logged-in HR name to localStorage
-        localStorage.setItem('loggedInHRId', response.user.id); // Save logged-in HR ID to localStorage
 
-        // Redirect based on user name
-        if (this.name === 'Sushil') {
+        // Store user-specific information in localStorage
+        localStorage.setItem('loggedInHR', response.user.name); // Save logged-in HR name
+        localStorage.setItem('loggedInHRId', response.user.id); // Save logged-in HR ID
+        localStorage.setItem('userPermission', response.user.permission); // Save user permission
+
+        // Redirect based on user permission
+        if (response.user.permission === 'CEO') {
           this.router.navigate(['/ceo']); // Redirect to CEO component
+        } else if (response.user.permission === 'HR') {
+          this.router.navigate(['/hr-dashboard']); // Redirect to HR dashboard
         } else {
-          this.router.navigate(['/hr-dashboard']); // Redirect to HR dashboard for other users
+          this.router.navigate(['/default-dashboard']); // Redirect to a default dashboard
         }
       },
       error: (error) => {

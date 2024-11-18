@@ -11,7 +11,6 @@
 
 
 
-
 <!-- hr.component.html -->
 <div *ngIf="showChangePasswordForm" class="change-password-form">
   <h3>Change Password</h3>
@@ -136,33 +135,27 @@
       <div>
         <label for="name">Name:</label>
         <input [(ngModel)]="newCandidate.name" name="name" placeholder="Enter Name" required />
-        
       </div>
       
       <!-- Candidate Position -->
       <div>
         <label for="position">Position:</label>
-        <select [(ngModel)]="newCandidate.position" name="position" (change)="isCustomPosition = newCandidate.position === 'Custom'" required>
+        <select [(ngModel)]="newCandidate.position" name="position" required>
           <option value="" disabled>Select position</option>
           <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
-          <option value="Custom">Custom</option>
         </select>
       </div>
-      <div *ngIf="isCustomPosition">
-        <label for="customPosition">Enter Custom Position:</label>
-        <input type="text" [(ngModel)]="newCandidate.customPosition" name="customPosition" placeholder="Type custom position here" />
-      </div>
-      
+
       <!-- Round Number -->
       <div>
         <label for="round_number">Round:</label>
-        <select [(ngModel)]="newRound.round_number" name="round_number" required>
+        <select [(ngModel)]="newRound.round_number" name="round_number" (change)="isCustomRound = newRound.round_number === 'Custom'" required>
           <option value="" disabled>Select Round Number</option>
           <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
           <option value="Custom">Custom</option>
         </select>
       </div>
-      <div *ngIf="newRound.round_number === 'Custom'">
+      <div *ngIf="isCustomRound">
         <label for="customRoundNumber">Enter Custom Round Number:</label>
         <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber" placeholder="Type custom round number" />
       </div>
@@ -173,18 +166,13 @@
         <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
           <option value="" disabled>Select Interviewer</option>
           <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
-          <option value="Custom">Custom</option>
         </select>
-      </div>
-      <div *ngIf="newRound.interviewer === 'Custom'">
-        <label for="customInterviewer">Enter Custom Interviewer:</label>
-        <input type="text" [(ngModel)]="newRound.customInterviewer" name="customInterviewer" placeholder="Type custom interviewer" />
       </div>
       
       <!-- Interview Date -->
       <div>
         <label for="interview_date">Interview Date:</label>
-        <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date"   [min]="todayDate" required />
+        <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
       </div>
       
       <!-- Status -->
@@ -193,12 +181,7 @@
         <select [(ngModel)]="newRound.status" name="status" required>
           <option value="" disabled>Select Status</option>
           <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-          <option value="Custom">Custom</option>
         </select>
-      </div>
-      <div *ngIf="newRound.status === 'Custom'">
-        <label for="customStatus">Enter Custom Status:</label>
-        <input type="text" [(ngModel)]="newRound.customStatus" name="customStatus" placeholder="Type custom status" />
       </div>
       
       <!-- Remarks -->
@@ -213,6 +196,7 @@
     </form>
   </div>
 </div>
+
 
 
 
@@ -289,10 +273,10 @@
   <!-- Modal for Adding Interview Round -->
   <div class="modal" *ngIf="showAddRoundModal">
     <div class="modal-content">
-      <span class="close" (click)="toggleAddRoundModal()">&times;</span> <!-- Close button -->
+      <span class="close" (click)="toggleAddRoundModal()">&times;</span>
       <h2>Add Interview Round for {{ selectedCandidate.Candidate_Name }}</h2>
       <form (ngSubmit)="addNewRound()">
-
+  
         <!-- Round Number Selection -->
         <div>
           <label for="round_number">Round:</label>
@@ -304,58 +288,46 @@
         </div>
         <div *ngIf="newRound.round_number === 'Custom'">
           <label for="customRoundNumber">Enter Custom Round Number:</label>
-          <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber"
-            placeholder="Type custom round number" />
+          <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber" placeholder="Type custom round number" />
         </div>
-
-        <!-- Interviewer Selection -->
+  
+        <!-- Interviewer Selection (No Custom Option) -->
         <div>
           <label for="interviewer">Interviewer:</label>
           <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
             <option value="" disabled>Select Interviewer</option>
-            <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}
-            </option>
-            <option value="Custom">Custom</option>
+            <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
           </select>
         </div>
-        <div *ngIf="newRound.interviewer === 'Custom'">
-          <label for="customInterviewer">Enter Custom Interviewer:</label>
-          <input type="text" [(ngModel)]="newRound.customInterviewer" name="customInterviewer"
-            placeholder="Type custom interviewer" />
-        </div>
-
+  
         <!-- Interview Date Selection -->
         <div>
           <label for="interview_date">Interview Date:</label>
           <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
         </div>
-
-        <!-- Status Selection -->
+  
+        <!-- Status Selection (No Custom Option) -->
         <div>
           <label for="status">Status:</label>
           <select [(ngModel)]="newRound.status" name="status" required>
             <option value="" disabled>Select Status</option>
             <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-            <option value="Custom">Custom</option>
           </select>
         </div>
-        <div *ngIf="newRound.status === 'Custom'">
-          <label for="customStatus">Enter Custom Status:</label>
-          <input type="text" [(ngModel)]="newRound.customStatus" name="customStatus" placeholder="Type custom status" />
-        </div>
-
+  
         <!-- Remarks -->
         <div>
           <label for="remarks">Remarks:</label>
           <textarea [(ngModel)]="newRound.remarks" name="remarks"></textarea>
         </div>
-
+  
         <!-- Submit Button -->
         <button type="submit">Add Interview Round</button>
         <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
       </form>
     </div>
   </div>
+  
 
 
 
