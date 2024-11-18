@@ -26,6 +26,7 @@ export class HRComponent implements OnInit {
     ngOnInit(): void {
       this.loggedInHR = localStorage.getItem('loggedInHR') || '';
       this.loggedInHRId = localStorage.getItem('loggedInHRId');
+      
       console.log('Logged in HR:', this.loggedInHR);
       console.log('Logged in HR ID:', this.loggedInHRId);
 
@@ -475,6 +476,7 @@ getLastRoundData(candidateId: number) {
     localStorage.removeItem('loggedInHR');
     localStorage.removeItem('loggedInHRId');
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userPermission');
     console.log('Logged out successfully.');
     // Navigate to login page
     this.router.navigate(['/login']); // Redirect to HR dashboard for other users

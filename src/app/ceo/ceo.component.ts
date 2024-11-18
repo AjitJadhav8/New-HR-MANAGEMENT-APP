@@ -99,6 +99,7 @@ export class CEOComponent implements OnInit {
     localStorage.removeItem('loggedInHR');
     localStorage.removeItem('loggedInHRId');
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userPermission');
     console.log('Logged out successfully.'); 
     // Navigate to login page
     this.router.navigate(['/login']); // Redirect to HR dashboard for other users
