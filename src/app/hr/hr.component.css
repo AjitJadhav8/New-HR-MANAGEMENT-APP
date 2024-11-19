@@ -21,6 +21,37 @@
 }
 
 
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: center;
+}
+
+.pagination-button {
+  padding: 8px 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.pagination-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  margin: 0 10px;
+}
+
+
+
 .admin-section {
   /* Center the admin section both vertically and horizontally */
   display: flex;
@@ -109,17 +140,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
 }
-.modal-content-history {
-  background-color: white;
-  padding: 10px;
-  border-radius: 5px;
-  width: 80%;
-  max-height: 90vh; /* Set a max height (80% of viewport height) */
-  overflow-y: auto; /* Enable vertical scroll if content overflows */
-  max-width: 900px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  position: relative;
-}
+
 
 
 
@@ -197,28 +218,55 @@
 
 
 
+
+/* Modal content container */
+.modal-content-history {
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+  width: 80%;
+  max-height: 80vh;  /* Adjust height if needed */
+  max-width: 900px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  margin: auto;
+  overflow-y: auto; /* Scrollable content */
+}
+
+/* Close button */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Table container */
 .view-history-table-container {
-  width: 100%; /* Ensure it stays within modal boundaries */
-  overflow-x: auto; /* Horizontal scroll if necessary */
-  padding: 10px; /* Add padding for spacing inside the modal */
+  width: 100%;
+  padding: 0px;
   box-sizing: border-box;
+  overflow-x: auto;
 }
 
 /* View History Table Styling */
 .view-history-table {
   width: 100%;
-  table-layout: fixed; /* Force columns to fit within the table width */
+  table-layout: fixed;  /* Allow table to adjust column width based on content */
   border-collapse: collapse;
   background-color: white;
+  font-size: 12px;  /* Smaller font size for compact table */
 }
 
 /* Styling for table header */
 .view-history-table thead th {
   background-color: #343a40;
   color: white;
-  padding: 8px;
+  padding: 5px;  /* Reduce padding for header */
   text-align: left;
-  white-space: nowrap; /* Prevents header text from wrapping */
+  white-space: nowrap;
 }
 
 /* Styling for table rows */
@@ -230,14 +278,16 @@
   background-color: #ffffff;
 }
 
+/* Styling for table cells */
 .view-history-table tbody td {
-  padding: 3px;
+  padding: 5px;  /* Reduce padding for cells */
   border: 1px solid #ddd;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 
+/* Scrollbar styling for modal content */
 .view-history-table-container::-webkit-scrollbar {
   height: 6px;
 }
@@ -245,80 +295,93 @@
 
 
 
-
-
-
-
-.view-history-table-container1 {
+/* Container for the candidate table */
+.get-candidate-table-container {
   width: auto; /* Ensure it stays within modal boundaries */
   overflow-x: auto; /* Horizontal scroll if necessary */
   padding: 10px; /* Add padding for spacing inside the modal */
   box-sizing: border-box;
 }
 
-/* View History Table Styling */
-.view-history-table1 {
+/* Styling for the candidate table */
+.get-candidate-table {
   width: 100%;
   table-layout: fixed; /* Force columns to fit within the table width */
   border-collapse: collapse;
   background-color: white;
+  text-align: center;
 }
 
 /* Styling for table header */
-.view-history-table1 thead th {
+.get-candidate-table thead th {
   background-color: #343a40;
   color: white;
-  padding: 8px;
-  text-align: left;
+  padding: 5px 6px; /* Adjust padding for smaller row height */
+  text-align: center;
   white-space: nowrap; /* Prevents header text from wrapping */
+  font-size: 14px; /* Reduce font size */
 }
 
 /* Styling for table rows */
-.view-history-table1 tbody tr:nth-child(even) {
+.get-candidate-table tbody tr:nth-child(even) {
   background-color: #f5f5f5;
 }
 
-.view-history-table1 tbody tr:nth-child(odd) {
+.get-candidate-table tbody tr:nth-child(odd) {
   background-color: #ffffff;
 }
 
-.view-history-table1 tbody td {
-  padding: 3px;
+.get-candidate-table tbody td {
+  padding: 2px 3px; /* Reduced padding to make row height smaller */
   border: 1px solid #ddd;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap; 
+  font-size: 14px; /* Reduce font size */
 }
 
-
-/* Apply ellipsis for Remarks */
-.view-history-table1 tbody td.remarks {
-  max-width: 150px; /* Adjust the width as per your table layout */
+/* Styling for the Remarks column */
+.get-candidate-table tbody td.remarks {
+  position: relative;
+  max-width: 120px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
+  font-size: 14px; /* Reduced font size for Remarks */
 }
 
-/* Hover effect to display full text */
-.view-history-table1 tbody td.remarks:hover {
-  overflow: visible;
+/* Tooltip appearance on hover */
+.get-candidate-table tbody td.remarks:hover::after {
+  content: attr(title); /* Use the 'title' attribute content */
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  background-color: black; /* Black background */
+  color: white; /* White text */
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px; /* Smaller font size for tooltip */
   white-space: normal;
-  background-color: #f5f5f5; /* Optional background on hover */
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Optional shadow on hover */
-  z-index: 1; /* Ensure it appears above other content */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  width: max-content;
+  max-width: 300px;
+  text-align: center;
+  pointer-events: none;
 }
 
+/* Optional: Style when the content is truncated and hovering over the remarks */
+.get-candidate-table tbody td.remarks:hover {
+  overflow: hidden; /* Prevent text overflow */
+}
 
-.view-history-table-container1::-webkit-scrollbar {
+/* Custom scrollbar styling */
+.get-candidate-table-container::-webkit-scrollbar {
   height: 6px;
 }
-
-
-
-
-
-
-
 
 
 
@@ -335,6 +398,8 @@
   cursor: pointer;
   color: #026faa; /* Color to match your theme */
   transition: color 0.3s ease, transform 0.2s ease; /* Smooth transition for color and scale */
+  z-index: 1001; /* Ensure the close button stays above content */
+
 }
 
 /* Hover effect for close button */

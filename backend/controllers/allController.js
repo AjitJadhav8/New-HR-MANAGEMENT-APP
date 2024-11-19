@@ -14,11 +14,13 @@ const db = require('../config/db');  // Import the database connection
 // Login function done
 exports.login = (req, res) => {
   const { name, password } = req.body;
+
+  // Modify the query to reflect your updated schema without using aliases
   const query = `
-      SELECT users.u_id, users.name, permissions.permission_name 
-      FROM users 
-      JOIN permissions ON users.permission_id = permissions.permission_id 
-      WHERE users.name = ? AND users.password = ?
+      SELECT trans_users.user_id, trans_users.user_name, master_role.role_name
+      FROM trans_users
+      JOIN master_role ON trans_users.role_id = master_role.role_id
+      WHERE trans_users.user_name = ? AND trans_users.password = ?
   `;
 
   db.query(query, [name, password], (err, results) => {
@@ -32,8 +34,8 @@ exports.login = (req, res) => {
 
           // Generate JWT tokens
           const token = jwt.sign(
-              { id: user.u_id, name: user.name, permission: user.permission_name }, // Include permission in payload
-              'your-secret-key',
+              { id: user.user_id, name: user.user_name, permission: user.role_name }, // Include permission in payload
+              'your-secret-key',  // Replace with a secure secret key
               { expiresIn: '1h' }
           );
 
@@ -42,9 +44,9 @@ exports.login = (req, res) => {
               message: 'Login successful',
               token: token,
               user: {
-                  id: user.u_id,
-                  name: user.name,
-                  permission: user.permission_name // Include permission in response
+                  id: user.user_id,
+                  name: user.user_name,
+                  permission: user.role_name // Include permission in response
               }
           });
       } else {
@@ -54,70 +56,74 @@ exports.login = (req, res) => {
 };
 
 
+
   // Change password function done
-exports.changePassword = (req, res) => {
+  exports.changePassword = (req, res) => {
     const { userId, currentPassword, newPassword } = req.body;
-  
+
     if (!userId || !currentPassword || !newPassword) {
-      return res.status(400).json({ error: 'All fields are required' });
+        return res.status(400).json({ error: 'All fields are required' });
     }
-  
+
     // Check if the user exists and if the current password is correct
-    const query = 'SELECT * FROM users WHERE u_id = ? AND password = ?';
+    const query = 'SELECT * FROM trans_users WHERE user_id = ? AND password = ?';
     db.query(query, [userId, currentPassword], (err, results) => {
-      if (err) {
-        console.error('Database query error:', err);
-        return res.status(500).json({ error: 'Database error' });
-      }
-  
-      if (results.length === 0) {
-        return res.status(401).json({ error: 'Invalid current password' });
-      }
-  
-      // Update the password
-      const updateQuery = 'UPDATE users SET password = ? WHERE u_id = ?';
-      db.query(updateQuery, [newPassword, userId], (err, result) => {
         if (err) {
-          console.error('Error updating password:', err);
-          return res.status(500).json({ error: 'Failed to update password' });
+            console.error('Database query error:', err);
+            return res.status(500).json({ error: 'Database error' });
         }
-  
-        res.json({ message: 'Password changed successfully' });
-      });
+
+        if (results.length === 0) {
+            return res.status(401).json({ error: 'Invalid current password' });
+        }
+
+        // Update the password
+        const updateQuery = 'UPDATE trans_users SET password = ? WHERE user_id = ?';
+        db.query(updateQuery, [newPassword, userId], (err, result) => {
+            if (err) {
+                console.error('Error updating password:', err);
+                return res.status(500).json({ error: 'Failed to update password' });
+            }
+
+            res.json({ message: 'Password changed successfully' });
+        });
     });
-  };
+};
+
   
-  // DROPDOWN Get interview options for done
-exports.getInterviewOptions = async (req, res) => {
+  // DROPDOWN Get interview options for 
+  exports.getInterviewOptions = async (req, res) => {
     try {
-      // Fetch unique positions from the "positions" table
+      // Fetch unique positions from the "master_positions" table
       const [positions] = await db
         .promise()
-        .query("SELECT DISTINCT position_name FROM positions ORDER BY position_name ASC");
-  
-      // Fetch other fields from their respective tables
+        .query("SELECT DISTINCT position_name FROM master_positions ORDER BY position_name ASC");
+
+      // Fetch distinct round numbers from the "trans_interview_rounds" table
       const [roundNumbers] = await db
         .promise()
-        .query("SELECT DISTINCT round_number FROM interview_rounds ORDER BY round_number ASC");
-  
-        const [interviewers] = await db
-      .promise()
-      .query("SELECT DISTINCT interviewer_name FROM interviewers ORDER BY interviewer_name ASC");
-  
+        .query("SELECT DISTINCT round_number FROM trans_interview_rounds ORDER BY round_number ASC");
+
+      // Fetch distinct interviewers from the "master_interviewers" table
+      const [interviewers] = await db
+        .promise()
+        .query("SELECT DISTINCT interviewer_name FROM master_interviewers ORDER BY interviewer_name ASC");
+
+      // Fetch distinct remarks from the "trans_interview_rounds" table
       const [remarks] = await db
         .promise()
-        .query("SELECT DISTINCT remarks FROM interview_rounds WHERE remarks IS NOT NULL ORDER BY remarks ASC");
-  
-      // Corrected query for statuses with JOIN
+        .query("SELECT DISTINCT remarks FROM trans_interview_rounds WHERE remarks IS NOT NULL ORDER BY remarks ASC");
+
+      // Corrected query for statuses with JOIN between "trans_interview_rounds" and "master_statuses"
       const [statuses] = await db
         .promise()
         .query(`
           SELECT DISTINCT s.status_name
-          FROM interview_rounds ir
-          JOIN statuses s ON ir.status_id = s.status_id
+          FROM trans_interview_rounds ir
+          JOIN master_statuses s ON ir.status_id = s.status_id
           ORDER BY s.status_name ASC
         `);
-  
+
       // Send the response as JSON
       res.json({
         positions: positions.map((item) => item.position_name),
@@ -131,20 +137,20 @@ exports.getInterviewOptions = async (req, res) => {
       console.error("Stack trace:", error.stack);  // Detailed error stack trace
       res.status(500).send("Error retrieving interview options");
     }
-  };
-  
+};
+
   // Get candidates for a specific HR user done
   exports.getCandidates = (req, res) => {
     const { u_id } = req.query;
-  
+
     if (!u_id) {
       return res.status(400).json({ error: 'HR user ID is required' });
     }
-  
+
     const query = `
       SELECT 
-        c.c_id AS Candidate_ID,
-        c.c_name AS Candidate_Name,
+        c.candidate_id AS Candidate_ID,
+        c.candidate_name AS Candidate_Name,
         p.position_name AS Position,
         ir.round_number AS Round_Number,
         ir.interview_date AS Interview_Date,
@@ -153,39 +159,39 @@ exports.getInterviewOptions = async (req, res) => {
         s.status_name AS Status,
         ir.remarks AS Remarks
       FROM 
-        candidates c
+        trans_candidates c
       LEFT JOIN 
-        interview_rounds ir 
+        trans_interview_rounds ir 
       ON 
-        c.c_id = ir.c_id AND ir.is_deleted = 0  -- Exclude deleted rounds
+        c.candidate_id = ir.candidate_id AND ir.is_deleted = 0  -- Exclude deleted rounds
       LEFT JOIN 
-        positions p 
+        master_positions p 
       ON 
         c.position_id = p.position_id
       LEFT JOIN 
-        interviewers i 
+        master_interviewers i 
       ON 
         ir.interviewer_id = i.interviewer_id
       LEFT JOIN 
-        statuses s
+        master_statuses s
       ON 
         ir.status_id = s.status_id
       WHERE 
-        c.u_id = ?
+        c.user_id = ?  -- Adjusted to match the correct column name for user ID
       ORDER BY 
-        c.c_id DESC, ir.ir_id DESC;
+        c.candidate_id DESC, ir.ir_id DESC;
     `;
-  
+
     db.query(query, [u_id], (err, results) => {
       if (err) {
         console.error('Database query error:', err);
         return res.status(500).json({ error: 'Database query error' });
       }
-  
+
       // Process the results to group the data by candidates
       const candidates = results.reduce((acc, candidate) => {
         const existingCandidate = acc.find(c => c.Candidate_ID === candidate.Candidate_ID);
-  
+
         if (existingCandidate) {
           // If interview round data exists and is not deleted, add it
           if (candidate.Round_Number && candidate.Is_Deleted === 0) {
@@ -214,272 +220,277 @@ exports.getInterviewOptions = async (req, res) => {
         }
         return acc;
       }, []);
-  
+
       res.json(candidates);
     });
-  };
-  
+};
 
   
-  
+
   
   
   // Add a new candidate with interview round done
   exports.addCandidateWithRound = (req, res) => {
     const { candidate, round } = req.body;
-  
+
     if (!candidate || !round) {
       return res.status(400).json({ error: 'Candidate and round data are required' });
     }
-  
+
     const { name, position, u_id } = candidate;
     const { round_number, interviewer, interview_date, status, remarks } = round;
-  
+
     if (!name || !position || !u_id || !round_number || !interviewer || !interview_date || !status) {
       return res.status(400).json({ error: 'All fields are required' });
     }
-  
+
     const finalPosition = position === 'Custom' ? candidate.customPosition : position;
     const upperCaseName = name.toUpperCase();
-  
+
     // Get position_id based on the position name
     const getPositionIdQuery = `
-      SELECT position_id FROM positions WHERE position_name = ?
+      SELECT position_id FROM master_positions WHERE position_name = ?
     `;
-  
+
     db.query(getPositionIdQuery, [finalPosition], (err, positionResults) => {
       if (err) {
         console.error('Error fetching position ID:', err);
         return res.status(500).json({ error: 'Database error fetching position ID' });
       }
-  
+
       if (positionResults.length === 0) {
         return res.status(400).json({ error: 'Position not found' });
       }
-  
+
       const positionId = positionResults[0].position_id;
-  
+
       // Get interviewer_id based on the interviewer's name
       const getInterviewerIdQuery = `
-        SELECT interviewer_id FROM interviewers WHERE interviewer_name = ?
+        SELECT interviewer_id FROM master_interviewers WHERE interviewer_name = ?
       `;
-  
+
       db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
         if (err) {
           console.error('Error fetching interviewer ID:', err);
           return res.status(500).json({ error: 'Database error fetching interviewer ID' });
         }
-  
+
         if (interviewerResults.length === 0) {
           return res.status(400).json({ error: 'Interviewer not found' });
         }
-  
+
         const interviewerId = interviewerResults[0].interviewer_id;
-  
+
         // Get status_id based on the status name
         const getStatusIdQuery = `
-          SELECT status_id FROM statuses WHERE status_name = ?
+          SELECT status_id FROM master_statuses WHERE status_name = ?
         `;
-  
+
         db.query(getStatusIdQuery, [status], (err, statusResults) => {
           if (err) {
             console.error('Error fetching status ID:', err);
             return res.status(500).json({ error: 'Database error fetching status ID' });
           }
-  
+
           if (statusResults.length === 0) {
             return res.status(400).json({ error: 'Status not found' });
           }
-  
+
           const statusId = statusResults[0].status_id;
-  
+
           // Insert new candidate
           const addCandidateQuery = `
-            INSERT INTO candidates (c_name, position_id, u_id) VALUES (?, ?, ?)
+            INSERT INTO trans_candidates (candidate_name, position_id, user_id) 
+            VALUES (?, ?, ?)
           `;
-  
+
           db.query(addCandidateQuery, [upperCaseName, positionId, u_id], (err, result) => {
             if (err) {
               console.error('Error inserting candidate:', err);
               return res.status(500).json({ error: err.message || 'Database error' });
             }
-  
+
             const candidateId = result.insertId;
-  
+
             // Insert interview round for the new candidate
             const addInterviewRoundQuery = `
-              INSERT INTO interview_rounds (c_id, round_number, interviewer_id, interview_date, status_id, remarks)
+              INSERT INTO trans_interview_rounds (candidate_id, round_number, interviewer_id, interview_date, status_id, remarks)
               VALUES (?, ?, ?, ?, ?, ?)
             `;
-  
+
             db.query(addInterviewRoundQuery, [candidateId, round_number, interviewerId, interview_date, statusId, remarks], (err) => {
               if (err) {
                 console.error('Error inserting interview round:', err);
                 return res.status(500).json({ error: err.message || 'Database error' });
               }
-  
+
               res.status(201).json({ message: 'Candidate and interview round added successfully' });
             });
           });
         });
       });
     });
-  };
+};
+
   
+
+
   // ----
-  // Add a new interview round for an existing candidate Done
-exports.addInterviewRound = (req, res) => {
-  const { id } = req.params;  // Candidate ID
-  const { round_number, interviewer, interview_date, status, remarks } = req.body;
-
-  if (!round_number || !interviewer || !interview_date || !status) {
-    return res.status(400).json({ error: 'All fields are required for the interview round' });
-  }
-
-  // Get interviewer_id from the interviewers table
-  const getInterviewerIdQuery = `
-    SELECT interviewer_id FROM interviewers WHERE interviewer_name = ?
-  `;
-
-  db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
-    if (err) {
-      console.error('Error fetching interviewer ID:', err);
-      return res.status(500).json({ error: 'Database error fetching interviewer ID' });
+  // Add a new interview round for an existing candidate 
+  exports.addInterviewRound = (req, res) => {
+    const { id } = req.params;  // Candidate ID
+    const { round_number, interviewer, interview_date, status, remarks } = req.body;
+  
+    if (!round_number || !interviewer || !interview_date || !status) {
+      return res.status(400).json({ error: 'All fields are required for the interview round' });
     }
-
-    if (interviewerResults.length === 0) {
-      return res.status(400).json({ error: 'Interviewer not found' });
-    }
-
-    const interviewerId = interviewerResults[0].interviewer_id;
-
-    // Get status_id from the statuses table
-    const getStatusIdQuery = `
-      SELECT status_id FROM statuses WHERE status_name = ?
+  
+    // Get interviewer_id from the master_interviewers table
+    const getInterviewerIdQuery = `
+      SELECT interviewer_id FROM master_interviewers WHERE interviewer_name = ?
     `;
-
-    db.query(getStatusIdQuery, [status], (err, statusResults) => {
+  
+    db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
       if (err) {
-        console.error('Error fetching status ID:', err);
-        return res.status(500).json({ error: 'Database error fetching status ID' });
+        console.error('Error fetching interviewer ID:', err);
+        return res.status(500).json({ error: 'Database error fetching interviewer ID' });
       }
-
-      if (statusResults.length === 0) {
-        return res.status(400).json({ error: 'Status not found' });
+  
+      if (interviewerResults.length === 0) {
+        return res.status(400).json({ error: 'Interviewer not found' });
       }
-
-      const statusId = statusResults[0].status_id;
-
-      // Insert interview round for the candidate
-      const addInterviewRoundQuery = `
-        INSERT INTO interview_rounds (c_id, round_number, interviewer_id, interview_date, status_id, remarks)
-        VALUES (?, ?, ?, ?, ?, ?)
+  
+      const interviewerId = interviewerResults[0].interviewer_id;
+  
+      // Get status_id from the master_statuses table
+      const getStatusIdQuery = `
+        SELECT status_id FROM master_statuses WHERE status_name = ?
       `;
-
-      db.query(addInterviewRoundQuery, [id, round_number, interviewerId, interview_date, statusId, remarks], (err) => {
+  
+      db.query(getStatusIdQuery, [status], (err, statusResults) => {
         if (err) {
-          console.error('Error inserting interview round:', err);
-          return res.status(500).json({ error: err.message || 'Database error' });
+          console.error('Error fetching status ID:', err);
+          return res.status(500).json({ error: 'Database error fetching status ID' });
         }
-
-        res.status(201).json({ message: 'Interview round added successfully' });
+  
+        if (statusResults.length === 0) {
+          return res.status(400).json({ error: 'Status not found' });
+        }
+  
+        const statusId = statusResults[0].status_id;
+  
+        // Insert interview round for the candidate into trans_interview_rounds
+        const addInterviewRoundQuery = `
+          INSERT INTO trans_interview_rounds (candidate_id, round_number, interviewer_id, interview_date, status_id, remarks)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `;
+  
+        db.query(addInterviewRoundQuery, [id, round_number, interviewerId, interview_date, statusId, remarks], (err) => {
+          if (err) {
+            console.error('Error inserting interview round:', err);
+            return res.status(500).json({ error: err.message || 'Database error' });
+          }
+  
+          res.status(201).json({ message: 'Interview round added successfully' });
+        });
       });
     });
+  };
+  
+
+  // Delete an interview round for a candidate
+exports.deleteInterviewRound = (req, res) => {
+  const { id, round_number } = req.params;
+
+  // Query to mark the round as deleted in the trans_interview_rounds table
+  const query = 'UPDATE trans_interview_rounds SET is_deleted = 1 WHERE candidate_id = ? AND round_number = ?';
+
+  db.query(query, [id, round_number], (err, result) => {
+    if (err) {
+      console.error('Error deleting interview round:', err);
+      return res.status(500).json({ error: err.message || 'Database error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Interview round not found' });
+    }
+
+    res.json({ message: 'Interview round marked as deleted successfully' });
   });
 };
 
-  // Delete an interview round for a candidate
-  exports.deleteInterviewRound = (req, res) => {
-    const { id, round_number } = req.params;
-  
-    // Query to mark the round as deleted
-    const query = 'UPDATE interview_rounds SET is_deleted = 1 WHERE c_id = ? AND round_number = ?';
-  
-    db.query(query, [id, round_number], (err, result) => {
-      if (err) {
-        console.error('Error deleting interview round:', err);
-        return res.status(500).json({ error: err.message || 'Database error' });
-      }
-  
-      if (result.affectedRows === 0) {
-        return res.status(404).json({ message: 'Interview round not found' });
-      }
-  
-      res.json({ message: 'Interview round marked as deleted successfully' });
-    });
-  };
   
   // -----
 
 
 
-  // Update a candidate's information done
+  // Update a candidate's information 
   exports.updateCandidate = (req, res) => {
     const { id } = req.params;
     const { name, position } = req.body;
-  
+
     if (!name || !position) {
       return res.status(400).json({ error: 'Name and position are required' });
     }
-  
+
     const upperCaseName = name.toUpperCase(); // Ensure the name is stored in uppercase
-  
-    // Get the position_id based on the position name
+
+    // Get the position_id based on the position name from the new table schema
     const getPositionIdQuery = `
-      SELECT position_id FROM positions WHERE position_name = ?
+      SELECT position_id FROM master_positions WHERE position_name = ?
     `;
-  
+
     db.query(getPositionIdQuery, [position], (err, positionResults) => {
       if (err) {
         console.error('Error fetching position ID:', err);
         return res.status(500).json({ error: 'Database error fetching position ID' });
       }
-  
+
       if (positionResults.length === 0) {
         return res.status(400).json({ error: 'Position not found' });
       }
-  
+
       const positionId = positionResults[0].position_id;
-  
-      // Update the candidate name and position_id
+
+      // Update the candidate name and position_id in the updated table schema
       const updateCandidateQuery = `
-        UPDATE candidates 
-        SET c_name = ?, position_id = ?
-        WHERE c_id = ?
+        UPDATE trans_candidates 
+        SET candidate_name = ?, position_id = ?
+        WHERE candidate_id = ?
       `;
-  
+
       db.query(updateCandidateQuery, [upperCaseName, positionId, id], (err, result) => {
         if (err) {
           console.error('Error updating candidate:', err);
           return res.status(500).json({ error: 'Database error' });
         }
-  
+
         if (result.affectedRows === 0) {
           return res.status(404).json({ message: 'Candidate not found' });
         }
-  
+
         res.json({ message: 'Candidate updated successfully' });
       });
     });
-  };
-  
+};
+
   
   // Get all distinct candidates from all HRs (no interview details in the list) for CEO Done
   exports.getAllCandidates = (req, res) => {
     const query = `
       SELECT DISTINCT 
-          c.c_id AS Candidate_ID,
-          c.c_name AS Candidate_Name,
-          p.position_name AS Position,  -- Fetch position name from the positions table
-          u.name AS HR_Name  -- Fetch HR name from the users table
+          c.candidate_id AS Candidate_ID,
+          c.candidate_name AS Candidate_Name,
+          p.position_name AS Position,  -- Fetch position name from the master_positions table
+          u.user_name AS HR_Name  -- Fetch HR name from the trans_users table
       FROM 
-          candidates c
+          trans_candidates c
       LEFT JOIN 
-          users u ON c.u_id = u.u_id
+          trans_users u ON c.user_id = u.user_id  -- Join with trans_users to get HR name
       LEFT JOIN 
-          positions p ON c.position_id = p.position_id  -- Join with positions table to fetch position name
+          master_positions p ON c.position_id = p.position_id  -- Join with master_positions to get position name
       ORDER BY 
-          c.c_id DESC;
+          c.candidate_id DESC;
     `;
     
     db.query(query, (err, results) => {
@@ -490,40 +501,40 @@ exports.addInterviewRound = (req, res) => {
       console.log('Distinct candidates results:', results);
       res.json(results);
     });
-  };
+};
+
   
-  
-  // Get candidate details history by ID (including all interview rounds) for CEO Done 
+  // Get candidate details history by ID (including all interview rounds) for CEO  Done
   exports.getCandidateDetails = (req, res) => {
     const { id } = req.params;
   
     const query = `
       SELECT 
-        c.c_id AS Candidate_ID,
-        c.c_name AS Candidate_Name,
+        c.candidate_id AS Candidate_ID,
+        c.candidate_name AS Candidate_Name,
         p.position_name AS Position,
-        u.name AS HR_Name,
+        u.user_name AS HR_Name,
         ir.round_number AS Round_Number,
         iv.interviewer_name AS Interviewer,
         ir.interview_date AS Interview_Date,
         s.status_name AS Status,
         ir.remarks AS Remarks
       FROM 
-        candidates c
+        trans_candidates c
       LEFT JOIN 
-        interview_rounds ir ON c.c_id = ir.c_id AND ir.is_deleted = 0  -- Exclude deleted rounds
+        trans_interview_rounds ir ON c.candidate_id = ir.candidate_id AND ir.is_deleted = 0  -- Exclude deleted rounds
       LEFT JOIN 
-        users u ON c.u_id = u.u_id
+        trans_users u ON c.user_id = u.user_id
       LEFT JOIN 
-        positions p ON c.position_id = p.position_id
+        master_positions p ON c.position_id = p.position_id
       LEFT JOIN 
-        interviewers iv ON ir.interviewer_id = iv.interviewer_id
+        master_interviewers iv ON ir.interviewer_id = iv.interviewer_id
       LEFT JOIN 
-        statuses s ON ir.status_id = s.status_id
+        master_statuses s ON ir.status_id = s.status_id
       WHERE 
-        c.c_id = ?
+        c.candidate_id = ?
       ORDER BY 
-        ir.round_number ;
+        ir.round_number;
     `;
   
     db.query(query, [id], (err, results) => {
@@ -549,8 +560,8 @@ exports.addInterviewRound = (req, res) => {
   
       res.json(candidate);
     });
-  };
-  
+};
+
 
   
   // Get interview rounds history for a candidate (HR) Done
@@ -560,19 +571,19 @@ exports.addInterviewRound = (req, res) => {
   
     // Query to fetch interview rounds with interviewer's name and status name
     const query = `
-    SELECT 
-      ir.round_number AS Round_Number,
-      i.interviewer_name AS Interviewer,
-      ir.interview_date AS Interview_Date,
-      s.status_name AS Status,
-      ir.remarks AS Remarks
-    FROM interview_rounds ir
-    LEFT JOIN interviewers i ON ir.interviewer_id = i.interviewer_id
-    LEFT JOIN statuses s ON ir.status_id = s.status_id
-    WHERE ir.c_id = ? AND ir.is_deleted = 0  -- Exclude rounds marked as deleted
-    ORDER BY ir.ir_id;
-  `;
-  
+      SELECT 
+        ir.round_number AS Round_Number,
+        i.interviewer_name AS Interviewer,
+        ir.interview_date AS Interview_Date,
+        s.status_name AS Status,
+        ir.remarks AS Remarks
+      FROM trans_interview_rounds ir
+      LEFT JOIN master_interviewers i ON ir.interviewer_id = i.interviewer_id
+      LEFT JOIN master_statuses s ON ir.status_id = s.status_id
+      WHERE ir.candidate_id = ? AND ir.is_deleted = 0  -- Exclude rounds marked as deleted
+      ORDER BY ir.ir_id;
+    `;
+    
     db.query(query, [c_id], (err, results) => {
       if (err) {
         console.error('Database query error:', err);
@@ -584,39 +595,40 @@ exports.addInterviewRound = (req, res) => {
   };
   
   
+  
 
   // Add a new entry (position, status, interviewer)
   exports.addAdminEntry = (req, res) => {
     const { type, name } = req.body;
-  
+
     // Define the appropriate table based on the type
     let table;
     switch (type) {
       case 'position':
-        table = 'positions';
+        table = 'master_positions';  // Updated to match schema
         break;
       case 'status':
-        table = 'statuses';
+        table = 'master_statuses';  // Updated to match schema
         break;
       case 'interviewer':
-        table = 'interviewers';
+        table = 'master_interviewers';  // Updated to match schema
         break;
       default:
         return res.status(400).json({ error: 'Invalid entry type' });
     }
-  
+
     // Use the correct column name based on the type
     let columnName;
-    if (table === 'positions') {
-      columnName = 'position_name'; // Correct column name
-    } else if (table === 'statuses') {
-      columnName = 'status_name';
-    } else if (table === 'interviewers') {
-      columnName = 'interviewer_name';
+    if (table === 'master_positions') {
+      columnName = 'position_name';  // Correct column name for positions
+    } else if (table === 'master_statuses') {
+      columnName = 'status_name';  // Correct column name for statuses
+    } else if (table === 'master_interviewers') {
+      columnName = 'interviewer_name';  // Correct column name for interviewers
     }
-  
+
     const query = `INSERT INTO ${table} (${columnName}) VALUES (?)`;
-  
+
     db.query(query, [name], (err, results) => {
       if (err) {
         console.error('Database error:', err);
@@ -624,8 +636,8 @@ exports.addInterviewRound = (req, res) => {
       }
       res.status(201).json({ message: `${type} added successfully` });
     });
-  };
-  
+};
+
   
 // Delete an entry (position, status, interviewer)
 exports.deleteAdminEntry = (req, res) => {
@@ -640,34 +652,39 @@ exports.deleteAdminEntry = (req, res) => {
   let table;
   let column;
   let checkQuery;
-  
+
   switch (type) {
     case 'position':
-      table = 'positions';
+      table = 'master_positions';
       column = 'position_id';
-      checkQuery = `SELECT COUNT(*) AS count FROM candidates WHERE position_id = ?`;
+      // Check if there are any candidates associated with the position
+      checkQuery = `SELECT COUNT(*) AS count FROM trans_candidates WHERE position_id = ?`;
       break;
     case 'status':
-      table = 'statuses';
+      table = 'master_statuses';
       column = 'status_id';
+      // No check for dependent rows for status, so no query needed
+      checkQuery = null;
       break;
     case 'interviewer':
-      table = 'interviewers';
+      table = 'master_interviewers';
       column = 'interviewer_id';
+      // No check for dependent rows for interviewer, so no query needed
+      checkQuery = null;
       break;
     default:
       return res.status(400).json({ error: 'Invalid entry type' });
   }
 
-  // Check if there are any candidates associated with the position
+  // If there's a check query (for positions), we check for dependent candidates
   if (checkQuery) {
     db.query(checkQuery, [id], (err, results) => {
       if (err) {
         console.error('Database error:', err);
         return res.status(500).json({ error: 'Error checking for dependent rows' });
       }
-      
-      // If there are dependent rows, return an error
+
+      // If there are dependent rows (candidates), return an error
       if (results[0].count > 0) {
         return res.status(400).json({ error: 'Cannot delete position because there are candidates associated with it' });
       }
@@ -687,7 +704,7 @@ exports.deleteAdminEntry = (req, res) => {
       });
     });
   } else {
-    // If there's no check for dependent rows (status, interviewer), just proceed
+    // If there's no check for dependent rows (status, interviewer), just proceed with deletion
     const query = `DELETE FROM ${table} WHERE ${column} = ?`;
 
     db.query(query, [id], (err, results) => {
@@ -705,11 +722,13 @@ exports.deleteAdminEntry = (req, res) => {
 
 
 
+
 // Fetch admin data (positions, statuses, interviewers)
 exports.getAdminData = (req, res) => {
-  const positionsQuery = 'SELECT * FROM positions';
-  const statusesQuery = 'SELECT * FROM statuses';
-  const interviewersQuery = 'SELECT * FROM interviewers';
+  // Modified queries to reflect the new schema
+  const positionsQuery = 'SELECT * FROM master_positions';
+  const statusesQuery = 'SELECT * FROM master_statuses';
+  const interviewersQuery = 'SELECT * FROM master_interviewers';
 
   db.query(positionsQuery, (err, positions) => {
     if (err) {
@@ -748,3 +767,4 @@ exports.getAdminData = (req, res) => {
     });
   });
 };
+
