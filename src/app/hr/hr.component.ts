@@ -16,9 +16,17 @@ export class HRComponent implements OnInit {
   loggedInHR: string = '';
   loggedInHRId: string | null = '';
   candidates: any[] = [];
-
-
   selectedCandidate: any = null;
+
+
+  isAdmin: boolean = false; // New property to check if the user is Admin
+  adminData: {
+    positions: { position_id: number, position_name: string }[],
+    statuses: { status_id: number, status_name: string }[],
+    interviewers: { interviewer_id: number, interviewer_name: string }[]
+  } = { positions: [], statuses: [], interviewers: [] };
+
+
 
   constructor(private http: HttpClient, private router: Router, private dataService: DataService) { }
   todayDate: string = ''; // Declare todayDate as a string
@@ -26,27 +34,50 @@ export class HRComponent implements OnInit {
     ngOnInit(): void {
       this.loggedInHR = localStorage.getItem('loggedInHR') || '';
       this.loggedInHRId = localStorage.getItem('loggedInHRId');
+
+      this.isAdmin = localStorage.getItem('userPermission') === 'Admin'; // Check if the user is an Admin
+
       
       console.log('Logged in HR:', this.loggedInHR);
       console.log('Logged in HR ID:', this.loggedInHRId);
+      this.fetchAdminData();
 
+      // if (this.loggedInHRId) {
+      //   this.getCandidates();
+      // } else {
+      //   console.error('No HR is logged in!');
+      // }
       if (this.loggedInHRId) {
         this.getCandidates();
+        if (this.isAdmin) {
+          this.fetchAdminData();
+        }
       } else {
         console.error('No HR is logged in!');
       }
-    
       // Fetch interview options for dropdowns
       this.dataService.getInterviewOptions().subscribe((data) => {
         this.interviewOptions = data;
         console.log('Interview Options:', this.interviewOptions);
       });
-      this.getInterviewOptions();
       const today = new Date();
       this.todayDate = today.toISOString().split('T')[0];
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 getCandidates() {
   console.log('Fetching candidates for HR ID:', this.loggedInHRId);
@@ -82,6 +113,120 @@ getCandidates() {
       }
     );
 }
+
+
+
+newAdminEntry: { type: string; name: string } = { type: '', name: '' };
+selectedAdminEntry: { type: string; id: number | null } = { type: '', id: null };
+
+
+onPositionSelect() {
+  this.selectedAdminEntry.type = 'position';
+}
+
+onStatusSelect() {
+  this.selectedAdminEntry.type = 'status';
+}
+
+onInterviewerSelect() {
+  this.selectedAdminEntry.type = 'interviewer';
+}
+
+fetchAdminData() {
+  this.dataService.getAdminData().subscribe(
+    (data) => {
+      this.adminData = data;
+      console.log('Fetched admin data:', this.adminData);
+    },
+    (error) => {
+      console.error('Error fetching admin data:', error);
+    }
+  );
+}
+
+
+addAdminEntry(type: string) {
+  let name: string = ''; // Initialize the variable to an empty string
+  let newEntry: any;
+
+  // Choose the right entry object based on the type
+  if (type === 'position') {
+    newEntry = this.newPositionEntry;
+    name = newEntry.name; // Assign the name value for position
+  } else if (type === 'status') {
+    newEntry = this.newStatusEntry;
+    name = newEntry.name; // Assign the name value for status
+  } else if (type === 'interviewer') {
+    newEntry = this.newInterviewerEntry;
+    name = newEntry.name; // Assign the name value for interviewer
+  }
+
+  // Ensure that the name is not empty before proceeding
+  if (!name.trim()) {
+    this.showAlert('Please provide a name.', 'alert-danger');
+    return;
+  }
+
+  // Now call the service to add the new entry
+  this.dataService.addAdminEntry(type, name).subscribe(
+    (response: any) => {
+      this.showAlert('Entry added successfully!', 'alert-success');
+      newEntry.name = ''; // Reset the name field for the section
+      this.fetchAdminData(); // Refresh data
+    },
+    (error: any) => {
+      console.error('Error adding entry:', error);
+      this.showAlert('Error adding entry. Please try again.', 'alert-danger');
+    }
+  );
+}
+
+
+
+
+
+deleteAdminEntry(type: string, id: number | string) {
+  // Convert string to number if necessary
+  const idToDelete = typeof id === 'string' ? parseInt(id, 10) : id;
+
+  // Validate the id to ensure it's a number
+  if (isNaN(idToDelete)) {
+    console.error('Invalid ID:', id);
+    return;
+  }
+
+  // Show a confirmation dialog before deleting
+  const confirmation = confirm('Are you sure you want to delete this entry?');
+  if (confirmation) {
+    // Call the service to delete the entry
+    this.dataService.deleteAdminEntry(type, idToDelete).subscribe(
+      (response: any) => {
+        this.showAlert('Entry deleted successfully!', 'alert-success');
+        this.fetchAdminData(); // Refresh the data after deletion
+      },
+      (error: any) => {
+        console.error('Error deleting entry:', error);
+        this.showAlert('Error deleting entry. Please try again.', 'alert-danger');
+      }
+    );
+  }
+}
+
+ // Separate new entry objects for each section
+ newPositionEntry = { name: '' };
+ newStatusEntry = { name: '' };
+ newInterviewerEntry = { name: '' };
+ currentSection: string = '';
+
+  // Toggle the section based on the button clicked
+  toggleSection(section: string) {
+    this.currentSection = section;
+  }
+
+
+
+
+
 
     
   
@@ -133,12 +278,6 @@ getLastRoundData(candidateId: number) {
 
 
 
-
-
-
-
-
-
   toggleAddRoundModal() {
     this.showAddRoundModal = !this.showAddRoundModal; // Toggle modal visibility
   }
@@ -160,11 +299,6 @@ getLastRoundData(candidateId: number) {
     const userTimezoneOffset = date.getTimezoneOffset() * 60000; // Get the timezone offset in milliseconds
     return new Date(date.getTime() - userTimezoneOffset).toISOString().split('T')[0];
   }
-
-
-
-
-
 
   currentPage: number = 1;
   pageSize: number = 30;  // Number of candidates per page
@@ -210,10 +344,6 @@ getLastRoundData(candidateId: number) {
   updatePageCandidates() {
     this.paginatedCandidates;
   }
-
-
-
-
 
   newCandidate: { name: string, position: string | undefined, customPosition?: string } = { name: '', position: '', customPosition: '' };
 
@@ -290,8 +420,6 @@ getLastRoundData(candidateId: number) {
   }
   
 
-  
-
 
   addNewRound() {
 
@@ -353,7 +481,6 @@ getLastRoundData(candidateId: number) {
   }
   
 
-
   
   showAddRoundSection(candidate: any) {
     this.selectedCandidate = candidate; // Set the selected candidate for the add round form
@@ -406,10 +533,6 @@ getLastRoundData(candidateId: number) {
       customStatus: '',       // Default to empty string
       remarks: ''
     };
-
-
-
-
 
 
   deleteInterviewRound(candidateId: number, roundNumber: string, candidateName: string) {
@@ -596,10 +719,6 @@ getLastRoundData(candidateId: number) {
   closeHistoryModal() {
     this.showHistory = false;
   }
-
-
-
-
 
   // Component TypeScript file
 

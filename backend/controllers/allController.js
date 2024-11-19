@@ -551,13 +551,7 @@ exports.addInterviewRound = (req, res) => {
     });
   };
   
-  
-  
-  
-  
-  
-  
-  
+
   
   // Get interview rounds history for a candidate (HR) Done
   exports.getInterviewRoundsForCandidate = (req, res) => {
@@ -590,3 +584,167 @@ exports.addInterviewRound = (req, res) => {
   };
   
   
+
+  // Add a new entry (position, status, interviewer)
+  exports.addAdminEntry = (req, res) => {
+    const { type, name } = req.body;
+  
+    // Define the appropriate table based on the type
+    let table;
+    switch (type) {
+      case 'position':
+        table = 'positions';
+        break;
+      case 'status':
+        table = 'statuses';
+        break;
+      case 'interviewer':
+        table = 'interviewers';
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid entry type' });
+    }
+  
+    // Use the correct column name based on the type
+    let columnName;
+    if (table === 'positions') {
+      columnName = 'position_name'; // Correct column name
+    } else if (table === 'statuses') {
+      columnName = 'status_name';
+    } else if (table === 'interviewers') {
+      columnName = 'interviewer_name';
+    }
+  
+    const query = `INSERT INTO ${table} (${columnName}) VALUES (?)`;
+  
+    db.query(query, [name], (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Error adding entry' });
+      }
+      res.status(201).json({ message: `${type} added successfully` });
+    });
+  };
+  
+  
+// Delete an entry (position, status, interviewer)
+exports.deleteAdminEntry = (req, res) => {
+  const { type, id } = req.params;
+
+  // Validate if the id is numeric
+  if (isNaN(id)) {
+    return res.status(400).json({ error: 'Invalid ID' });
+  }
+
+  // Define the appropriate table and column based on the type
+  let table;
+  let column;
+  let checkQuery;
+  
+  switch (type) {
+    case 'position':
+      table = 'positions';
+      column = 'position_id';
+      checkQuery = `SELECT COUNT(*) AS count FROM candidates WHERE position_id = ?`;
+      break;
+    case 'status':
+      table = 'statuses';
+      column = 'status_id';
+      break;
+    case 'interviewer':
+      table = 'interviewers';
+      column = 'interviewer_id';
+      break;
+    default:
+      return res.status(400).json({ error: 'Invalid entry type' });
+  }
+
+  // Check if there are any candidates associated with the position
+  if (checkQuery) {
+    db.query(checkQuery, [id], (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Error checking for dependent rows' });
+      }
+      
+      // If there are dependent rows, return an error
+      if (results[0].count > 0) {
+        return res.status(400).json({ error: 'Cannot delete position because there are candidates associated with it' });
+      }
+
+      // Proceed with deleting the position
+      const query = `DELETE FROM ${table} WHERE ${column} = ?`;
+
+      db.query(query, [id], (err, results) => {
+        if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: 'Error deleting entry' });
+        }
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ error: 'Entry not found' });
+        }
+        res.json({ message: `${type} deleted successfully` });
+      });
+    });
+  } else {
+    // If there's no check for dependent rows (status, interviewer), just proceed
+    const query = `DELETE FROM ${table} WHERE ${column} = ?`;
+
+    db.query(query, [id], (err, results) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Error deleting entry' });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ error: 'Entry not found' });
+      }
+      res.json({ message: `${type} deleted successfully` });
+    });
+  }
+};
+
+
+
+// Fetch admin data (positions, statuses, interviewers)
+exports.getAdminData = (req, res) => {
+  const positionsQuery = 'SELECT * FROM positions';
+  const statusesQuery = 'SELECT * FROM statuses';
+  const interviewersQuery = 'SELECT * FROM interviewers';
+
+  db.query(positionsQuery, (err, positions) => {
+    if (err) {
+      console.error('Database error:', err);
+      return res.status(500).json({ error: 'Error fetching positions' });
+    }
+
+    db.query(statusesQuery, (err, statuses) => {
+      if (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ error: 'Error fetching statuses' });
+      }
+
+      db.query(interviewersQuery, (err, interviewers) => {
+        if (err) {
+          console.error('Database error:', err);
+          return res.status(500).json({ error: 'Error fetching interviewers' });
+        }
+
+        // Send the full data with id and name
+        res.json({
+          positions: positions.map(p => ({
+            position_id: p.position_id,
+            position_name: p.position_name
+          })),
+          statuses: statuses.map(s => ({
+            status_id: s.status_id,
+            status_name: s.status_name
+          })),
+          interviewers: interviewers.map(i => ({
+            interviewer_id: i.interviewer_id,
+            interviewer_name: i.interviewer_name
+          }))
+        });
+      });
+    });
+  });
+};

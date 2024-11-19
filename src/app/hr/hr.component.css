@@ -20,6 +20,83 @@
   margin: 0 10px; /* Adds space to the left and right of each button */
 }
 
+
+.admin-section {
+  /* Center the admin section both vertically and horizontally */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh; /* Adjust the height to make it smaller */
+  width: 50%; /* Make the width smaller */
+  margin: 50px auto; /* Center it on the screen with some margin from top */
+  padding: 20px;
+  background-color: #f4f4f4; /* Light background for better visibility */
+  border: 2px solid #007bff; /* Blue border */
+  border-radius: 10px; /* Rounded corners */
+}
+
+.admin-section h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.admin-section .button-container {
+  display: flex;
+  justify-content: space-around; /* Distribute buttons evenly */
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.admin-section button {
+  /* Style buttons */
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.admin-section button:hover {
+  background-color: #0056b3; /* Darker shade on hover */
+}
+
+.admin-section select,
+.admin-section input {
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 400px; /* Limit width */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.admin-section .alert {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border-radius: 5px;
+}
+
+.admin-section .alert.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.admin-section .alert.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+
+
+
+
 /* Modal content box */
 .modal-content {
   background-color: white;

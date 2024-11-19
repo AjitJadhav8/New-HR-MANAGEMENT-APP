@@ -32,4 +32,11 @@ router.get('/candidates/:id/details', allController.getCandidateDetails);
 
 router.get('/interview_rounds/:c_id', allController.getInterviewRoundsForCandidate);
 
+
+
+router.post('/admin/entries', allController.addAdminEntry);
+router.delete('/admin/entries/:type/:id', allController.deleteAdminEntry);
+router.get('/admin/data', allController.getAdminData);
+
+
 module.exports = router;

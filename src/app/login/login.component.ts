@@ -9,7 +9,7 @@ import { DataService } from '../services/data.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [HttpClientModule,FormsModule,CommonModule],
+  imports: [HttpClientModule, FormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -23,7 +23,7 @@ export class LoginComponent {
     private router: Router,
     private dataService: DataService,
     private authService: AuthService
-  ) {}
+  ) { }
 
   login() {
     const loginData = { name: this.name, password: this.password };
@@ -40,14 +40,13 @@ export class LoginComponent {
         localStorage.setItem('loggedInHR', response.user.name); // Save logged-in HR name
         localStorage.setItem('loggedInHRId', response.user.id); // Save logged-in HR ID
         localStorage.setItem('userPermission', response.user.permission); // Save user permission
-
+        // /hr-dashboard
+        // Redirect based on user permission
         // Redirect based on user permission
         if (response.user.permission === 'CEO') {
           this.router.navigate(['/ceo']); // Redirect to CEO component
-        } else if (response.user.permission === 'HR') {
-          this.router.navigate(['/hr-dashboard']); // Redirect to HR dashboard
-        } else {
-          this.router.navigate(['/default-dashboard']); // Redirect to a default dashboard
+        } else if (response.user.permission === 'HR' || response.user.permission === 'Admin') {
+          this.router.navigate(['/hr-dashboard']); // Redirect both HR and Admin to the HR component
         }
       },
       error: (error) => {

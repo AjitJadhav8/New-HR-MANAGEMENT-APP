@@ -14,6 +14,23 @@ export class DataService {
 
   constructor(private http: HttpClient) {}
 
+ 
+  addAdminEntry(type: string, name: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/api/admin/entries`, { type, name });
+  }
+  
+  deleteAdminEntry(type: string, id: number): Observable<any> {
+    return this.http.delete<any>(`${this.apiUrl}/api/admin/entries/${type}/${id}`);
+  }
+  
+  getAdminData(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/api/admin/data`);
+  }
+  
+ 
+ 
+ 
+ 
   // Fetch all candidates for CEO
   getAllCandidates(): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/api/all-candidates`);

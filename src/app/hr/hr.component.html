@@ -9,10 +9,6 @@
   </div>
 </div>
 
-
-
-
-<!-- hr.component.html -->
 <div *ngIf="showChangePasswordForm" class="change-password-form">
   <h3>Change Password</h3>
   <form (ngSubmit)="changePassword()">
@@ -32,8 +28,78 @@
   </form>
 </div>
 
+
+<div *ngIf="isAdmin" class="admin-section">
+  <h3>Admin Panel</h3>
+
+
+
+  <div class="button-container">
+    <button (click)="toggleSection('positions')">Manage Positions</button>
+    <button (click)="toggleSection('statuses')">Manage Statuses</button>
+    <button (click)="toggleSection('interviewers')">Manage Interviewers</button>
+  </div>
+
+  <!-- Manage Positions Section -->
+  <div *ngIf="currentSection === 'positions'">
+    <h4>Manage Positions</h4>
+    <select [(ngModel)]="selectedAdminEntry.id" (change)="onPositionSelect()">
+      <option value="" disabled selected>Select a position</option>
+      <option *ngFor="let position of adminData.positions" [value]="position.position_id">{{ position.position_name }}</option>
+    </select>
+    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('position', selectedAdminEntry.id)">Delete Position</button>
+    <input [(ngModel)]="newPositionEntry.name" placeholder="New Position" />
+    <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
+      {{ alertMessage }}
+    </div>
+    <button (click)="addAdminEntry('position')">Add Position</button>
+  </div>
+
+  <!-- Manage Statuses Section -->
+  <div *ngIf="currentSection === 'statuses'">
+    <h4>Manage Statuses</h4>
+    <select [(ngModel)]="selectedAdminEntry.id" (change)="onStatusSelect()">
+      <option value="" disabled selected>Select a status</option>
+      <option *ngFor="let status of adminData.statuses" [value]="status.status_id">{{ status.status_name }}</option>
+    </select>
+    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('status', selectedAdminEntry.id)">Delete Status</button>
+    <input [(ngModel)]="newStatusEntry.name" placeholder="New Status" />
+    <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
+      {{ alertMessage }}
+    </div>
+    <button (click)="addAdminEntry('status')">Add Status</button>
+  </div>
+
+  <!-- Manage Interviewers Section -->
+  <div *ngIf="currentSection === 'interviewers'">
+    <h4>Manage Interviewers</h4>
+    <select [(ngModel)]="selectedAdminEntry.id" (change)="onInterviewerSelect()">
+      <option value="" disabled selected>Select an interviewer</option>
+      <option *ngFor="let interviewer of adminData.interviewers" [value]="interviewer.interviewer_id">{{ interviewer.interviewer_name }}</option>
+    </select>
+    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('interviewer', selectedAdminEntry.id)">Delete Interviewer</button>
+    <input [(ngModel)]="newInterviewerEntry.name" placeholder="New Interviewer" />
+    <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
+      {{ alertMessage }}
+    </div>
+    <button (click)="addAdminEntry('interviewer')">Add Interviewer</button>
+  </div>
+
+</div>
+
+
+
+
+<br><br>
+
+
+
+
+<!-- hr.component.html -->
+
  
   
+<div *ngIf="!isAdmin">
 
 
 <div class="container">
@@ -308,4 +374,5 @@
   </div>
 
 
+</div>
 </div>
