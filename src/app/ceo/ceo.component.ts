@@ -22,6 +22,9 @@ export class CEOComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllCandidates();
+    this.getAllUsers();
+    this.getAllRoles();
+    this.getAllCandidates();
   }
 
   getAllCandidates() {
@@ -186,6 +189,106 @@ get totalPages() {
   return Math.ceil(this.totalCandidates / this.pageSize);
 }
 
+users: any[] = [];
+roles: any[] = [];
+selectedUserId: number | null = null;
+selectedRoleId: number | null = null;
+newUser: any = {
+  user_name: '',
+  password: '',
+  role_id: null,
+};
+alertMessage: string = '';
+alertType: string = '';
+
+
+// Fetch all users
+getAllUsers() {
+  this.dataService.getAllUsers().subscribe(
+    (data) => {
+      this.users = data;
+    },
+    (error) => {
+      console.error('Error fetching users:', error);
+    }
+  );
+}
+
+// Fetch all roles
+getAllRoles() {
+  this.dataService.getAllRoles().subscribe(
+    (data) => {
+      this.roles = data;
+    },
+    (error) => {
+      console.error('Error fetching roles:', error);
+    }
+  );
+}
+
+// Update user role
+updateUserRole() {
+  if (!this.selectedUserId || !this.selectedRoleId) {
+    this.alertMessage = 'Please select a user and role.';
+    this.alertType = 'error';
+    return;
+  }
+
+  this.dataService.updateUserRole(this.selectedUserId, this.selectedRoleId).subscribe(
+    (response) => {
+      this.alertMessage = 'User role updated successfully.';
+      this.alertType = 'success';
+      this.getAllUsers(); // Refresh user data
+    },
+    (error) => {
+      console.error('Error updating user role:', error);
+      this.alertMessage = 'Failed to update user role.';
+      this.alertType = 'error';
+    }
+  );
+}
+
+// Add a new user
+addUser() {
+  if (!this.newUser.user_name || !this.newUser.password || !this.newUser.role_id) {
+    this.alertMessage = 'Please fill all the fields.';
+    this.alertType = 'error';
+    return;
+  }
+
+  this.dataService.addUser(this.newUser).subscribe(
+    (response) => {
+      this.alertMessage = 'New user added successfully.';
+      this.alertType = 'success';
+      this.newUser = { user_name: '', password: '', role_id: null }; // Reset form
+      this.getAllUsers(); // Refresh user data
+    },
+    (error) => {
+      console.error('Error adding user:', error);
+      this.alertMessage = 'Failed to add user.';
+      this.alertType = 'error';
+    }
+  );
+}
+
+
+
+deleteUser(userId: number): void {
+  if (confirm('Are you sure you want to delete this user?')) {
+    this.dataService.deleteUser(userId).subscribe(
+      (response) => {
+        this.alertMessage = 'User deleted successfully.';
+        this.alertType = 'success';
+        this.getAllUsers(); // Refresh user data
+      },
+      (error) => {
+        console.error('Error deleting user:', error);
+        this.alertMessage = 'Failed to delete user.';
+        this.alertType = 'error';
+      }
+    );
+  }
+}
 
 
 

@@ -8,6 +8,86 @@
   </div>
 </div>
  
+<div class="user-management">
+  <h3>User Management</h3>
+
+  <!-- Edit Role Section -->
+  <div>
+    <h4>Edit User Role</h4>
+    <label for="userSelect">Select User:</label>
+    <select id="userSelect" [(ngModel)]="selectedUserId">
+      <option value="" disabled selected>Select a user</option>
+      <option *ngFor="let user of users" [value]="user.user_id">
+        {{ user.user_name }}
+      </option>
+    </select>
+
+    <label for="roleSelect">Select Role:</label>
+    <select id="roleSelect" [(ngModel)]="selectedRoleId">
+      <option value="" disabled selected>Select a role</option>
+      <option *ngFor="let role of roles" [value]="role.role_id">
+        {{ role.role_name }}
+      </option>
+    </select>
+
+    <button (click)="updateUserRole()">Update Role</button>
+  </div>
+
+  <!-- Add New User Section -->
+  <div>
+    <h4>Add New User</h4>
+    <input
+      [(ngModel)]="newUser.user_name"
+      placeholder="Enter Username"
+      required
+    />
+    <input
+      [(ngModel)]="newUser.password"
+      placeholder="Enter Password"
+      type="password"
+      required
+    />
+    <select [(ngModel)]="newUser.role_id">
+      <option value="" disabled selected>Select a role</option>
+      <option *ngFor="let role of roles" [value]="role.role_id">
+        {{ role.role_name }}
+      </option>
+    </select>
+    <button (click)="addUser()">Add User</button>
+  </div>
+
+
+  <!-- User List Section -->
+  <div>
+    <h4>Existing Users</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.user_name }}</td>
+          <td>{{ user.role_name }}</td>
+          <td>
+            <button (click)="deleteUser(user.user_id)" class="btn btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+  <!-- Alert Section -->
+  <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
+    {{ alertMessage }}
+  </div>
+</div>
+
 
 
 

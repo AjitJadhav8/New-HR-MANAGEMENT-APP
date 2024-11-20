@@ -844,3 +844,103 @@ exports.getAdminData = (req, res) => {
   });
 };
 
+// -----------------------
+
+// Get all users
+exports.getAllUsers = (req, res) => {
+  const query = `
+    SELECT u.user_id, u.user_name, r.role_name, r.role_id
+    FROM trans_users u
+    INNER JOIN master_role r ON u.role_id = r.role_id
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);
+  });
+};
+
+// Get all roles
+exports.getAllRoles = (req, res) => {
+  const query = `
+    SELECT role_id, role_name FROM master_role
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching roles:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.json(results);
+  });
+};
+
+// Update user role
+exports.updateUserRole = (req, res) => {
+  const { userId } = req.params;
+  const { roleId } = req.body;
+
+  if (!userId || !roleId) {
+    return res.status(400).json({ error: 'User ID and Role ID are required' });
+  }
+
+  const query = `
+    UPDATE trans_users SET role_id = ? WHERE user_id = ?
+  `;
+
+  db.query(query, [roleId, userId], (err, result) => {
+    if (err) {
+      console.error('Error updating user role:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json({ message: 'User role updated successfully' });
+  });
+};
+
+// Add new user
+exports.addUser = (req, res) => {
+  const { user_name, password, role_id } = req.body;
+
+  if (!user_name || !password || !role_id) {
+    return res.status(400).json({ error: 'All fields are required' });
+  }
+
+  const query = `
+    INSERT INTO trans_users (user_name, password, role_id) VALUES (?, ?, ?)
+  `;
+
+  db.query(query, [user_name, password, role_id], (err, result) => {
+    if (err) {
+      console.error('Error adding user:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(201).json({ message: 'User added successfully', userId: result.insertId });
+  });
+};
+
+exports.deleteUser = (req, res) => {
+  const userId = req.params.userId;
+  console.log(`Attempting to delete user with ID: ${userId}`);  // Add this to check if the route is hit
+  
+  const query = 'DELETE FROM trans_users WHERE user_id = ?';
+  
+  db.query(query, [userId], (err, result) => {
+    if (err) {
+      console.error('Error deleting user:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (result.affectedRows > 0) {
+      return res.status(200).json({ message: 'User deleted successfully' });
+    } else {
+      return res.status(404).json({ error: 'User not found' });
+    }
+  });
+};
+
+

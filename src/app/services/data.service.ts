@@ -99,4 +99,34 @@ getInterviewOptions(): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/api/interview-options`);
   }
 
+// superAdmin
+    // Method to get all users
+// Method to get all users
+getAllUsers(): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/api/users`); // Corrected the URL to use /api prefix
+}
+
+// Method to get all roles
+getAllRoles(): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/api/roles`); // Corrected the URL to use /api prefix
+}
+
+// Method to update a user's role
+updateUserRole(userId: number, roleId: number): Observable<any> {
+  return this.http.put<any>(`${this.apiUrl}/api/users/${userId}/role`, { roleId }); // Corrected URL to use /api prefix
+}
+
+// Method to add a new user
+addUser(user: any): Observable<any> {
+  return this.http.post<any>(`${this.apiUrl}/api/users`, user); // Corrected the URL to use /api prefix
+}
+
+
+deleteUser(userId: number): Observable<any> {
+  return this.http.delete<any>(`${this.apiUrl}/api/users/${userId}`);
+}
+
+
+
+
 }

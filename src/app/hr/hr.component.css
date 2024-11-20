@@ -301,6 +301,67 @@
   background: #555;
 }
 
+/* Responsive Styles for Smaller Screens */
+@media (max-width: 768px) {
+  .view-history-table {
+    font-size: 10px;  /* Smaller font size for smaller screens */
+  }
+
+  .view-history-table thead th,
+  .view-history-table tbody td {
+    padding: 6px; /* Smaller padding */
+  }
+
+  .modal-content-history {
+    width: 95%; /* Allow modal to be slightly smaller on small screens */
+  }
+
+  .view-history-table-container {
+    overflow-x: scroll; /* Allow horizontal scrolling */
+  }
+}
+
+
+
+/* Styling for the Remarks column in the modal */
+.modal-history .view-history-table tbody td.remarks {
+  position: relative;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 12px; /* Adjusted font size for remarks */
+}
+
+/* Tooltip appearance on hover for modal remarks */
+.modal-history .view-history-table tbody td.remarks:hover::after {
+  content: attr(title); /* Use the 'title' attribute content */
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  background-color: black; /* Black background */
+  color: white; /* White text */
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px; /* Smaller font size for tooltip */
+  white-space: normal;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  width: max-content;
+  max-width: 300px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Optional: Style when the content is truncated and hovering over the remarks */
+.modal-history .view-history-table tbody td.remarks:hover {
+  overflow: hidden; /* Prevent text overflow */
+}
+
+
 
 
 
@@ -392,6 +453,10 @@
 .get-candidate-table-container::-webkit-scrollbar {
   height: 6px;
 }
+
+
+
+
 
 
 
@@ -640,16 +705,7 @@ p {
 }
 
 /* Adjust the table layout for responsive behavior */
-.table-responsive {
-  width: 100%;
-  overflow-x: auto; /* Enable horizontal scrolling */
-}
 
-/* Table should exceed 1400px to trigger horizontal scrolling */
-table {
-  width: 100%;
-  min-width: 1400px; /* Ensure the table is wide enough to trigger horizontal scroll */
-}
 
 
 /* Form Styling */
@@ -732,6 +788,17 @@ button.delete:hover {
 
 .navbar button:hover {
   background-color: #005f8c;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+/* Table should exceed 1400px to trigger horizontal scrolling */
+table {
+  width: 100%;
+  min-width: 1400px; /* Ensure the table is wide enough to trigger horizontal scroll */
 }
 
 /* Table Styling */

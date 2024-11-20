@@ -355,7 +355,7 @@
     </div>
 
     <!-- Interview History Modal -->
-    <div *ngIf="showHistory" class="modal-history">
+    <!-- <div *ngIf="showHistory" class="modal-history">
       <div class="modal-content-history">
         <span class="close-btn" (click)="closeHistoryModal()">&lt;</span>
         <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
@@ -375,13 +375,47 @@
               <td>{{ round.Interviewer }}</td>
               <td>{{ round.Interview_Date }}</td>
               <td>{{ round.Status }}</td>
-              <td>{{ round.Remarks }}</td>
+              <td class="remarks" [title]="round.Remarks || 'N/A'">
+                {{ round.Remarks || 'N/A' }}
+              </td>              
             </tr>
           </tbody>
         </table>
       </div>
-    </div>
+    </div> -->
 
+
+    <div *ngIf="showHistory" class="modal-history">
+      <div class="modal-content-history">
+        <span class="close-btn" (click)="closeHistoryModal()">&lt;</span>
+        <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
+        <div class="view-history-table-container">
+          <table class="view-history-table">
+            <thead>
+              <tr>
+                <th>Round </th>
+                <th>Interviewer</th>
+                <th>Interview Date</th>
+                <th>Status</th>
+                <th>Remarks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let round of candidateHistory">
+                <td>{{ round.Round_Number }}</td>
+                <td>{{ round.Interviewer }}</td>
+                <td>{{ round.Interview_Date }}</td>
+                <td>{{ round.Status }}</td>
+                <td class="remarks" [title]="round.Remarks || 'N/A'">
+                  {{ round.Remarks || 'N/A' }}
+                </td>              
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
 
   </div>
 </div>

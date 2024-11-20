@@ -32,11 +32,26 @@ router.get('/candidates/:id/details', allController.getCandidateDetails);
 
 router.get('/interview_rounds/:c_id', allController.getInterviewRoundsForCandidate);
 
-
+// -----Admin-----
 
 router.post('/admin/entries', allController.addAdminEntry);
 router.delete('/admin/entries/:type/:id', allController.deleteAdminEntry);
 router.get('/admin/data', allController.getAdminData);
 
+// -----SuperUser--
+router.post('/users', allController.addUser);
+
+// Route to get all users
+router.get('/users', allController.getAllUsers);
+
+// Route to get all roles
+router.get('/roles', allController.getAllRoles);
+
+// Route to update a user's role
+router.put('/users/:userId/role', allController.updateUserRole);
+
+
+// Route to delete a user
+router.delete('/users/:userId', allController.deleteUser);
 
 module.exports = router;
