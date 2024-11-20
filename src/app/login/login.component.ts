@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service'; // Use AuthService
@@ -13,7 +13,7 @@ import { DataService } from '../services/data.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   name: string = '';
   password: string = '';
   errorMessage: string = '';
@@ -24,6 +24,13 @@ export class LoginComponent {
     private dataService: DataService,
     private authService: AuthService
   ) { }
+
+
+  ngOnInit(): void {
+    // Clear all items in localStorage when the LoginComponent is loaded
+    console.log('Clearing localStorage');
+    localStorage.clear();
+  }
 
   login() {
     const loginData = { name: this.name, password: this.password };
