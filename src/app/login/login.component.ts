@@ -45,7 +45,7 @@ export class LoginComponent {
         // Redirect based on user permission
         if (response.user.permission === 'CEO') {
           this.router.navigate(['/ceo']); // Redirect to CEO component
-        } else if (response.user.permission === 'HR' || response.user.permission === 'Admin') {
+        } else if (response.user.permission === 'HR' || response.user.permission === 'Admin'  || response.user.permission === 'HrAdmin') {
           this.router.navigate(['/hr-dashboard']); // Redirect both HR and Admin to the HR component
         }
       },

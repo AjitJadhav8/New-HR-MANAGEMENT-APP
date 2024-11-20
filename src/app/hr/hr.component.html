@@ -3,6 +3,8 @@
   <p class="navbar-center">HR Dashboard</p>
   <div class="navbar-right">
     <p>Welcome, {{ loggedInHR }}</p>
+    <button *ngIf="isAdmin" (click)="toggleAdminPanel()">Open Admin Panel</button>
+
     <button class="logout-button" (click)="logout()">Logout</button>
     <button class="change-password-button" (click)="showChangePasswordForm = !showChangePasswordForm">Change
       Password</button>
@@ -29,10 +31,8 @@
 </div>
 
 
-<div *ngIf="isAdmin" class="admin-section">
+<div *ngIf="isAdmin && isAdminPanelVisible" class="admin-section">
   <h3>Admin Panel</h3>
-
-
 
   <div class="button-container">
     <button (click)="toggleSection('positions')">Manage Positions</button>
@@ -99,7 +99,7 @@
 
 
 <!-- hr  if role -->
-<div *ngIf="!isAdmin">
+<div *ngIf="isHR">
 
 
   <div class="container">

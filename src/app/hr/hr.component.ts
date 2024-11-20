@@ -30,41 +30,65 @@ export class HRComponent implements OnInit {
   isAdmin: boolean = false; // New property to check if the user is Admin
 
   ngOnInit(): void {
+    // Fetch the logged-in HR details and permission from localStorage
     this.loggedInHR = localStorage.getItem('loggedInHR') || '';
     this.loggedInHRId = localStorage.getItem('loggedInHRId');
-
-    this.isAdmin = localStorage.getItem('userPermission') === 'Admin'; // Check if the user is an Admin
-    this.isHR = localStorage.getItem('userPermission') === 'HR'; // Set isHR based on localStorage role
-
+  
+    // Check the user role stored in localStorage and set appropriate flags for Admin and HR roles
+    const userPermission = localStorage.getItem('userPermission');
+    
+    // If the user is 'HrAdmin', give them both Admin and HR privileges
+    if (userPermission === 'HrAdmin') {
+      this.isAdmin = true;
+      this.isHR = true;
+    } else if (userPermission === 'Admin') {
+      this.isAdmin = true;
+      this.isHR = false;
+    } else if (userPermission === 'HR') {
+      this.isAdmin = false;
+      this.isHR = true;
+    } else {
+      this.isAdmin = false;
+      this.isHR = false;
+    }
+  
+    // Log the role details for debugging
     console.log('Is Admin:', this.isAdmin);
     console.log('Is HR:', this.isHR);
     console.log('Logged in HR:', this.loggedInHR);
     console.log('Logged in HR ID:', this.loggedInHRId);
-    this.fetchAdminData();
-
-    // if (this.loggedInHRId) {
-    //   this.getCandidates();
-    // } else {
-    //   console.error('No HR is logged in!');
-    // }
+  
+    // Fetch data if the logged-in HR exists
     if (this.loggedInHRId) {
+      // Fetch candidates if the HR is logged in
       this.getCandidates();
+      
+      // Fetch admin data if the user has Admin rights
       if (this.isAdmin) {
         this.fetchAdminData();
       }
     } else {
       console.error('No HR is logged in!');
     }
-
-    // Fetch interview options for dropdowns
+  
+    // Fetch interview options for dropdowns (positions, statuses, interviewers)
     this.dataService.getInterviewOptions().subscribe((data) => {
       this.interviewOptions = data;
       console.log('Interview Options:', this.interviewOptions);
     });
+  
+    // Set today's date in the required format
     const today = new Date();
     this.todayDate = today.toISOString().split('T')[0];
-
   }
+  
+
+
+  isAdminPanelVisible: boolean = false;  // Panel is hidden initially
+  toggleAdminPanel() {
+    this.isAdminPanelVisible = !this.isAdminPanelVisible;
+  }
+
 
 
 
