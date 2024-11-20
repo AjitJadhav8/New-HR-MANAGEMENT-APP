@@ -45,9 +45,11 @@
     <h4>Manage Positions</h4>
     <select [(ngModel)]="selectedAdminEntry.id" (change)="onPositionSelect()">
       <option value="" disabled selected>Select a position</option>
-      <option *ngFor="let position of adminData.positions" [value]="position.position_id">{{ position.position_name }}</option>
+      <option *ngFor="let position of adminData.positions" [value]="position.position_id">{{ position.position_name }}
+      </option>
     </select>
-    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('position', selectedAdminEntry.id)">Delete Position</button>
+    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('position', selectedAdminEntry.id)">Delete
+      Position</button>
     <input [(ngModel)]="newPositionEntry.name" placeholder="New Position" />
     <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
       {{ alertMessage }}
@@ -62,7 +64,8 @@
       <option value="" disabled selected>Select a status</option>
       <option *ngFor="let status of adminData.statuses" [value]="status.status_id">{{ status.status_name }}</option>
     </select>
-    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('status', selectedAdminEntry.id)">Delete Status</button>
+    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('status', selectedAdminEntry.id)">Delete
+      Status</button>
     <input [(ngModel)]="newStatusEntry.name" placeholder="New Status" />
     <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
       {{ alertMessage }}
@@ -75,9 +78,11 @@
     <h4>Manage Interviewers</h4>
     <select [(ngModel)]="selectedAdminEntry.id" (change)="onInterviewerSelect()">
       <option value="" disabled selected>Select an interviewer</option>
-      <option *ngFor="let interviewer of adminData.interviewers" [value]="interviewer.interviewer_id">{{ interviewer.interviewer_name }}</option>
+      <option *ngFor="let interviewer of adminData.interviewers" [value]="interviewer.interviewer_id">{{
+        interviewer.interviewer_name }}</option>
     </select>
-    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('interviewer', selectedAdminEntry.id)">Delete Interviewer</button>
+    <button *ngIf="selectedAdminEntry.id" (click)="deleteAdminEntry('interviewer', selectedAdminEntry.id)">Delete
+      Interviewer</button>
     <input [(ngModel)]="newInterviewerEntry.name" placeholder="New Interviewer" />
     <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
       {{ alertMessage }}
@@ -89,294 +94,294 @@
 
 
 
-
 <br><br>
 
 
 
-
-<!-- hr.component.html -->
-
- 
-  
+<!-- hr  if role -->
 <div *ngIf="!isAdmin">
 
 
-<div class="container">
+  <div class="container">
 
-<!-- Button to Open Modal -->
-<button (click)="openModal()">Add New Candidate</button>
+    <!-- Button to Open Modal -->
+    <button (click)="openModal()">Add New Candidate</button>
 
-<!-- Modal for Adding New Candidate -->
-<div class="modal" *ngIf="isModalOpen">
-  <div class="modal-content">
-    <span class="close" (click)="closeModal()">&times;</span>
-    <h2>Add New Candidate</h2>
-    <form (ngSubmit)="addNewCandidate()">
-      
-      <!-- Candidate Name -->
-      <div>
-        <label for="name">Name:</label>
-        <input [(ngModel)]="newCandidate.name" name="name" placeholder="Enter Name" required />
+    <!-- Modal for Adding New Candidate -->
+    <div class="modal" *ngIf="isModalOpen">
+      <div class="modal-content">
+        <span class="close" (click)="closeModal()">&times;</span>
+        <h2>Add New Candidate</h2>
+        <form (ngSubmit)="addNewCandidate()">
+
+          <!-- Candidate Name -->
+          <div>
+            <label for="name">Name:</label>
+            <input [(ngModel)]="newCandidate.name" name="name" placeholder="Enter Name" required />
+          </div>
+
+          <!-- Candidate Position -->
+          <div>
+            <label for="position">Position:</label>
+            <select [(ngModel)]="newCandidate.position" name="position" required>
+              <option value="" disabled>Select position</option>
+              <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
+            </select>
+          </div>
+
+          <!-- Round Number -->
+          <div>
+            <label for="round_number">Round:</label>
+            <select [(ngModel)]="newRound.round_number" name="round_number"
+              (change)="isCustomRound = newRound.round_number === 'Custom'" required>
+              <option value="" disabled>Select Round Number</option>
+              <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+          <div *ngIf="isCustomRound">
+            <label for="customRoundNumber">Enter Custom Round Number:</label>
+            <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber"
+              placeholder="Type custom round number" />
+          </div>
+
+          <!-- Interviewer -->
+          <div>
+            <label for="interviewer">Interviewer:</label>
+            <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
+              <option value="" disabled>Select Interviewer</option>
+              <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Interview Date -->
+          <div>
+            <label for="interview_date">Interview Date:</label>
+            <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label for="status">Status:</label>
+            <select [(ngModel)]="newRound.status" name="status" required>
+              <option value="" disabled>Select Status</option>
+              <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+
+          <!-- Remarks -->
+          <div>
+            <label for="remarks">Remarks:</label>
+            <textarea [(ngModel)]="newRound.remarks" name="remarks" placeholder="Any Remarks?"></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+          <button type="submit">Add New Candidate</button>
+        </form>
       </div>
-      
-      <!-- Candidate Position -->
-      <div>
-        <label for="position">Position:</label>
-        <select [(ngModel)]="newCandidate.position" name="position" required>
-          <option value="" disabled>Select position</option>
-          <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
-        </select>
-      </div>
-
-      <!-- Round Number -->
-      <div>
-        <label for="round_number">Round:</label>
-        <select [(ngModel)]="newRound.round_number" name="round_number" (change)="isCustomRound = newRound.round_number === 'Custom'" required>
-          <option value="" disabled>Select Round Number</option>
-          <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-          <option value="Custom">Custom</option>
-        </select>
-      </div>
-      <div *ngIf="isCustomRound">
-        <label for="customRoundNumber">Enter Custom Round Number:</label>
-        <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber" placeholder="Type custom round number" />
-      </div>
-      
-      <!-- Interviewer -->
-      <div>
-        <label for="interviewer">Interviewer:</label>
-        <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
-          <option value="" disabled>Select Interviewer</option>
-          <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
-        </select>
-      </div>
-      
-      <!-- Interview Date -->
-      <div>
-        <label for="interview_date">Interview Date:</label>
-        <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
-      </div>
-      
-      <!-- Status -->
-      <div>
-        <label for="status">Status:</label>
-        <select [(ngModel)]="newRound.status" name="status" required>
-          <option value="" disabled>Select Status</option>
-          <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-        </select>
-      </div>
-      
-      <!-- Remarks -->
-      <div>
-        <label for="remarks">Remarks:</label>
-        <textarea [(ngModel)]="newRound.remarks" name="remarks" placeholder="Any Remarks?"></textarea>
-      </div>
-      
-      <!-- Submit Button -->
-      <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
-      <button type="submit">Add New Candidate</button>
-    </form>
-  </div>
-</div>
-
-
-
-
-
-
-<!-- candidate list -->
-  <div  class="get-candidate-table-container">
-    <h2>Candidate List</h2>
-    <div class="get-candidate-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Serial No.</th>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Round</th>
-            <th>Interviewer</th>
-            <th>Interview Date</th>
-            <th>Status</th>
-            <th>Remarks</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let candidate of paginatedCandidates; let i = index">
-            <td>{{ (currentPage - 1) * pageSize + (i + 1) }}</td> <!-- Display correct serial number -->
-            <td>{{ candidate.Candidate_Name }}</td>
-            <td>{{ candidate.Position }}</td>
-            <td>{{ candidate.Round_Number || 'N/A' }}</td>
-            <td>{{ candidate.Interviewer || 'N/A' }}</td>
-            <td>{{ candidate.Interview_Date || 'N/A' }}</td>
-            <td>{{ candidate.Status || 'N/A' }}</td>
-            <td class="remarks" [title]="candidate.Remarks || 'N/A'">
-              {{ candidate.Remarks || 'N/A' }}
-            </td>
-            <td>
-              <button (click)="showAddRoundSection(candidate)">Add Round</button>
-              <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
     </div>
 
-    <!-- Pagination Controls -->
-    <!-- Pagination Controls -->
-<div class="pagination-controls">
-  <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-button">Previous</button>
-  <span>Page {{ currentPage }} of {{ totalPages }}</span>
-  <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="pagination-button">Next</button>
-</div>
-
-  </div>
 
 
-
-
-  <!-- Modal for Actions (Update, View History, Delete) -->
-  <div *ngIf="showActionModal" class="modal">
-    <div class="modal-content">
-      <span class="close" (click)="closeActionModal()">&times;</span> <!-- Close button -->
-      <h2>Actions for {{ selectedCandidate.Candidate_Name }}</h2>
-      <div class="button-group">
-
-      <button class="action-button" (click)="showUpdateCandidateSection()">Update Candidate</button>
-      <button class="action-button" (click)="showHistorySection()">View History</button>
-      <button class="action-button"
-        (click)="deleteInterviewRound(selectedCandidate.Candidate_ID, selectedCandidate.Round_Number, selectedCandidate.Candidate_Name)">
-        Delete Round
-      </button>
+    <!-- candidate list -->
+    <div class="get-candidate-table-container">
+      <h2>Candidate List</h2>
+      <div class="get-candidate-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Serial No.</th>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Round</th>
+              <th>Interviewer</th>
+              <th>Interview Date</th>
+              <th>Status</th>
+              <th>Remarks</th>
+              <th>#</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let candidate of paginatedCandidates; let i = index">
+              <td>{{ (currentPage - 1) * pageSize + (i + 1) }}</td> <!-- Display correct serial number -->
+              <td>{{ candidate.Candidate_Name }}</td>
+              <td>{{ candidate.Position }}</td>
+              <td>{{ candidate.Round_Number || 'N/A' }}</td>
+              <td>{{ candidate.Interviewer || 'N/A' }}</td>
+              <td>{{ candidate.Interview_Date || 'N/A' }}</td>
+              <td>{{ candidate.Status || 'N/A' }}</td>
+              <td class="remarks" [title]="candidate.Remarks || 'N/A'">
+                {{ candidate.Remarks || 'N/A' }}
+              </td>
+              <td>
+                <button (click)="selectCandidateForNextRound(candidate)">Selected</button>
+                <button (click)="rejectCandidate(candidate)">Rejected</button>
+              </td>
+              <td>
+                <button (click)="showAddRoundSection(candidate)">Add Round</button>
+                <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+
+      <!-- Pagination Controls -->
+      <!-- Pagination Controls -->
+      <div class="pagination-controls">
+        <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-button">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="pagination-button">Next</button>
+      </div>
+
     </div>
-  </div>
 
 
-  <!-- Add New Interview Round Form for Selected Candidate -->
-  <!-- Modal for Adding Interview Round -->
-  <div class="modal" *ngIf="showAddRoundModal">
-    <div class="modal-content">
-      <span class="close" (click)="toggleAddRoundModal()">&times;</span>
-      <h2>Add Interview Round for {{ selectedCandidate.Candidate_Name }}</h2>
-      <form (ngSubmit)="addNewRound()">
-  
-        <!-- Round Number Selection -->
-        <div>
-          <label for="round_number">Round:</label>
-          <select [(ngModel)]="newRound.round_number" name="round_number" required>
-            <option value="" disabled>Select Round Number</option>
-            <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+
+    <!-- Modal for Actions (Update, View History, Delete) -->
+    <div *ngIf="showActionModal" class="modal">
+      <div class="modal-content">
+        <span class="close" (click)="closeActionModal()">&times;</span> <!-- Close button -->
+        <h2>Actions for {{ selectedCandidate.Candidate_Name }}</h2>
+        <div class="button-group">
+
+          <button class="action-button" (click)="showUpdateCandidateSection()">Update Candidate</button>
+          <button class="action-button" (click)="showHistorySection()">View History</button>
+          <button class="action-button"
+            (click)="deleteInterviewRound(selectedCandidate.Candidate_ID, selectedCandidate.Round_Number, selectedCandidate.Candidate_Name)">
+            Delete Round
+          </button>
+        </div>
+        <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+      </div>
+    </div>
+
+
+    <!-- Add New Interview Round Form for Selected Candidate -->
+    <!-- Modal for Adding Interview Round -->
+    <div class="modal" *ngIf="showAddRoundModal">
+      <div class="modal-content">
+        <span class="close" (click)="toggleAddRoundModal()">&times;</span>
+        <h2>Add Interview Round for {{ selectedCandidate.Candidate_Name }}</h2>
+        <form (ngSubmit)="addNewRound()">
+
+          <!-- Round Number Selection -->
+          <div>
+            <label for="round_number">Round:</label>
+            <select [(ngModel)]="newRound.round_number" name="round_number" required>
+              <option value="" disabled>Select Round Number</option>
+              <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+              <option value="Custom">Custom</option>
+            </select>
+          </div>
+          <div *ngIf="newRound.round_number === 'Custom'">
+            <label for="customRoundNumber">Enter Custom Round Number:</label>
+            <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber"
+              placeholder="Type custom round number" />
+          </div>
+
+          <!-- Interviewer Selection (No Custom Option) -->
+          <div>
+            <label for="interviewer">Interviewer:</label>
+            <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
+              <option value="" disabled>Select Interviewer</option>
+              <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Interview Date Selection -->
+          <div>
+            <label for="interview_date">Interview Date:</label>
+            <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required
+              [attr.min]="lastInterviewDate" />
+          </div>
+
+          <!-- Status Selection (No Custom Option) -->
+          <div>
+            <label for="status">Status:</label>
+            <select [(ngModel)]="newRound.status" name="status" required>
+              <option value="" disabled>Select Status</option>
+              <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+
+          <!-- Remarks -->
+          <div>
+            <label for="remarks">Remarks:</label>
+            <textarea [(ngModel)]="newRound.remarks" name="remarks"></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit">Add Interview Round</button>
+          <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- Candidate Update Modal -->
+    <div *ngIf="showUpdateCandidate" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" (click)="closeUpdateCandidateModal()">&lt;</span>
+        <h2>Update {{ selectedCandidate.Candidate_Name }}</h2>
+        <form (submit)="updateCandidate()">
+          <label for="name">Name:</label>
+          <input type="text" [(ngModel)]="selectedCandidate.Candidate_Name" name="name" required>
+
+          <label for="position">Position:</label>
+          <select [(ngModel)]="selectedCandidate.Position" name="position"
+            (change)="isCustomPosition = selectedCandidate.Position === 'Custom'">
+            <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
             <option value="Custom">Custom</option>
           </select>
-        </div>
-        <div *ngIf="newRound.round_number === 'Custom'">
-          <label for="customRoundNumber">Enter Custom Round Number:</label>
-          <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber" placeholder="Type custom round number" />
-        </div>
-  
-        <!-- Interviewer Selection (No Custom Option) -->
-        <div>
-          <label for="interviewer">Interviewer:</label>
-          <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
-            <option value="" disabled>Select Interviewer</option>
-            <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
-          </select>
-        </div>
-  
-        <!-- Interview Date Selection -->
-        <div>
-          <label for="interview_date">Interview Date:</label>
-          <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
-        </div>
-  
-        <!-- Status Selection (No Custom Option) -->
-        <div>
-          <label for="status">Status:</label>
-          <select [(ngModel)]="newRound.status" name="status" required>
-            <option value="" disabled>Select Status</option>
-            <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-          </select>
-        </div>
-  
-        <!-- Remarks -->
-        <div>
-          <label for="remarks">Remarks:</label>
-          <textarea [(ngModel)]="newRound.remarks" name="remarks"></textarea>
-        </div>
-  
-        <!-- Submit Button -->
-        <button type="submit">Add Interview Round</button>
+
+          <!-- Custom Position Input -->
+          <div *ngIf="isCustomPosition">
+            <label for="customPosition">Enter Custom Position:</label>
+            <input type="text" [(ngModel)]="selectedCandidate.customPosition" name="customPosition" required>
+          </div>
+          <br> <br>
+          <button type="submit">Update Candidate</button>
+
+        </form>
         <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
-      </form>
-    </div>
-  </div>
-  
 
-
-
-  <!-- Candidate Update Modal -->
-  <div *ngIf="showUpdateCandidate" class="modal">
-    <div class="modal-content">
-      <span class="close-btn" (click)="closeUpdateCandidateModal()">&lt;</span>
-      <h2>Update {{ selectedCandidate.Candidate_Name }}</h2>
-      <form (submit)="updateCandidate()">
-        <label for="name">Name:</label>
-        <input type="text" [(ngModel)]="selectedCandidate.Candidate_Name" name="name"  required>
-
-        <label for="position">Position:</label>
-        <select [(ngModel)]="selectedCandidate.Position" name="position"
-          (change)="isCustomPosition = selectedCandidate.Position === 'Custom'">
-          <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
-          <option value="Custom">Custom</option>
-        </select>
-
-        <!-- Custom Position Input -->
-        <div *ngIf="isCustomPosition">
-          <label for="customPosition">Enter Custom Position:</label>
-          <input type="text" [(ngModel)]="selectedCandidate.customPosition" name="customPosition" required>
-        </div>
-        <br> <br>
-        <button type="submit">Update Candidate</button>
-
-      </form>
-      <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+      </div>
 
     </div>
 
-  </div>
-
-  <!-- Interview History Modal -->
-  <div *ngIf="showHistory" class="modal">
-    <div class="modal-content-history view-history-table-container">
-      <span class="close-btn" (click)="closeHistoryModal()">&lt;</span>
-      <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
-      <table class="view-history-table">
-        <thead>
-          <tr>
-            <th>Round </th>
-            <th>Interviewer</th>
-            <th>Interview Date</th>
-            <th>Status</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let round of candidateHistory">
-            <td>{{ round.Round_Number }}</td>
-            <td>{{ round.Interviewer }}</td>
-            <td>{{ round.Interview_Date }}</td>
-            <td>{{ round.Status }}</td>
-            <td>{{ round.Remarks }}</td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Interview History Modal -->
+    <div *ngIf="showHistory" class="modal-history">
+      <div class="modal-content-history">
+        <span class="close-btn" (click)="closeHistoryModal()">&lt;</span>
+        <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
+        <table class="view-history-table">
+          <thead>
+            <tr>
+              <th>Round </th>
+              <th>Interviewer</th>
+              <th>Interview Date</th>
+              <th>Status</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let round of candidateHistory">
+              <td>{{ round.Round_Number }}</td>
+              <td>{{ round.Interviewer }}</td>
+              <td>{{ round.Interview_Date }}</td>
+              <td>{{ round.Status }}</td>
+              <td>{{ round.Remarks }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
+
   </div>
-
-
-</div>
 </div>

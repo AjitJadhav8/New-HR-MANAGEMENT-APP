@@ -337,12 +337,81 @@ exports.login = (req, res) => {
 
   // ----
   // Add a new interview round for an existing candidate 
+  // exports.addInterviewRound = (req, res) => {
+  //   const { id } = req.params;  // Candidate ID
+  //   const { round_number, interviewer, interview_date, status, remarks } = req.body;
+  
+  //   if (!round_number || !interviewer || !interview_date || !status) {
+  //     return res.status(400).json({ error: 'All fields are required for the interview round' });
+  //   }
+  
+  //   // Get interviewer_id from the master_interviewers table
+  //   const getInterviewerIdQuery = `
+  //     SELECT interviewer_id FROM master_interviewers WHERE interviewer_name = ?
+  //   `;
+  
+  //   db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
+  //     if (err) {
+  //       console.error('Error fetching interviewer ID:', err);
+  //       return res.status(500).json({ error: 'Database error fetching interviewer ID' });
+  //     }
+  
+  //     if (interviewerResults.length === 0) {
+  //       return res.status(400).json({ error: 'Interviewer not found' });
+  //     }
+  
+  //     const interviewerId = interviewerResults[0].interviewer_id;
+  
+  //     // Get status_id from the master_statuses table
+  //     const getStatusIdQuery = `
+  //       SELECT status_id FROM master_statuses WHERE status_name = ?
+  //     `;
+  
+  //     db.query(getStatusIdQuery, [status], (err, statusResults) => {
+  //       if (err) {
+  //         console.error('Error fetching status ID:', err);
+  //         return res.status(500).json({ error: 'Database error fetching status ID' });
+  //       }
+  
+  //       if (statusResults.length === 0) {
+  //         return res.status(400).json({ error: 'Status not found' });
+  //       }
+  
+  //       const statusId = statusResults[0].status_id;
+  
+  //       // Insert interview round for the candidate into trans_interview_rounds
+  //       const addInterviewRoundQuery = `
+  //         INSERT INTO trans_interview_rounds (candidate_id, round_number, interviewer_id, interview_date, status_id, remarks)
+  //         VALUES (?, ?, ?, ?, ?, ?)
+  //       `;
+  
+  //       db.query(addInterviewRoundQuery, [id, round_number, interviewerId, interview_date, statusId, remarks], (err) => {
+  //         if (err) {
+  //           console.error('Error inserting interview round:', err);
+  //           return res.status(500).json({ error: err.message || 'Database error' });
+  //         }
+  
+  //         res.status(201).json({ message: 'Interview round added successfully' });
+  //       });
+  //     });
+  //   });
+  // };
+  
   exports.addInterviewRound = (req, res) => {
-    const { id } = req.params;  // Candidate ID
+    const { id } = req.params; // Candidate ID
     const { round_number, interviewer, interview_date, status, remarks } = req.body;
   
     if (!round_number || !interviewer || !interview_date || !status) {
-      return res.status(400).json({ error: 'All fields are required for the interview round' });
+      return res.status(400).json({ error: 'All fields are required for the interview round.' });
+    }
+  
+    // Check if the request is for a new round from the "Promote" or "Reject" buttons
+    if (status === 'Selected' || status === 'Rejected') {
+      // Only allow 'Selected' or 'Rejected' for these buttons
+      const allowedStatuses = ['Selected', 'Rejected'];
+      if (!allowedStatuses.includes(status)) {
+        return res.status(400).json({ error: 'Invalid status. Allowed values are "Selected" or "Rejected".' });
+      }
     }
   
     // Get interviewer_id from the master_interviewers table
@@ -353,11 +422,11 @@ exports.login = (req, res) => {
     db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
       if (err) {
         console.error('Error fetching interviewer ID:', err);
-        return res.status(500).json({ error: 'Database error fetching interviewer ID' });
+        return res.status(500).json({ error: 'Database error fetching interviewer ID.' });
       }
   
       if (interviewerResults.length === 0) {
-        return res.status(400).json({ error: 'Interviewer not found' });
+        return res.status(400).json({ error: 'Interviewer not found.' });
       }
   
       const interviewerId = interviewerResults[0].interviewer_id;
@@ -370,11 +439,11 @@ exports.login = (req, res) => {
       db.query(getStatusIdQuery, [status], (err, statusResults) => {
         if (err) {
           console.error('Error fetching status ID:', err);
-          return res.status(500).json({ error: 'Database error fetching status ID' });
+          return res.status(500).json({ error: 'Database error fetching status ID.' });
         }
   
         if (statusResults.length === 0) {
-          return res.status(400).json({ error: 'Status not found' });
+          return res.status(400).json({ error: 'Status not found.' });
         }
   
         const statusId = statusResults[0].status_id;
@@ -385,18 +454,25 @@ exports.login = (req, res) => {
           VALUES (?, ?, ?, ?, ?, ?)
         `;
   
-        db.query(addInterviewRoundQuery, [id, round_number, interviewerId, interview_date, statusId, remarks], (err) => {
-          if (err) {
-            console.error('Error inserting interview round:', err);
-            return res.status(500).json({ error: err.message || 'Database error' });
-          }
+        db.query(
+          addInterviewRoundQuery,
+          [id, round_number, interviewerId, interview_date, statusId, remarks],
+          (err) => {
+            if (err) {
+              console.error('Error inserting interview round:', err);
+              return res.status(500).json({ error: err.message || 'Database error.' });
+            }
   
-          res.status(201).json({ message: 'Interview round added successfully' });
-        });
+            res.status(201).json({ message: 'Interview round added successfully.' });
+          }
+        );
       });
     });
   };
   
+  
+
+
 
   // Delete an interview round for a candidate
 exports.deleteInterviewRound = (req, res) => {
