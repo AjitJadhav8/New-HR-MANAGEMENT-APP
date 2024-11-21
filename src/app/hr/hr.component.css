@@ -53,6 +53,7 @@
 
 .admin-section {
   /* Center the admin section both vertically and horizontally */
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -210,6 +211,7 @@
 }
 
 
+
 /* Fullscreen modal background */
 .modal-history {
   position: fixed;
@@ -217,29 +219,28 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000; /* Ensure it's above other elements */
+  z-index: 1000; 
+  
 }
 
-/* Modal content container */
 .modal-content-history {
   background-color: white;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
-  width: 90%; /* Adjust to fit screen width */
+  width: 90%; 
   max-height: 80vh;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   position: relative;
-  margin: 0; /* Remove auto margin for centering */
-  overflow-y: auto; /* Scrollable content */
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  margin: 0; 
+  overflow-y: auto; 
+  overflow-x: hidden; 
 }
 
 
-/* Table container */
 .view-history-table-container {
   width: 100%;
   padding: 0; /* Remove extra padding */
@@ -255,7 +256,7 @@
   table-layout: fixed; /* Allow table to adjust column width based on content */
   border-collapse: collapse;
   background-color: white;
-  font-size: 12px;  /* Smaller font size for compact table */
+  font-size: 14px;  /* Smaller font size for compact table */
 }
 
 /* Styling for table header */

@@ -2,40 +2,31 @@
   <img src="credenca-logo.png" alt="Logo" class="navbar-logo" />
   <p class="navbar-center">CEO Dashboard</p>
   <div class="navbar-right">
-    <button class="logout-button" (click)="logout()">Logout</button>
+    <button class="logout-button" (click)="showUserManagement = !showUserManagement">
+      User Management
+    </button>
     <button class="logout-button" (click)="showChangePasswordForm = !showChangePasswordForm">Change Password</button>
 
+    <button class="logout-button" (click)="logout()">Logout</button>
+   
   </div>
 </div>
  
-<div class="user-management">
+<div class="user-management" *ngIf="showUserManagement">
   <h3>User Management</h3>
+  <button class="close" (click)="closeUserManagement()">X</button>
 
-  <!-- Edit Role Section -->
-  <div>
-    <h4>Edit User Role</h4>
-    <label for="userSelect">Select User:</label>
-    <select id="userSelect" [(ngModel)]="selectedUserId">
-      <option value="" disabled selected>Select a user</option>
-      <option *ngFor="let user of users" [value]="user.user_id">
-        {{ user.user_name }}
-      </option>
-    </select>
-
-    <label for="roleSelect">Select Role:</label>
-    <select id="roleSelect" [(ngModel)]="selectedRoleId">
-      <option value="" disabled selected>Select a role</option>
-      <option *ngFor="let role of roles" [value]="role.role_id">
-        {{ role.role_name }}
-      </option>
-    </select>
-
-    <button (click)="updateUserRole()">Update Role</button>
+  <!-- Buttons to toggle sections -->
+  <div class="button-container">
+    <button (click)="toggleUserManagementSection('addUser')">Add User</button>
+    <button (click)="toggleUserManagementSection('updateRole')">Update Role</button>
+    <button (click)="toggleUserManagementSection('viewUsers')">View/Delete User</button>
   </div>
 
   <!-- Add New User Section -->
-  <div>
+  <div *ngIf="currentSection === 'addUser'">
     <h4>Add New User</h4>
+    
     <input
       [(ngModel)]="newUser.user_name"
       placeholder="Enter Username"
@@ -52,13 +43,33 @@
       <option *ngFor="let role of roles" [value]="role.role_id">
         {{ role.role_name }}
       </option>
-    </select>
+    </select><br>
     <button (click)="addUser()">Add User</button>
   </div>
 
+  <!-- Edit Role Section -->
+  <div *ngIf="currentSection === 'updateRole'">
+    <h4>Edit User Role</h4>
+    <label for="userSelect">Select User:</label>
+    <select id="userSelect" [(ngModel)]="selectedUserId">
+      <option value="" disabled selected>Select a user</option>
+      <option *ngFor="let user of users" [value]="user.user_id">
+        {{ user.user_name }}
+      </option>
+    </select><br>
+    <label for="roleSelect">Select Role:</label>
+    <select id="roleSelect" [(ngModel)]="selectedRoleId">
+      <option value="" disabled selected>Select a role</option>
+      <option *ngFor="let role of roles" [value]="role.role_id">
+        {{ role.role_name }}
+      </option>
+    </select>
 
-  <!-- User List Section -->
-  <div>
+    <button (click)="updateUserRole()">Update Role</button>
+  </div>
+
+  <!-- View/Delete User Section -->
+  <div *ngIf="currentSection === 'viewUsers'">
     <h4>Existing Users</h4>
     <table>
       <thead>
@@ -80,13 +91,12 @@
     </table>
   </div>
 
-
-
   <!-- Alert Section -->
   <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">
     {{ alertMessage }}
   </div>
 </div>
+
 
 
 
@@ -203,8 +213,8 @@
             <td>{{ round.Round_Number }}</td>
             <td>{{ round.Interviewer }}</td>
             <td>{{ round.Interview_Date }}</td>
-            <td>{{ round.Status }}</td>
-            <td>{{ round.Remarks }}</td>
+            <td title="{{ round.Status }}">{{ round.Status }}</td> <!-- Tooltip for Status -->
+      <td title="{{ round.Remarks }}">{{ round.Remarks }}</td> <!-- Tooltip for Remarks -->
           </tr>
         </tbody>
       </table>

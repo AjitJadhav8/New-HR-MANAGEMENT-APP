@@ -198,8 +198,7 @@ newUser: any = {
   password: '',
   role_id: null,
 };
-alertMessage: string = '';
-alertType: string = '';
+
 
 
 // Fetch all users
@@ -229,21 +228,20 @@ getAllRoles() {
 // Update user role
 updateUserRole() {
   if (!this.selectedUserId || !this.selectedRoleId) {
-    this.alertMessage = 'Please select a user and role.';
-    this.alertType = 'error';
+    this.showAlert('Please select a user and role.', 'error');
     return;
   }
 
   this.dataService.updateUserRole(this.selectedUserId, this.selectedRoleId).subscribe(
     (response) => {
-      this.alertMessage = 'User role updated successfully.';
-      this.alertType = 'success';
+      this.showAlert('User role updated successfully.', 'success');
+
       this.getAllUsers(); // Refresh user data
     },
     (error) => {
       console.error('Error updating user role:', error);
-      this.alertMessage = 'Failed to update user role.';
-      this.alertType = 'error';
+      this.showAlert('Failed to update user role.', 'error');
+
     }
   );
 }
@@ -251,22 +249,28 @@ updateUserRole() {
 // Add a new user
 addUser() {
   if (!this.newUser.user_name || !this.newUser.password || !this.newUser.role_id) {
-    this.alertMessage = 'Please fill all the fields.';
-    this.alertType = 'error';
+    // this.alertMessage = 'Please fill all the fields.';
+    // this.alertType = 'error';
+    // return;
+    this.showAlert('Please fill all the fields.', 'error');
     return;
   }
 
   this.dataService.addUser(this.newUser).subscribe(
     (response) => {
-      this.alertMessage = 'New user added successfully.';
-      this.alertType = 'success';
+      this.showAlert('New user added successfully.', 'success');
+
+      // this.alertMessage = 'New user added successfully.';
+      // this.alertType = 'success';
       this.newUser = { user_name: '', password: '', role_id: null }; // Reset form
       this.getAllUsers(); // Refresh user data
     },
     (error) => {
       console.error('Error adding user:', error);
-      this.alertMessage = 'Failed to add user.';
-      this.alertType = 'error';
+      // this.alertMessage = 'Failed to add user.';
+      // this.alertType = 'error';
+      this.showAlert('Failed to add user.', 'error');
+
     }
   );
 }
@@ -277,19 +281,40 @@ deleteUser(userId: number): void {
   if (confirm('Are you sure you want to delete this user?')) {
     this.dataService.deleteUser(userId).subscribe(
       (response) => {
-        this.alertMessage = 'User deleted successfully.';
-        this.alertType = 'success';
+        this.showAlert('User deleted successfully.', 'success');
+
         this.getAllUsers(); // Refresh user data
       },
       (error) => {
         console.error('Error deleting user:', error);
-        this.alertMessage = 'Failed to delete user.';
-        this.alertType = 'error';
+        this.showAlert('Failed to delete user.', 'error');
+
       }
     );
   }
 }
+currentSection: string | null = null; // Track current visible section
 
+showUserManagement = false; // Controls visibility of User Management section
 
+toggleUserManagementSection(section: string): void {
+  this.currentSection = this.currentSection === section ? null : section;
+}
 
+alertMessage: string = '';
+alertType: string = '';
+  // Method to show alert
+  showAlert(message: string, type: string) {
+    this.alertMessage = message;
+    this.alertType = type;
+
+    // Automatically hide the alert after 3 seconds
+    setTimeout(() => {
+      this.alertMessage = '';  // Clear the alert message
+    }, 3000);  // 3000ms = 3 seconds
+  }
+  closeUserManagement() {
+    this.showUserManagement = false;
+  }
+  
 }

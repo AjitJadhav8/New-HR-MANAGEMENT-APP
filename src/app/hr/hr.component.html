@@ -5,9 +5,10 @@
     <p>Welcome, {{ loggedInHR }}</p>
     <button *ngIf="isAdmin" (click)="toggleAdminPanel()">Open Admin Panel</button>
 
-    <button class="logout-button" (click)="logout()">Logout</button>
     <button class="change-password-button" (click)="showChangePasswordForm = !showChangePasswordForm">Change
       Password</button>
+      <button class="logout-button" (click)="logout()">Logout</button>
+
   </div>
 </div>
 
@@ -33,6 +34,7 @@
 
 <div *ngIf="isAdmin && isAdminPanelVisible" class="admin-section">
   <h3>Admin Panel</h3>
+  <button class="close" (click)="closeAdminPanel()">X</button>
 
   <div class="button-container">
     <button (click)="toggleSection('positions')">Manage Positions</button>
@@ -238,7 +240,6 @@
       </div>
 
     </div>
-
 
 
     <!-- Modal for Actions (Update, View History, Delete) -->

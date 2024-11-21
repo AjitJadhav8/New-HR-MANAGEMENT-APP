@@ -6,18 +6,105 @@
   padding: 20px;
 }
 
-/* .pagination-controls{
-  
+.user-management {
+  /* Center the user management section both vertically and horizontally */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh; /* Adjust the height to make it smaller */
+  width: 50%; /* Make the width smaller */
+  margin: 50px auto; /* Center it on the screen with some margin from top */
+  padding: 20px;
+  background-color: #f4f4f4; /* Light background for better visibility */
+  border: 2px solid #007bff; /* Green border for differentiation */
+  border-radius: 10px; /* Rounded corners */
+}
 
-} */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: white;
+  border: none;
+  font-size: 16px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background-color: darkred;
+}
+
+.user-management h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.user-management .button-container {
+  display: flex;
+  justify-content: space-around; /* Distribute buttons evenly */
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.user-management button {
+  /* Style buttons */
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff; /* Green background for user management */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.user-management button:hover {
+  background-color: #10549c; /* Darker shade of green on hover */
+}
+
+.user-management select,
+.user-management input {
+  padding: 10px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 400px; /* Limit width */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.user-management .alert {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f8d7da;
+  color: #721c257a;
+  border-radius: 5px;
+}
+
+.user-management .alert.success {
+  background-color: #d4edda;
+  color: #1557246c;
+}
+
+.user-management .alert.error {
+  background-color: #f8d7da;
+  color: #721c258a;
+}
+
+
+
+
 
 /* Candidate Table Styling */
 .candidate-table {
   width: 60%;
   border-collapse: collapse;
-  font-size: 18px;
+  font-size: 14px;
   font-family: Arial, sans-serif;
-  text-align: left;
+  text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -30,7 +117,7 @@
 
 .candidate-table th, 
 .candidate-table td {
-  padding: 12px 15px;
+  padding: 8px 10px;
   border: 1px solid #ddd;
 }
 
@@ -130,7 +217,7 @@
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  width: 600px;
+  width: 800px;
   max-width: 80%;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -173,6 +260,34 @@
   color: #666;
   margin-bottom: 10px;
 }
+
+
+.modal-content table td {
+  max-width: 150px; /* Adjust as needed */
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Display ellipsis for truncated text */
+  padding: 8px 10px; /* Consistent padding */
+  border: 1px solid #ddd;
+}
+
+.modal-content table th {
+  padding: 8px 10px;
+  background-color: #3498db;
+  color: white;
+  text-transform: uppercase;
+}
+
+.modal-content table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+
+.modal-content table tr:hover td {
+  background-color: #f1f1f1; /* Optional: Highlight row on hover */
+}
+
 
 .modal-content table {
   width: 100%;

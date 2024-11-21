@@ -475,23 +475,69 @@ exports.login = (req, res) => {
 
 
   // Delete an interview round for a candidate
+// exports.deleteInterviewRound = (req, res) => {
+//   const { id, round_number } = req.params;
+
+//   // Query to mark the round as deleted in the trans_interview_rounds table
+//   const query = 'UPDATE trans_interview_rounds SET is_deleted = 1 WHERE candidate_id = ? AND round_number = ?';
+
+//   db.query(query, [id, round_number], (err, result) => {
+//     if (err) {
+//       console.error('Error deleting interview round:', err);
+//       return res.status(500).json({ error: err.message || 'Database error' });
+//     }
+
+//     if (result.affectedRows === 0) {
+//       return res.status(404).json({ message: 'Interview round not found' });
+//     }
+
+//     res.json({ message: 'Interview round marked as deleted successfully' });
+//   });
+// };
 exports.deleteInterviewRound = (req, res) => {
-  const { id, round_number } = req.params;
+  const { id } = req.params; // Only use candidate_id (id)
 
-  // Query to mark the round as deleted in the trans_interview_rounds table
-  const query = 'UPDATE trans_interview_rounds SET is_deleted = 1 WHERE candidate_id = ? AND round_number = ?';
+  // Step 1: Find the latest interview round for the given candidate_id
+  const getLatestRoundQuery = `
+    SELECT ir_id 
+    FROM trans_interview_rounds 
+    WHERE candidate_id = ? 
+    ORDER BY ir_id DESC 
+    LIMIT 1
+  `;
 
-  db.query(query, [id, round_number], (err, result) => {
+  db.query(getLatestRoundQuery, [id], (err, result) => {
     if (err) {
-      console.error('Error deleting interview round:', err);
+      console.error('Error finding latest interview round:', err);
       return res.status(500).json({ error: err.message || 'Database error' });
     }
 
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Interview round not found' });
+    if (result.length === 0) {
+      return res.status(404).json({ message: 'No interview rounds found for this candidate' });
     }
 
-    res.json({ message: 'Interview round marked as deleted successfully' });
+    // Get the latest ir_id
+    const latestIrId = result[0].ir_id;
+
+    // Step 2: Mark this round as deleted
+    const deleteRoundQuery = `
+      UPDATE trans_interview_rounds 
+      SET is_deleted = 1 
+      WHERE ir_id = ?
+    `;
+
+    db.query(deleteRoundQuery, [latestIrId], (err, result) => {
+      if (err) {
+        console.error('Error deleting latest interview round:', err);
+        return res.status(500).json({ error: err.message || 'Database error' });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ message: 'Interview round not found' });
+      }
+
+      res.json({ message: 'Latest interview round marked as deleted successfully' });
+    });
   });
 };
 

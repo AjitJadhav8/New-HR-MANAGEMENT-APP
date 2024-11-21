@@ -90,7 +90,10 @@ export class HRComponent implements OnInit {
   }
 
 
+  closeAdminPanel(){
+    this.isAdminPanelVisible = false;
 
+  }
 
 
   getCandidates() {
