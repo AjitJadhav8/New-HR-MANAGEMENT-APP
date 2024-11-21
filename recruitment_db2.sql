@@ -65,7 +65,7 @@ CREATE TABLE `master_positions` (
 
 LOCK TABLES `master_positions` WRITE;
 /*!40000 ALTER TABLE `master_positions` DISABLE KEYS */;
-INSERT INTO `master_positions` VALUES (1,'PowerApps Developer','2024-11-19 07:37:44','2024-11-19 07:37:44'),(2,'Inside Sales','2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Power BI Developer','2024-11-19 07:37:44','2024-11-19 07:37:44'),(4,'Web Developer','2024-11-19 07:37:44','2024-11-19 07:37:44'),(5,'Intern','2024-11-19 07:37:44','2024-11-19 07:37:44'),(6,'PBI','2024-11-19 09:27:03','2024-11-19 09:27:03');
+INSERT INTO `master_positions` VALUES (1,'PowerApps Developer','2024-11-19 07:37:44','2024-11-19 07:37:44'),(2,'Inside Sales','2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Power BI Developer','2024-11-19 07:37:44','2024-11-19 07:37:44'),(4,'Web Developer','2024-11-19 07:37:44','2024-11-19 07:37:44'),(5,'Intern','2024-11-19 07:37:44','2024-11-19 07:37:44');
 /*!40000 ALTER TABLE `master_positions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,7 +82,7 @@ CREATE TABLE `master_role` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +91,7 @@ CREATE TABLE `master_role` (
 
 LOCK TABLES `master_role` WRITE;
 /*!40000 ALTER TABLE `master_role` DISABLE KEYS */;
-INSERT INTO `master_role` VALUES (1,'HR','2024-11-19 07:37:44','2024-11-19 07:37:44'),(2,'CEO','2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Admin','2024-11-19 09:26:25','2024-11-19 09:26:25');
+INSERT INTO `master_role` VALUES (1,'HR','2024-11-19 07:37:44','2024-11-19 07:37:44'),(2,'CEO','2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Admin','2024-11-19 09:26:25','2024-11-19 09:26:25'),(4,'HrAdmin','2024-11-20 04:50:52','2024-11-20 04:50:52');
 /*!40000 ALTER TABLE `master_role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -108,7 +108,7 @@ CREATE TABLE `master_statuses` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`status_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +140,7 @@ CREATE TABLE `trans_candidates` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `trans_candidates_ibfk_1` FOREIGN KEY (`position_id`) REFERENCES `master_positions` (`position_id`),
   CONSTRAINT `trans_candidates_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `trans_users` (`user_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +149,7 @@ CREATE TABLE `trans_candidates` (
 
 LOCK TABLES `trans_candidates` WRITE;
 /*!40000 ALTER TABLE `trans_candidates` DISABLE KEYS */;
-INSERT INTO `trans_candidates` VALUES (1,'Abhishek Sutradharr',1,1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(2,'Aastha Sangtani',2,2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Mihir Jamgade',2,2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(4,'Ayush Shrivastava',3,2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(5,'Subodh Sanjay Mogarkar',3,3,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(6,'AJIT',5,1,'2024-11-19 08:16:20','2024-11-19 09:32:31');
+INSERT INTO `trans_candidates` VALUES (1,'Abhishek Sutradharr',1,1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(2,'Aastha Sangtani',2,2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Mihir Jamgade',2,2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(4,'Ayush Shrivastava',3,2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(5,'Subodh Sanjay Mogarkar',3,3,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(6,'AJIT',5,1,'2024-11-19 08:16:20','2024-11-19 09:32:31'),(7,'NEW DEMO',2,1,'2024-11-20 04:31:38','2024-11-20 04:31:38');
 /*!40000 ALTER TABLE `trans_candidates` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -178,7 +178,7 @@ CREATE TABLE `trans_interview_rounds` (
   CONSTRAINT `trans_interview_rounds_ibfk_1` FOREIGN KEY (`candidate_id`) REFERENCES `trans_candidates` (`candidate_id`) ON DELETE CASCADE,
   CONSTRAINT `trans_interview_rounds_ibfk_2` FOREIGN KEY (`interviewer_id`) REFERENCES `master_interviewers` (`interviewer_id`),
   CONSTRAINT `trans_interview_rounds_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `master_statuses` (`status_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,7 +187,7 @@ CREATE TABLE `trans_interview_rounds` (
 
 LOCK TABLES `trans_interview_rounds` WRITE;
 /*!40000 ALTER TABLE `trans_interview_rounds` DISABLE KEYS */;
-INSERT INTO `trans_interview_rounds` VALUES (1,1,'1',1,'2024-09-24',1,'Rejected because...','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(2,2,'1',1,'2024-10-01',2,'Waiting for R2','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(3,3,'1',2,'2024-10-17',4,'','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(4,4,'1',3,'2024-11-01',3,'Scheduled...','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(5,5,'2',4,'2024-11-05',5,'Offered','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(6,6,'1',3,'2024-11-20',4,'','2024-11-19 08:16:20','2024-11-19 09:28:41',1),(7,6,'2',3,'2024-11-21',2,'','2024-11-19 09:27:50','2024-11-19 09:28:04',1);
+INSERT INTO `trans_interview_rounds` VALUES (1,1,'1',1,'2024-09-24',1,'Rejected because...','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(2,2,'1',1,'2024-10-01',2,'Waiting for R2','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(3,3,'1',2,'2024-10-17',4,'','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(4,4,'1',3,'2024-11-01',3,'Scheduled...','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(5,5,'2',4,'2024-11-05',5,'Offered','2024-11-19 07:37:44','2024-11-19 07:37:44',0),(6,6,'1',3,'2024-11-20',4,'','2024-11-19 08:16:20','2024-11-19 09:28:41',1),(7,6,'2',3,'2024-11-21',2,'','2024-11-19 09:27:50','2024-11-19 09:28:04',1),(8,6,'1',3,'2024-11-20',4,'','2024-11-19 10:19:29','2024-11-19 10:19:29',0),(9,6,'2',5,'2024-11-21',4,'','2024-11-19 10:19:42','2024-11-21 06:31:22',1),(10,6,'2',5,'2024-11-22',1,'Candidate is rejected because of bad attitude','2024-11-19 10:24:14','2024-11-21 06:31:22',1),(11,6,'2',5,'2024-11-20',2,'Promoted to next round','2024-11-20 04:26:36','2024-11-21 06:31:22',1),(12,7,'1',3,'2024-11-20',3,'first schedule','2024-11-20 04:31:38','2024-11-21 06:32:09',1),(13,7,'1',3,'2024-11-20',2,'Promoted to next round','2024-11-20 04:31:42','2024-11-21 06:32:09',1),(14,7,'2',5,'2024-11-21',5,'','2024-11-20 04:32:11','2024-11-20 04:40:07',1),(15,7,'2',5,'2024-11-20',1,'Candidate rejected','2024-11-20 04:32:23','2024-11-20 04:40:07',1),(16,6,'2',5,'2024-11-22',2,'Promoted to next round sdfsdgsadgsad','2024-11-20 04:34:35','2024-11-21 06:31:22',1),(17,7,'1',3,'2024-11-20',1,'Candidate rejected','2024-11-20 06:00:36','2024-11-21 06:32:09',1),(18,6,'2',5,'2024-11-23',2,'Promoted to next round sdfsdgsadgsadsadasfasf','2024-11-20 12:03:09','2024-11-21 06:31:22',1),(19,7,'1',5,'2024-11-22',4,'','2024-11-21 06:32:48','2024-11-21 06:33:51',1),(20,7,'1',5,'2024-11-21',2,'Promoted to next round','2024-11-21 06:33:02','2024-11-21 06:33:51',1),(21,7,'2',4,'2024-11-22',3,'','2024-11-21 06:33:23','2024-11-21 06:33:37',1),(22,7,'1',2,'2024-11-22',4,'','2024-11-21 06:40:07','2024-11-21 06:40:07',0),(23,7,'1',2,'2024-11-21',2,'Promoted to next round','2024-11-21 06:40:10','2024-11-21 06:40:23',1),(24,7,'1',2,'2024-11-21',2,'Promoted to next round','2024-11-21 06:40:34','2024-11-21 06:40:34',0),(25,7,'1',2,'2024-11-21',1,'Candidate rejected','2024-11-21 06:40:35','2024-11-21 06:40:50',1);
 /*!40000 ALTER TABLE `trans_interview_rounds` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +208,7 @@ CREATE TABLE `trans_users` (
   PRIMARY KEY (`user_id`),
   KEY `role_id` (`role_id`),
   CONSTRAINT `trans_users_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `master_role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,7 +217,7 @@ CREATE TABLE `trans_users` (
 
 LOCK TABLES `trans_users` WRITE;
 /*!40000 ALTER TABLE `trans_users` DISABLE KEYS */;
-INSERT INTO `trans_users` VALUES (1,'Prachi','123',1,'2024-11-19 07:37:44','2024-11-19 08:04:43'),(2,'Shreyansh','123',1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Sakshi','123',1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(4,'Siyona','123',1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(5,'Sushil','123',2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(6,'Admin','123',3,'2024-11-19 09:26:34','2024-11-19 09:26:34');
+INSERT INTO `trans_users` VALUES (1,'Prachi','123',4,'2024-11-19 07:37:44','2024-11-21 03:30:45'),(2,'Shreyansh','123',1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(3,'Sakshi','123',1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(4,'Siyona','123',1,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(5,'Sushil','123',2,'2024-11-19 07:37:44','2024-11-19 07:37:44'),(6,'Admin','123',3,'2024-11-19 09:26:34','2024-11-19 09:26:34');
 /*!40000 ALTER TABLE `trans_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -230,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-19 15:12:58
+-- Dump completed on 2024-11-21 13:18:00
