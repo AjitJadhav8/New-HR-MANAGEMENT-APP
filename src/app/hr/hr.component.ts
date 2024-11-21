@@ -191,9 +191,32 @@ export class HRComponent implements OnInit {
   formatLocalDate(dateString: string): string {
     const date = new Date(dateString);
     const userTimezoneOffset = date.getTimezoneOffset() * 60000; // Get the timezone offset in milliseconds
-    return new Date(date.getTime() - userTimezoneOffset).toISOString().split('T')[0];
+    const localDate = new Date(date.getTime() - userTimezoneOffset);
+  
+    const day = localDate.getDate().toString().padStart(2, '0'); // Get day and pad with 0 if needed
+    const month = localDate.toLocaleString('default', { month: 'short' }); // Get short month name (e.g., "Nov")
+    const year = localDate.getFullYear(); // Get full year
+  
+    return `${day}-${month}-${year}`;
   }
-
+  // formatLocalDate(dateString: string): { formattedForUI: string; formattedForDB: string } {
+  //   const date = new Date(dateString);
+  //   const userTimezoneOffset = date.getTimezoneOffset() * 60000; // Get the timezone offset in milliseconds
+  //   const localDate = new Date(date.getTime() - userTimezoneOffset);
+  
+  //   // Format the date for UI as dd-MMM-yyyy (e.g., 21-Nov-2024)
+  //   const day = localDate.getDate().toString().padStart(2, '0'); // Get day and pad with 0 if needed
+  //   const month = localDate.toLocaleString('default', { month: 'short' }); // Get short month name (e.g., "Nov")
+  //   const year = localDate.getFullYear(); // Get full year
+  
+  //   const formattedForUI = `${day}-${month}-${year}`;  // Date for UI
+    
+  //   // Convert to YYYY-MM-DD format for database insertion
+  //   const formattedForDB = `${year}-${(localDate.getMonth() + 1).toString().padStart(2, '0')}-${day.padStart(2, '0')}`;
+    
+  //   return { formattedForUI, formattedForDB };
+  // }
+  
 
   newCandidate: { name: string, position: string | undefined, customPosition?: string } = { name: '', position: '', customPosition: '' };
 

@@ -19,6 +19,9 @@
 .action-button {
   margin: 0 10px; /* Adds space to the left and right of each button */
 }
+.underlined {
+  text-decoration: underline;
+}
 
 
 .pagination-controls {

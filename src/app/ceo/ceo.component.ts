@@ -76,26 +76,39 @@ export class CEOComponent implements OnInit {
     return data;
   }
 
+
   // formatDate(dateString: string): string {
-  //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
+  //   if (!dateString) {
+  //     return '';  // Or another fallback value if the date is missing
+  //   }
+    
   //   const date = new Date(dateString);
+    
+  //   if (isNaN(date.getTime())) {
+  //     return 'Invalid Date';  // Or another fallback value for invalid date
+  //   }
+    
+  //   const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
   //   return date.toLocaleDateString('en-GB', options); // 'en-GB' gives dd-mm-yyyy format
   // }
-
   formatDate(dateString: string): string {
     if (!dateString) {
-      return '';  // Or another fallback value if the date is missing
+      return ''; // Or another fallback value if the date is missing
     }
-    
+  
     const date = new Date(dateString);
-    
+  
     if (isNaN(date.getTime())) {
-      return 'Invalid Date';  // Or another fallback value for invalid date
+      return 'Invalid Date'; // Or another fallback value for invalid date
     }
-    
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' } as const;
-    return date.toLocaleDateString('en-GB', options); // 'en-GB' gives dd-mm-yyyy format
+  
+    const day = date.getDate().toString().padStart(2, '0'); // Get day and pad with 0 if needed
+    const month = date.toLocaleString('en-US', { month: 'short' }); // Get short month name (e.g., "Nov")
+    const year = date.getFullYear(); // Get full year
+  
+    return `${day}-${month}-${year}`;
   }
+  
   
 
   logout(){

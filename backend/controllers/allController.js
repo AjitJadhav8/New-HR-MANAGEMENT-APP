@@ -311,6 +311,7 @@ exports.login = (req, res) => {
             }
 
             const candidateId = result.insertId;
+            
 
             // Insert interview round for the new candidate
             const addInterviewRoundQuery = `

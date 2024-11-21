@@ -1,6 +1,6 @@
 <div class="navbar-main">
   <img src="credenca-logo.png" alt="Logo" class="navbar-logo" />
-  <p class="navbar-center">HR Dashboard</p>
+  <p class="navbar-center">Dashboard</p>
   <div class="navbar-right">
     <p>Welcome, {{ loggedInHR }}</p>
     <button *ngIf="isAdmin" (click)="toggleAdminPanel()">Open Admin Panel</button>
@@ -159,7 +159,7 @@
 
           <!-- Interview Date -->
           <div>
-            <label for="interview_date">Interview Date:</label>
+            <label for="interview_date">Activity Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
           </div>
 
@@ -199,7 +199,7 @@
               <th>Position</th>
               <th>Round</th>
               <th>Interviewer</th>
-              <th>Interview Date</th>
+              <th>Activity Date</th>
               <th>Status</th>
               <th>Remarks</th>
               <th>#</th>
@@ -246,7 +246,7 @@
     <div *ngIf="showActionModal" class="modal">
       <div class="modal-content">
         <span class="close" (click)="closeActionModal()">&times;</span> <!-- Close button -->
-        <h2>Actions for {{ selectedCandidate.Candidate_Name }}</h2>
+        <h2>Actions for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2>
         <div class="button-group">
 
           <button class="action-button" (click)="showUpdateCandidateSection()">Update Candidate</button>
@@ -266,9 +266,8 @@
     <div class="modal" *ngIf="showAddRoundModal">
       <div class="modal-content">
         <span class="close" (click)="toggleAddRoundModal()">&times;</span>
-        <h2>Add Interview Round for {{ selectedCandidate.Candidate_Name }}</h2>
+        <h2>Add Interview Round for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2>
         <form (ngSubmit)="addNewRound()">
-
           <!-- Round Number Selection -->
           <div>
             <label for="round_number">Round:</label>
@@ -296,7 +295,7 @@
 
           <!-- Interview Date Selection -->
           <div>
-            <label for="interview_date">Interview Date:</label>
+            <label for="interview_date">Activity Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required
               [attr.min]="lastInterviewDate" />
           </div>
@@ -328,7 +327,7 @@
     <div *ngIf="showUpdateCandidate" class="modal">
       <div class="modal-content">
         <span class="close-btn" (click)="closeUpdateCandidateModal()">&lt;</span>
-        <h2>Update {{ selectedCandidate.Candidate_Name }}</h2>
+        <h2>Update <span class="underlined"> {{ selectedCandidate.Candidate_Name }}</span></h2>
         <form (submit)="updateCandidate()">
           <label for="name">Name:</label>
           <input type="text" [(ngModel)]="selectedCandidate.Candidate_Name" name="name" required>
@@ -389,14 +388,14 @@
     <div *ngIf="showHistory" class="modal-history">
       <div class="modal-content-history">
         <span class="close-btn" (click)="closeHistoryModal()">&lt;</span>
-        <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
+        <h3>Interview History for <span class="underlined"> {{ selectedCandidate.Candidate_Name }}</span></h3>
         <div class="view-history-table-container">
           <table class="view-history-table">
             <thead>
               <tr>
                 <th>Round </th>
                 <th>Interviewer</th>
-                <th>Interview Date</th>
+                <th>Activity Date</th>
                 <th>Status</th>
                 <th>Remarks</th>
               </tr>
