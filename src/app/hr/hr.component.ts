@@ -1185,8 +1185,10 @@ currentCandidate: any = null; // Store the selected candidate
   openDecisionModal(candidate: any) {
     this.showModal = true;
     this.currentCandidate = candidate;
+    this.getLastRoundData(this.currentCandidate.Candidate_ID, 'update'); // 'add' mode to use for setting last interview date
+
     this.selectedDecision = 'Selected';
-    this.interviewDate = this.todayDate;
+    // this.interviewDate = this.todayDate;
     this.remarks = '';
   }
   closeDecisionModal() {
