@@ -1,6 +1,6 @@
 <div class="navbar-main">
   <img src="credenca-logo.png" alt="Logo" class="navbar-logo" />
-  <p class="navbar-center">Dashboard</p>
+  <p class="navbar-center"> &nbsp; </p>
   <div class="navbar-right">
     <p>Welcome, {{ loggedInHR }}</p>
     <button *ngIf="isAdmin" (click)="toggleAdminPanel()">Open Admin Panel</button>
@@ -251,7 +251,9 @@
 
           <button class="action-button" (click)="showUpdateCandidateSection()">Update Candidate</button>
           <button class="action-button" (click)="showHistorySection()">View History</button>
-          <button class="action-button"
+          <button class="action-button" >Update Round</button>
+
+          <button  *ngIf="isAdmin && isHR" class="action-button"
             (click)="deleteInterviewRound(selectedCandidate.Candidate_ID, selectedCandidate.Round_Number, selectedCandidate.Candidate_Name)">
             Delete Round
           </button>
@@ -314,10 +316,9 @@
             <label for="remarks">Remarks:</label>
             <textarea [(ngModel)]="newRound.remarks" name="remarks"></textarea>
           </div>
-
+          <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
           <!-- Submit Button -->
           <button type="submit">Add Interview Round</button>
-          <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
         </form>
       </div>
     </div>
