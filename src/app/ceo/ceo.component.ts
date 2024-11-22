@@ -27,6 +27,16 @@ export class CEOComponent implements OnInit {
     this.getAllCandidates();
   }
 
+
+
+  showDetailView = false; // Flag to control the visibility of the second table
+
+  // Method to toggle the visibility of the second table
+  toggleDetailView() {
+    this.showDetailView = !this.showDetailView; // Toggle the value of showDetailView
+  }
+
+
   getAllCandidates() {
     this.dataService.getAllCandidates().subscribe(
       data => {
@@ -329,5 +339,6 @@ alertType: string = '';
   closeUserManagement() {
     this.showUserManagement = false;
   }
+  
   
 }

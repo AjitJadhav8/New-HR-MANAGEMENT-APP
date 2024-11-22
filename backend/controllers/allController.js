@@ -720,15 +720,23 @@ exports.deleteInterviewRound = (req, res) => {
           c.candidate_id AS Candidate_ID,
           c.candidate_name AS Candidate_Name,
           p.position_name AS Position,  -- Fetch position name from the master_positions table
-          u.user_name AS HR_Name  -- Fetch HR name from the trans_users table
+          u.user_name AS HR_Name,  -- Fetch HR name from the trans_users table
+          ir.round_number AS Round_Number,  -- Fetch round number from trans_interview_rounds table
+          ir.interview_date AS Interview_Date,  -- Fetch interview date from trans_interview_rounds table
+          s.status_name AS Status,  -- Fetch interview status from master_statuses table
+          ir.remarks AS Remarks  -- Fetch remarks from trans_interview_rounds table
       FROM 
           trans_candidates c
       LEFT JOIN 
           trans_users u ON c.user_id = u.user_id  -- Join with trans_users to get HR name
       LEFT JOIN 
           master_positions p ON c.position_id = p.position_id  -- Join with master_positions to get position name
+      LEFT JOIN 
+          trans_interview_rounds ir ON c.candidate_id = ir.candidate_id  -- Join with trans_interview_rounds to get interview round details
+      LEFT JOIN 
+          master_statuses s ON ir.status_id = s.status_id  -- Join with master_statuses to get the status name
       ORDER BY 
-          c.candidate_id DESC;
+          c.candidate_id DESC, ir.round_number DESC;  -- Order by candidate ID and round number (descending)
     `;
     
     db.query(query, (err, results) => {
@@ -736,10 +744,11 @@ exports.deleteInterviewRound = (req, res) => {
         console.error('Database query error:', err);
         return res.status(500).json({ error: 'Database query error' });
       }
-      console.log('Distinct candidates results:', results);
+      console.log('Distinct candidates with interview rounds results:', results);
       res.json(results);
     });
 };
+
 
   
   // Get candidate details history by ID (including all interview rounds) for CEO  Done

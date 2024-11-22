@@ -125,6 +125,11 @@ addUser(user: any): Observable<any> {
 deleteUser(userId: number): Observable<any> {
   return this.http.delete<any>(`${this.apiUrl}/api/users/${userId}`);
 }
+// ceo
+getAllInterviewRounds(): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/api/interview-rounds`);
+}
+
 
 updateInterviewRound(candidateId: number, roundData: any): Observable<any> {
   return this.http.put(`${this.apiUrl}/api/interview-rounds/${candidateId}`, roundData);

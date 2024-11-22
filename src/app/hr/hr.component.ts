@@ -437,7 +437,7 @@ export class HRComponent implements OnInit {
 
   //       // Show success alert
   //       this.showAlert('Candidate and Interview Round added successfully!', 'success');
-  //       setTimeout(() => {
+  //        meout(() => {
   //         this.isModalOpen = false; // Close the modal
   //       }, 2000);
   //     },
@@ -1109,7 +1109,7 @@ export class HRComponent implements OnInit {
     // Hide alert after 3 seconds
     setTimeout(() => {
       this.alertMessage = null;
-    }, 3000);
+    }, 2000);
   }
 
   isModalOpen: boolean = false; // Modal open state
@@ -1217,7 +1217,7 @@ submitDecision() {
       this.getCandidates(); // Refresh the candidate list
       setTimeout(() => {
         this.closeDecisionModal();
-      }, 3000);
+      }, 2000);
     },
     (error) => {
       console.error('Error processing decision:', error);
