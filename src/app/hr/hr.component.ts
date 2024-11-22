@@ -231,8 +231,10 @@ export class HRComponent implements OnInit {
             // Populate the update form fields with the last round data
             this.updatedRound = { ...lastRoundData };
           } else if (mode === 'add') {
+            this.newRound = { ...lastRoundData };
+
             // Set only the last interview date for the "Add Round" flow
-            this.newRound.interview_date = '';
+            
           }
   
           console.log("Last round data set for mode:", mode, lastRoundData);
@@ -626,8 +628,9 @@ export class HRComponent implements OnInit {
         remarks: ''
       };
       this.getLastRoundData(candidate.Candidate_ID, 'add');
-  
-      this.getCandidateHistory(candidate.Candidate_ID);
+      this.getCandidateHistory(candidate.Candidate_ID); // Additional step for candidate history
+
+      // this.getCandidateHistory(candidate.Candidate_ID);
       // this.getLastRoundData(candidate.Candidate_ID);
   
       this.showAddRound = true;

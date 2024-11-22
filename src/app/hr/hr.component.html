@@ -159,7 +159,7 @@
 
           <!-- Interview Date -->
           <div>
-            <label for="interview_date">Activity Date:</label>
+            <label for="interview_date">Last Activity Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
           </div>
 
@@ -200,7 +200,7 @@
               <th>Position</th>
               <th>Round</th>
               <th>Interviewer</th>
-              <th>Activity Date</th>
+              <th>Last Activity Date</th>
               <th>Status</th>
               <th>Remarks</th>
               <th>#</th>
@@ -344,7 +344,7 @@
 
       <!-- Interview Date -->
       <div>
-        <label for="interview_date">Activity Date:</label>
+        <label for="interview_date">Last Activity Date:</label>
         <input type="date" [(ngModel)]="updatedRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
       </div>
 
@@ -415,7 +415,7 @@
 
           <!-- Interview Date Selection -->
           <div>
-            <label for="interview_date">Activity Date:</label>
+            <label for="interview_date">Last Activity Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required
               [attr.min]="lastInterviewDate" />
           </div>
@@ -514,7 +514,7 @@
               <tr>
                 <th>Round </th>
                 <th>Interviewer</th>
-                <th>Activity Date</th>
+                <th>Last Activity Date</th>
                 <th>Status</th>
                 <th>Remarks</th>
               </tr>
