@@ -153,25 +153,194 @@ export class HRComponent implements OnInit {
 
 
   // Method to get the last interview round for the selected candidate
-  getLastRoundData(candidateId: number) {
+  // getLastRoundData(candidateId: number) {
+  //   this.dataService.getInterviewRounds(candidateId).subscribe(
+  //     (history) => {
+  //       if (history.length > 0) {
+  //         const lastRound = history[history.length - 1]; // Last round data
+  //         this.newRound.interviewer = lastRound.Interviewer;  // Prefill the interviewer
+  //         this.newRound.status = lastRound.Status;            // Prefill the status
+  //         // this.newRound.remarks = lastRound.Remarks;          // Prefill the remarks
+  //         this.newRound.round_number = lastRound.Round_Number; // Prefill round number
+
+  //       } else {
+  //         this.newRound.round_number = '1';  // If no previous rounds, set to '1'
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error fetching last round data:', error);
+  //     }
+  //   );
+  // }
+
+  // getLastRoundData(candidateId: number) {
+  //   console.log("Fetching last round data for candidate ID:", candidateId);
+  //   this.dataService.getInterviewRounds(candidateId).subscribe(
+  //     (history) => {
+  //       console.log("Interview history fetched:", history);
+  
+  //       // Fetch the latest interview round
+  //       const lastRound = history[history.length - 1];  // Get the last round
+  //       if (lastRound) {
+  //         // Populate the update form fields with the last round data
+  //         this.updatedRound = {
+  //           round_number: lastRound.Round_Number,
+  //           customRoundNumber: lastRound.Round_Number === 'Custom' ? lastRound.Custom_Round_Number : '',
+  //           interviewer: lastRound.Interviewer,
+  //           interview_date: this.formatDateForInput(lastRound.Interview_Date), // Format the interview date for the input field
+  //           status: lastRound.Status,
+  //           remarks: lastRound.Remarks,
+  //           round_id: lastRound.Round_ID // Assuming the backend uses a Round_ID for updates
+  //         };
+  
+  //         // Set the last interview date to restrict the date input
+  //         this.lastInterviewDate = this.formatDateForInput(lastRound.Interview_Date);
+  
+  //         console.log("Last round data:", this.updatedRound);
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error("Error fetching interview history:", error);
+  //     }
+  //   );
+  // }
+  
+  getLastRoundData(candidateId: number, mode: 'add' | 'update') {
+    console.log("Fetching last round data for candidate ID:", candidateId);
     this.dataService.getInterviewRounds(candidateId).subscribe(
       (history) => {
-        if (history.length > 0) {
-          const lastRound = history[history.length - 1]; // Last round data
-          this.newRound.interviewer = lastRound.Interviewer;  // Prefill the interviewer
-          this.newRound.status = lastRound.Status;            // Prefill the status
-          // this.newRound.remarks = lastRound.Remarks;          // Prefill the remarks
-          this.newRound.round_number = lastRound.Round_Number; // Prefill round number
-
-        } else {
-          this.newRound.round_number = '1';  // If no previous rounds, set to '1'
+        console.log("Interview history fetched:", history);
+  
+        // Fetch the latest interview round
+        const lastRound = history[history.length - 1];  // Get the last round
+        if (lastRound) {
+          const lastRoundData = {
+            round_number: lastRound.Round_Number,
+            customRoundNumber: lastRound.Round_Number === 'Custom' ? lastRound.Custom_Round_Number : '',
+            interviewer: lastRound.Interviewer,
+            interview_date: this.formatDateForInput(lastRound.Interview_Date), // Format the interview date for the input field
+            status: lastRound.Status,
+            remarks: lastRound.Remarks,
+            round_id: lastRound.Round_ID // Assuming the backend uses a Round_ID for updates
+          };
+  
+          // Set the last interview date to restrict the date input
+          this.lastInterviewDate = this.formatDateForInput(lastRound.Interview_Date);
+  
+          if (mode === 'update') {
+            // Populate the update form fields with the last round data
+            this.updatedRound = { ...lastRoundData };
+          } else if (mode === 'add') {
+            // Set only the last interview date for the "Add Round" flow
+            this.newRound.interview_date = '';
+          }
+  
+          console.log("Last round data set for mode:", mode, lastRoundData);
         }
       },
       (error) => {
-        console.error('Error fetching last round data:', error);
+        console.error("Error fetching interview history:", error);
       }
     );
   }
+
+
+
+
+
+
+  updatedRound: any = {};  // Ensure updatedRound is initialized to avoid undefined errors.
+  showUpdateLastRoundModal: boolean = false;  // Use a boolean to control modal visibility
+
+  toggleUpdateLastRoundModal() {
+    this.showUpdateLastRoundModal = !this.showUpdateLastRoundModal;
+  }
+
+  openUpdateLastRoundModal() {
+    // Fetch the last round data and pre-fill the form
+    // this.getLastRoundData(this.selectedCandidate.Candidate_ID);
+    this.getLastRoundData(this.selectedCandidate.Candidate_ID, 'update');
+
+    this.showUpdateLastRoundModal = true;  // Show modal
+  }
+  // Function to handle the form submission for updating the last interview round
+
+  updateLastRound() {
+    // Validate if the round number is provided (or custom round number if applicable)
+    if (!this.updatedRound.round_number?.trim() && !this.updatedRound.customRoundNumber?.trim()) {
+      this.showAlert('Round number or Custom Round Number is required.', 'alert-danger');
+      return;
+    }
+  
+    // Validate if an interviewer is selected
+    if (!this.updatedRound.interviewer) {
+      this.showAlert('Please select an interviewer name.', 'alert-danger');
+      return;
+    }
+  
+    // Validate if the status is selected
+    if (!this.updatedRound.status) {
+      this.showAlert('Please select a status.', 'alert-danger');
+      return;
+    }
+  
+    // Validate if the interview date is selected and is a valid future date
+    if (!this.updatedRound.interview_date) {
+      this.showAlert('Please select an interview date.', 'alert-danger');
+      return;
+    }
+  
+    const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
+    const interviewDate = new Date(this.updatedRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
+    if (isNaN(interviewDate) || interviewDate < today) {
+      this.showAlert('Please select a valid future interview date.', 'alert-danger');
+      return;
+    }
+  
+    // Prepare the final data for updating the round (use custom round number if applicable)
+    const roundData = {
+      round_number: this.updatedRound.round_number === 'Custom' ? this.updatedRound.customRoundNumber : this.updatedRound.round_number,
+      interviewer: this.updatedRound.interviewer,
+      interview_date: this.formatDateForBackend(this.updatedRound.interview_date), // Adjust date format
+      status: this.updatedRound.status,
+      remarks: this.updatedRound.remarks,
+      c_id: this.selectedCandidate.Candidate_ID, // Candidate ID for identification
+      round_id: this.updatedRound.round_id // Assuming you have a round_id for identifying the specific round
+    };
+  
+    // Send the update request to the backend
+    this.dataService.updateInterviewRound(this.selectedCandidate.Candidate_ID, roundData)
+      .subscribe(
+        () => {
+          this.showAlert('Interview round updated successfully!', 'alert-success'); // Success alert
+          this.getCandidates(); // Refresh candidate list
+          this.getInterviewOptions(); // Re-fetch interview options for dropdowns
+  
+          // Reset the form fields
+          this.updatedRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '', round_id: '' };
+  
+          // Close the modal after success
+          setTimeout(() => {
+            this.showUpdateLastRoundModal = false; // Close modal
+          }, 2000);
+        },
+        error => {
+          console.error('Error updating round:', error);
+          this.showAlert('Error updating the interview round. Please try again.', 'alert-danger'); // Error alert
+        }
+      );
+  }
+  
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -447,7 +616,24 @@ export class HRComponent implements OnInit {
           }
         );
     }
+    showAddRoundSection(candidate: any) {
+      this.selectedCandidate = candidate; // Set the selected candidate for the add round form
+      this.newRound = {
+        round_number: '', // Allow user to input the round number manually
+        interviewer: '',
+        interview_date: '',
+        status: '',
+        remarks: ''
+      };
+      this.getLastRoundData(candidate.Candidate_ID, 'add');
   
+      this.getCandidateHistory(candidate.Candidate_ID);
+      // this.getLastRoundData(candidate.Candidate_ID);
+  
+      this.showAddRound = true;
+      this.toggleAddRoundModal(); // Open the modal
+  
+    }
 
   // addNewRound() {
 
@@ -534,22 +720,7 @@ export class HRComponent implements OnInit {
   }
 
 
-  showAddRoundSection(candidate: any) {
-    this.selectedCandidate = candidate; // Set the selected candidate for the add round form
-    this.newRound = {
-      round_number: '', // Allow user to input the round number manually
-      interviewer: '',
-      interview_date: '',
-      status: '',
-      remarks: ''
-    };
-    this.getCandidateHistory(candidate.Candidate_ID);
-    this.getLastRoundData(candidate.Candidate_ID);
-
-    this.showAddRound = true;
-    this.toggleAddRoundModal(); // Open the modal
-
-  }
+ 
 
   selectedStatus: string = '';
   isCustomStatus: boolean = false;  // Toggle for custom status input

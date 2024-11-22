@@ -251,7 +251,8 @@
 
           <button class="action-button" (click)="showUpdateCandidateSection()">Update Candidate</button>
           <button class="action-button" (click)="showHistorySection()">View History</button>
-          <button class="action-button" >Update Round</button>
+<!-- Add a button to update the last interview round -->
+          <button class="action-button" (click)="openUpdateLastRoundModal()">Update Round</button>
 
           <button  *ngIf="isAdmin && isHR" class="action-button"
             (click)="deleteInterviewRound(selectedCandidate.Candidate_ID, selectedCandidate.Round_Number, selectedCandidate.Candidate_Name)">
@@ -261,6 +262,77 @@
         <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
       </div>
     </div>
+
+
+
+    showUpdateLastRoundModal 
+
+<!-- Modal for Updating Last Interview Round -->
+<div class="modal" *ngIf="showUpdateLastRoundModal">
+  <div class="modal-content">
+    <span class="close" (click)="toggleUpdateLastRoundModal()">&times;</span>
+    <h2>Update Interview Round for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2>
+    <form (ngSubmit)="updateLastRound()">
+      <!-- Round Number Selection -->
+      <div>
+        <label for="round_number">Round:</label>
+        <select [(ngModel)]="updatedRound.round_number" name="round_number" required>
+          <option value="" disabled>Select Round Number</option>
+          <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+          <option value="Custom">Custom</option>
+        </select>
+      </div>
+      <div *ngIf="updatedRound.round_number === 'Custom'">
+        <label for="customRoundNumber">Enter Custom Round Number:</label>
+        <input type="text" [(ngModel)]="updatedRound.customRoundNumber" name="customRoundNumber" />
+      </div>
+
+      <!-- Interviewer Selection -->
+      <div>
+        <label for="interviewer">Interviewer:</label>
+        <select [(ngModel)]="updatedRound.interviewer" name="interviewer" required>
+          <option value="" disabled>Select Interviewer</option>
+          <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
+        </select>
+      </div>
+
+      <!-- Interview Date -->
+      <div>
+        <label for="interview_date">Activity Date:</label>
+        <input type="date" [(ngModel)]="updatedRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
+      </div>
+
+      <!-- Status -->
+      <div>
+        <label for="status">Status:</label>
+        <select [(ngModel)]="updatedRound.status" name="status" required>
+          <option value="" disabled>Select Status</option>
+          <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+        </select>
+      </div>
+
+      <!-- Remarks -->
+      <div>
+        <label for="remarks">Remarks:</label>
+        <textarea [(ngModel)]="updatedRound.remarks" name="remarks"></textarea>
+      </div>
+      <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+
+      <!-- Submit Button -->
+      <button type="submit">Update Interview Round</button>
+    </form>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
 
 
     <!-- Add New Interview Round Form for Selected Candidate -->

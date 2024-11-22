@@ -54,4 +54,7 @@ router.put('/users/:userId/role', allController.updateUserRole);
 // Route to delete a user
 router.delete('/users/:userId', allController.deleteUser);
 
+router.put('/interview-rounds/:id', allController.updateInterviewRound);
+
+
 module.exports = router;

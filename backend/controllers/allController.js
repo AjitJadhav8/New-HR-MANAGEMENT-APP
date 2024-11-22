@@ -1105,4 +1105,71 @@ exports.deleteUser = (req, res) => {
   });
 };
 
+// Backend route for updating the last interview round
+exports.updateInterviewRound = (req, res) => {
+  const { id } = req.params; // Candidate ID
+  const { round_number, interviewer, interview_date, status, remarks } = req.body;
+
+  // Check if all required fields are provided
+  if (!round_number || !interviewer || !interview_date || !status) {
+    return res.status(400).json({ error: 'All fields are required to update the interview round.' });
+  }
+
+  // Get interviewer_id from the master_interviewers table
+  const getInterviewerIdQuery = `
+    SELECT interviewer_id FROM master_interviewers WHERE interviewer_name = ?
+  `;
+  
+  db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
+    if (err) {
+      console.error('Error fetching interviewer ID:', err);
+      return res.status(500).json({ error: 'Database error fetching interviewer ID.' });
+    }
+
+    if (interviewerResults.length === 0) {
+      return res.status(400).json({ error: 'Interviewer not found.' });
+    }
+
+    const interviewerId = interviewerResults[0].interviewer_id;
+
+    // Get status_id from the master_statuses table
+    const getStatusIdQuery = `
+      SELECT status_id FROM master_statuses WHERE status_name = ?
+    `;
+
+    db.query(getStatusIdQuery, [status], (err, statusResults) => {
+      if (err) {
+        console.error('Error fetching status ID:', err);
+        return res.status(500).json({ error: 'Database error fetching status ID.' });
+      }
+
+      if (statusResults.length === 0) {
+        return res.status(400).json({ error: 'Status not found.' });
+      }
+
+      const statusId = statusResults[0].status_id;
+
+      // Update the interview round in trans_interview_rounds
+      const updateInterviewRoundQuery = `
+        UPDATE trans_interview_rounds 
+        SET round_number = ?, interviewer_id = ?, interview_date = ?, status_id = ?, remarks = ?
+        WHERE candidate_id = ? 
+        ORDER BY ir_id DESC LIMIT 1
+      `;
+
+      db.query(
+        updateInterviewRoundQuery,
+        [round_number, interviewerId, interview_date, statusId, remarks, id],
+        (err) => {
+          if (err) {
+            console.error('Error updating interview round:', err);
+            return res.status(500).json({ error: err.message || 'Database error.' });
+          }
+
+          res.status(200).json({ message: 'Interview round updated successfully.' });
+        }
+      );
+    });
+  });
+};
 
