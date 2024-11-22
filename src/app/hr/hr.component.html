@@ -185,6 +185,7 @@
       </div>
     </div>
 
+    
 
 
     <!-- candidate list -->
@@ -218,10 +219,14 @@
               <td class="remarks" [title]="candidate.Remarks || 'N/A'">
                 {{ candidate.Remarks || 'N/A' }}
               </td>
-              <td>
+              <!-- <td>
                 <button (click)="selectCandidateForNextRound(candidate)">Selected</button>
                 <button (click)="rejectCandidate(candidate)">Rejected</button>
+              </td> -->
+              <td>
+                <button (click)="openDecisionModal(candidate)">Decision</button>
               </td>
+              
               <td>
                 <button (click)="showAddRoundSection(candidate)">Add Round</button>
                 <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
@@ -240,6 +245,13 @@
       </div>
 
     </div>
+
+
+
+
+ 
+
+
 
 
     <!-- Modal for Actions (Update, View History, Delete) -->
@@ -265,7 +277,41 @@
 
 
 
-    showUpdateLastRoundModal 
+
+    <div *ngIf="showModal" class="modal">
+      <div class="modal-content">
+        <form (submit)="submitDecision()">
+          <h2>Make a Decision for <span class="underlined">{{ currentCandidate.Candidate_Name }}</span></h2>
+          <select id="decision" [(ngModel)]="selectedDecision" name="decision" required>
+            <option value="Selected">Selected</option>
+            <option value="Rejected">Rejected</option>
+          </select>
+    
+          <label for="interviewDate">Interview Date</label>
+          <input
+            type="date"
+            id="interviewDate"
+            [(ngModel)]="interviewDate"
+            name="interviewDate"
+            [min]="todayDate"
+            required
+          />
+    
+          <label for="remarks">Remarks</label>
+          <textarea id="remarks" [(ngModel)]="remarks" name="remarks"></textarea>
+    
+          <div class="modal-actions">
+            <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+
+            <button type="submit" class="submit-button">Submit</button>
+            <span class="close" (click)="closeDecisionModal()">&times;</span> <!-- Close button -->
+
+          </div>
+        </form>
+      </div>
+    </div>
+    
+
 
 <!-- Modal for Updating Last Interview Round -->
 <div class="modal" *ngIf="showUpdateLastRoundModal">

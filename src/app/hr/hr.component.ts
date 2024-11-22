@@ -1077,7 +1077,7 @@ export class HRComponent implements OnInit {
   closeActionModal() {
     this.showActionModal = false;
   }
-
+ 
 
   openUpdateCandidateModal() {
     this.showUpdateCandidate = true;
@@ -1132,52 +1132,99 @@ export class HRComponent implements OnInit {
 
   //  }
 
-  selectCandidateForNextRound(candidate: any) {
-    const newRoundData = {
-      round_number: candidate.Round_Number || 1, // Keep the current round number or set to 1 if undefined
-      interviewer: candidate.Interviewer || '', // Retain the interviewer
-      interview_date: this.todayDate, // Set the current date
-      status: 'Selected', // Use 'Selected' status
-      remarks: 'Promoted to next round', // Default remark
-      c_id: candidate.Candidate_ID, // Candidate ID
-    };
+  // selectCandidateForNextRound(candidate: any) {
+  //   const newRoundData = {
+  //     round_number: candidate.Round_Number || 1, // Keep the current round number or set to 1 if undefined
+  //     interviewer: candidate.Interviewer || '', // Retain the interviewer
+  //     interview_date: this.todayDate, // Set the current date
+  //     status: 'Selected', // Use 'Selected' status
+  //     remarks: 'Promoted to next round', // Default remark
+  //     c_id: candidate.Candidate_ID, // Candidate ID
+  //   };
 
-    this.dataService.addNewRound(candidate.Candidate_ID, newRoundData).subscribe(
-      () => {
-        this.showAlert(`Candidate ${candidate.Candidate_Name} has been promoted to the next round.`, 'alert-success');
-        this.getCandidates(); // Refresh the candidate list
-      },
-      (error) => {
-        console.error('Error promoting candidate:', error);
-        this.showAlert('Failed to promote the candidate. Please try again.', 'alert-danger');
-      }
-    );
+  //   this.dataService.addNewRound(candidate.Candidate_ID, newRoundData).subscribe(
+  //     () => {
+  //       this.showAlert(`Candidate ${candidate.Candidate_Name} has been promoted to the next round.`, 'alert-success');
+  //       this.getCandidates(); // Refresh the candidate list
+  //     },
+  //     (error) => {
+  //       console.error('Error promoting candidate:', error);
+  //       this.showAlert('Failed to promote the candidate. Please try again.', 'alert-danger');
+  //     }
+  //   );
+  // }
+
+
+  // rejectCandidate(candidate: any) {
+  //   const rejectedRoundData = {
+  //     round_number: candidate.Round_Number || 1, // Keep the current round number or set to 1 if undefined
+  //     interviewer: candidate.Interviewer || '', // Retain the interviewer
+  //     interview_date: this.todayDate, // Set the current date
+  //     status: 'Rejected', // Use 'Rejected' status
+  //     remarks: 'Candidate rejected', // Default remark
+  //     c_id: candidate.Candidate_ID, // Candidate ID
+  //   };
+
+  //   this.dataService.addNewRound(candidate.Candidate_ID, rejectedRoundData).subscribe(
+  //     () => {
+  //       this.showAlert(`Candidate ${candidate.Candidate_Name} has been rejected.`, 'alert-success');
+  //       this.getCandidates(); // Refresh the candidate list
+  //     },
+  //     (error) => {
+  //       console.error('Error rejecting candidate:', error);
+  //       this.showAlert('Failed to reject the candidate. Please try again.', 'alert-danger');
+  //     }
+  //   );
+  // }
+  showModal: boolean = false;
+selectedDecision: string = 'Selected';
+interviewDate: string = this.todayDate; // Default to today's date
+remarks: string = '';
+currentCandidate: any = null; // Store the selected candidate
+
+  openDecisionModal(candidate: any) {
+    this.showModal = true;
+    this.currentCandidate = candidate;
+    this.selectedDecision = 'Selected';
+    this.interviewDate = this.todayDate;
+    this.remarks = '';
+  }
+  closeDecisionModal() {
+    this.showModal = false;
+    this.currentCandidate = null; // Optionally reset the current candidate
   }
 
+// Submit the decision
+submitDecision() {
+  if (!this.currentCandidate) return;
 
-  rejectCandidate(candidate: any) {
-    const rejectedRoundData = {
-      round_number: candidate.Round_Number || 1, // Keep the current round number or set to 1 if undefined
-      interviewer: candidate.Interviewer || '', // Retain the interviewer
-      interview_date: this.todayDate, // Set the current date
-      status: 'Rejected', // Use 'Rejected' status
-      remarks: 'Candidate rejected', // Default remark
-      c_id: candidate.Candidate_ID, // Candidate ID
-    };
+  const decisionData = {
+    round_number: this.currentCandidate.Round_Number || 1, // Keep current round or default to 1
+    interviewer: this.currentCandidate.Interviewer || '', // Retain interviewer
+    interview_date: this.interviewDate,
+    status: this.selectedDecision,
+    remarks: this.remarks ,
+    // || (this.selectedDecision === 'Selected' ? 'Promoted to next round' : 'Candidate rejected')
+    c_id: this.currentCandidate.Candidate_ID,
+  };
 
-    this.dataService.addNewRound(candidate.Candidate_ID, rejectedRoundData).subscribe(
-      () => {
-        this.showAlert(`Candidate ${candidate.Candidate_Name} has been rejected.`, 'alert-success');
-        this.getCandidates(); // Refresh the candidate list
-      },
-      (error) => {
-        console.error('Error rejecting candidate:', error);
-        this.showAlert('Failed to reject the candidate. Please try again.', 'alert-danger');
-      }
-    );
-  }
-
-
+  this.dataService.addNewRound(this.currentCandidate.Candidate_ID, decisionData).subscribe(
+    () => {
+      this.showAlert(
+        `Candidate ${this.currentCandidate.Candidate_Name} has been ${this.selectedDecision.toLowerCase()}.`,
+        'alert-success'
+      );
+      this.getCandidates(); // Refresh the candidate list
+      setTimeout(() => {
+        this.closeDecisionModal();
+      }, 3000);
+    },
+    (error) => {
+      console.error('Error processing decision:', error);
+      this.showAlert('Failed to process the decision. Please try again.', 'alert-danger');
+    }
+  );
+}
 
 
 }
