@@ -62,6 +62,10 @@ export class CEOComponent implements OnInit {
     return Array.from(distinctCandidates.values());
   }
 
+
+  closeModal() {
+    this.selectedCandidate = null;
+  }
   openModal(candidate: any) {
     this.dataService.getCandidateDetails(candidate.Candidate_ID).subscribe(
       data => {
@@ -73,9 +77,6 @@ export class CEOComponent implements OnInit {
     );
   }
 
-  closeModal() {
-    this.selectedCandidate = null;
-  }
 
   formatCandidateDetails(data: any) {
     if (data.interviewRounds) {
@@ -86,6 +87,8 @@ export class CEOComponent implements OnInit {
     return data;
   }
 
+
+  
 
   // formatDate(dateString: string): string {
   //   if (!dateString) {
