@@ -117,12 +117,13 @@ exports.login = (req, res) => {
       // Corrected query for statuses with JOIN between "trans_interview_rounds" and "master_statuses"
       const [statuses] = await db
         .promise()
-        .query(`
-          SELECT DISTINCT s.status_name
-          FROM trans_interview_rounds ir
-          JOIN master_statuses s ON ir.status_id = s.status_id
-          ORDER BY s.status_name ASC
-        `);
+        .query("SELECT DISTINCT status_name FROM master_statuses ORDER BY status_name ASC");
+        // .query(`
+        //   SELECT DISTINCT s.status_name
+        //   FROM trans_interview_rounds ir
+        //   JOIN master_statuses s ON ir.status_id = s.status_id
+        //   ORDER BY s.status_name ASC
+        // `);
 
       // Send the response as JSON
       res.json({
@@ -781,7 +782,7 @@ exports.deleteInterviewRound = (req, res) => {
       WHERE 
         c.candidate_id = ?
       ORDER BY 
-        ir.round_number;
+        ir.ir_id;
     `;
   
     db.query(query, [id], (err, results) => {

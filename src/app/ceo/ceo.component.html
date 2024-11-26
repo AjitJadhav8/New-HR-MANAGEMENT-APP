@@ -190,8 +190,6 @@
 
 
   <div *ngIf="showDetailView">
-
-  
     <div class="table-container-detail">
       <table class="candidate-table-detail">
         <thead>
@@ -214,7 +212,7 @@
             <td>{{ candidate.HR_Name }}</td>
             <td>{{ candidate.Round_Number }}</td>
             <td>{{ candidate.Interview_Date | date: 'dd-MMM-yyyy' }}</td>
-            <td>{{ candidate.Status }}</td>
+            <td  class="remarks" [title]="candidate.Status || 'N/A'">{{ candidate.Status }}</td>
             <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks || 'N/A' }}</td>
           </tr>
         </tbody>

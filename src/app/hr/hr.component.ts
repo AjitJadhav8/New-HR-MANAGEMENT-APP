@@ -18,14 +18,10 @@ export class HRComponent implements OnInit {
   loggedInHRId: string | null = '';
   candidates: any[] = [];
   selectedCandidate: any = null;
-
-
   showAddRound: boolean = false;  // New property to control Add Round section visibility
   showUpdateCandidate: boolean = false;
-
   constructor(private http: HttpClient, private router: Router, private dataService: DataService) { }
-  todayDate: string = ''; // Declare todayDate as a string
-
+  todayDate: string = ''; 
   isHR: boolean = false;
   isAdmin: boolean = false; // New property to check if the user is Admin
 
@@ -33,10 +29,8 @@ export class HRComponent implements OnInit {
     // Fetch the logged-in HR details and permission from localStorage
     this.loggedInHR = localStorage.getItem('loggedInHR') || '';
     this.loggedInHRId = localStorage.getItem('loggedInHRId');
-  
     // Check the user role stored in localStorage and set appropriate flags for Admin and HR roles
     const userPermission = localStorage.getItem('userPermission');
-    
     // If the user is 'HrAdmin', give them both Admin and HR privileges
     if (userPermission === 'HrAdmin') {
       this.isAdmin = true;
@@ -51,18 +45,18 @@ export class HRComponent implements OnInit {
       this.isAdmin = false;
       this.isHR = false;
     }
-  
+
     // Log the role details for debugging
     console.log('Is Admin:', this.isAdmin);
     console.log('Is HR:', this.isHR);
     console.log('Logged in HR:', this.loggedInHR);
     console.log('Logged in HR ID:', this.loggedInHRId);
-  
+
     // Fetch data if the logged-in HR exists
     if (this.loggedInHRId) {
       // Fetch candidates if the HR is logged in
       this.getCandidates();
-      
+
       // Fetch admin data if the user has Admin rights
       if (this.isAdmin) {
         this.fetchAdminData();
@@ -70,31 +64,23 @@ export class HRComponent implements OnInit {
     } else {
       console.error('No HR is logged in!');
     }
-  
+
     // Fetch interview options for dropdowns (positions, statuses, interviewers)
     this.dataService.getInterviewOptions().subscribe((data) => {
       this.interviewOptions = data;
       console.log('Interview Options:', this.interviewOptions);
     });
-  
+
     // Set today's date in the required format
     const today = new Date();
     this.todayDate = today.toISOString().split('T')[0];
   }
-  
 
 
-  isAdminPanelVisible: boolean = false;  // Panel is hidden initially
-  toggleAdminPanel() {
-    this.isAdminPanelVisible = !this.isAdminPanelVisible;
-  }
 
 
-  closeAdminPanel(){
-    this.isAdminPanelVisible = false;
 
-  }
-
+// ----------------Get Candidate Section ------------
 
   getCandidates() {
     console.log('Fetching candidates for HR ID:', this.loggedInHRId);
@@ -132,8 +118,6 @@ export class HRComponent implements OnInit {
   }
 
 
-
-
   getInterviewOptions() {
     this.dataService.getInterviewOptions().subscribe((data) => {
       this.interviewOptions = data;
@@ -144,73 +128,18 @@ export class HRComponent implements OnInit {
   showActionModal: boolean = false;  // Add this line to declare the flag
   selectCandidate(candidate: any) {
     this.selectedCandidate = candidate;
-    // Reset the visibility flags
     this.showAddRound = false;
     this.showUpdateCandidate = false;
     this.showActionModal = true; // Show the modal when a candidate is selected
 
   }
 
-
-  // Method to get the last interview round for the selected candidate
-  // getLastRoundData(candidateId: number) {
-  //   this.dataService.getInterviewRounds(candidateId).subscribe(
-  //     (history) => {
-  //       if (history.length > 0) {
-  //         const lastRound = history[history.length - 1]; // Last round data
-  //         this.newRound.interviewer = lastRound.Interviewer;  // Prefill the interviewer
-  //         this.newRound.status = lastRound.Status;            // Prefill the status
-  //         // this.newRound.remarks = lastRound.Remarks;          // Prefill the remarks
-  //         this.newRound.round_number = lastRound.Round_Number; // Prefill round number
-
-  //       } else {
-  //         this.newRound.round_number = '1';  // If no previous rounds, set to '1'
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error fetching last round data:', error);
-  //     }
-  //   );
-  // }
-
-  // getLastRoundData(candidateId: number) {
-  //   console.log("Fetching last round data for candidate ID:", candidateId);
-  //   this.dataService.getInterviewRounds(candidateId).subscribe(
-  //     (history) => {
-  //       console.log("Interview history fetched:", history);
-  
-  //       // Fetch the latest interview round
-  //       const lastRound = history[history.length - 1];  // Get the last round
-  //       if (lastRound) {
-  //         // Populate the update form fields with the last round data
-  //         this.updatedRound = {
-  //           round_number: lastRound.Round_Number,
-  //           customRoundNumber: lastRound.Round_Number === 'Custom' ? lastRound.Custom_Round_Number : '',
-  //           interviewer: lastRound.Interviewer,
-  //           interview_date: this.formatDateForInput(lastRound.Interview_Date), // Format the interview date for the input field
-  //           status: lastRound.Status,
-  //           remarks: lastRound.Remarks,
-  //           round_id: lastRound.Round_ID // Assuming the backend uses a Round_ID for updates
-  //         };
-  
-  //         // Set the last interview date to restrict the date input
-  //         this.lastInterviewDate = this.formatDateForInput(lastRound.Interview_Date);
-  
-  //         console.log("Last round data:", this.updatedRound);
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error("Error fetching interview history:", error);
-  //     }
-  //   );
-  // }
-  
   getLastRoundData(candidateId: number, mode: 'add' | 'update') {
     console.log("Fetching last round data for candidate ID:", candidateId);
     this.dataService.getInterviewRounds(candidateId).subscribe(
       (history) => {
         console.log("Interview history fetched:", history);
-  
+
         // Fetch the latest interview round
         const lastRound = history[history.length - 1];  // Get the last round
         if (lastRound) {
@@ -223,10 +152,10 @@ export class HRComponent implements OnInit {
             remarks: lastRound.Remarks,
             round_id: lastRound.Round_ID // Assuming the backend uses a Round_ID for updates
           };
-  
+
           // Set the last interview date to restrict the date input
           this.lastInterviewDate = this.formatDateForInput(lastRound.Interview_Date);
-  
+
           if (mode === 'update') {
             // Populate the update form fields with the last round data
             this.updatedRound = { ...lastRoundData };
@@ -234,9 +163,9 @@ export class HRComponent implements OnInit {
             this.newRound = { ...lastRoundData };
 
             // Set only the last interview date for the "Add Round" flow
-            
+
           }
-  
+
           console.log("Last round data set for mode:", mode, lastRoundData);
         }
       },
@@ -246,14 +175,10 @@ export class HRComponent implements OnInit {
     );
   }
 
-
-
-
-
-
-  updatedRound: any = {};  // Ensure updatedRound is initialized to avoid undefined errors.
-  showUpdateLastRoundModal: boolean = false;  // Use a boolean to control modal visibility
-
+  
+// ----------------Update Round Section ------------
+  updatedRound: any = {};  // updatedRound is initialized to avoid undefined errors.
+  showUpdateLastRoundModal: boolean = false;  //modal visibility
   toggleUpdateLastRoundModal() {
     this.showUpdateLastRoundModal = !this.showUpdateLastRoundModal;
   }
@@ -273,32 +198,32 @@ export class HRComponent implements OnInit {
       this.showAlert('Round number or Custom Round Number is required.', 'alert-danger');
       return;
     }
-  
+
     // Validate if an interviewer is selected
     if (!this.updatedRound.interviewer) {
       this.showAlert('Please select an interviewer name.', 'alert-danger');
       return;
     }
-  
+
     // Validate if the status is selected
     if (!this.updatedRound.status) {
       this.showAlert('Please select a status.', 'alert-danger');
       return;
     }
-  
+
     // Validate if the interview date is selected and is a valid future date
     if (!this.updatedRound.interview_date) {
       this.showAlert('Please select an interview date.', 'alert-danger');
       return;
     }
-  
+
     const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
     const interviewDate = new Date(this.updatedRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
     if (isNaN(interviewDate) || interviewDate < today) {
       this.showAlert('Please select a valid future interview date.', 'alert-danger');
       return;
     }
-  
+
     // Prepare the final data for updating the round (use custom round number if applicable)
     const roundData = {
       round_number: this.updatedRound.round_number === 'Custom' ? this.updatedRound.customRoundNumber : this.updatedRound.round_number,
@@ -309,7 +234,7 @@ export class HRComponent implements OnInit {
       c_id: this.selectedCandidate.Candidate_ID, // Candidate ID for identification
       round_id: this.updatedRound.round_id // Assuming you have a round_id for identifying the specific round
     };
-  
+
     // Send the update request to the backend
     this.dataService.updateInterviewRound(this.selectedCandidate.Candidate_ID, roundData)
       .subscribe(
@@ -317,10 +242,10 @@ export class HRComponent implements OnInit {
           this.showAlert('Interview round updated successfully!', 'alert-success'); // Success alert
           this.getCandidates(); // Refresh candidate list
           this.getInterviewOptions(); // Re-fetch interview options for dropdowns
-  
+
           // Reset the form fields
           this.updatedRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '', round_id: '' };
-  
+
           // Close the modal after success
           setTimeout(() => {
             this.showUpdateLastRoundModal = false; // Close modal
@@ -332,20 +257,6 @@ export class HRComponent implements OnInit {
         }
       );
   }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // Separate new entry objects for each section
   newPositionEntry = { name: '' };
@@ -358,97 +269,10 @@ export class HRComponent implements OnInit {
     this.showAddRound = false; // Hide add round section
   }
 
-
-  formatLocalDate(dateString: string): string {
-    const date = new Date(dateString);
-    const userTimezoneOffset = date.getTimezoneOffset() * 60000; // Get the timezone offset in milliseconds
-    const localDate = new Date(date.getTime() - userTimezoneOffset);
-  
-    const day = localDate.getDate().toString().padStart(2, '0'); // Get day and pad with 0 if needed
-    const month = localDate.toLocaleString('default', { month: 'short' }); // Get short month name (e.g., "Nov")
-    const year = localDate.getFullYear(); // Get full year
-  
-    return `${day}-${month}-${year}`;
-  }
-
-  // formatLocalDate(dateString: string): string {
-  //   const date = new Date(dateString);
-  //   const userTimezoneOffset = date.getTimezoneOffset() * 60000; // Get the timezone offset in milliseconds
-  //   return new Date(date.getTime() - userTimezoneOffset).toISOString().split('T')[0];
-  // }
+// ----------------Add New Candidate Section ------------
 
   newCandidate: { name: string, position: string | undefined, customPosition?: string } = { name: '', position: '', customPosition: '' };
-
   isCustomRound: boolean = false;  // Declare the flag for custom round
-
-  // addNewCandidate() {
-  //   if (!this.newCandidate.name?.trim()) {
-  //     this.showAlert('Candidate name is required.', 'error');
-  //     return;
-  //   }
-
-  //   if (!this.newCandidate.position?.trim()) {
-  //     this.showAlert('Position is required.', 'error');
-  //     return;
-  //   }
-
-  //   if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
-  //     this.showAlert('Round number or Custom Round Number is required.', 'error');
-  //     return;
-  //   }
-
-  //   const today = new Date().setHours(0, 0, 0, 0);
-  //   const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0);
-  //   if (isNaN(interviewDate) || interviewDate < today) {
-  //     this.showAlert('Please select a valid future interview date.', 'error');
-  //     return;
-  //   }
-
-  //   if (!this.newRound.status?.trim()) {
-  //     this.showAlert('Status is required.', 'error');
-  //     return;
-  //   }
-
-  //   // If round is 'Custom', assign customRoundNumber to round_number
-  //   this.newRound.round_number = this.isCustomRound ? this.newRound.customRoundNumber || '' : this.newRound.round_number;
-
-  //   // Prepare candidate data
-  //   const candidateData = {
-  //     name: this.newCandidate.name,
-  //     position: this.newCandidate.position || '',
-  //     u_id: this.loggedInHRId
-  //   };
-
-  //   // Prepare round data
-  //   const roundData = {
-  //     round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
-  //     interviewer: this.newRound.interviewer || '',
-  //     interview_date: this.formatLocalDate(this.newRound.interview_date),
-  //     status: this.newRound.status || '',
-  //     remarks: this.newRound.remarks
-  //   };
-
-  //   // Call the service to add both candidate and round
-  //   this.dataService.addNewCandidateWithRound(candidateData, roundData).subscribe(
-  //     response => {
-  //       this.getCandidates(); // Refresh candidate list
-  //       this.getInterviewOptions(); // Refetch interview options
-  //       this.newCandidate = { name: '', position: '' }; // Reset form
-  //       this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '' }; // Reset round form
-  //       this.isCustomRound = false; // Reset custom round flag
-
-  //       // Show success alert
-  //       this.showAlert('Candidate and Interview Round added successfully!', 'success');
-  //        meout(() => {
-  //         this.isModalOpen = false; // Close the modal
-  //       }, 2000);
-  //     },
-  //     error => {
-  //       console.error('Error adding candidate with round:', error);
-  //       this.showAlert('Failed to add candidate and round. Please fill all the fields.', 'error');
-  //     }
-  //   );
-  // }
 
   addNewCandidate() {
     // Validation for candidate data
@@ -456,39 +280,39 @@ export class HRComponent implements OnInit {
       this.showAlert('Candidate name is required.', 'alert-danger');
       return;
     }
-  
+
     if (!this.newCandidate.position?.trim()) {
       this.showAlert('Position is required.', 'alert-danger');
       return;
     }
-  
+
     if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
       this.showAlert('Round number or Custom Round Number is required.', 'alert-danger');
       return;
     }
-  
+
     const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
     const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert selected interview date to the same format
     if (isNaN(interviewDate) || interviewDate < today) {
       this.showAlert('Please select a valid future interview date.', 'alert-danger');
       return;
     }
-  
+
     if (!this.newRound.status?.trim()) {
       this.showAlert('Status is required.', 'alert-danger');
       return;
     }
-  
+
     // If round is 'Custom', assign customRoundNumber to round_number
     this.newRound.round_number = this.isCustomRound ? this.newRound.customRoundNumber || '' : this.newRound.round_number;
-  
+
     // Prepare candidate data for the backend
     const candidateData = {
       name: this.newCandidate.name,
       position: this.newCandidate.position || '',
       u_id: this.loggedInHRId
     };
-  
+
     // Prepare round data for the backend
     const roundData = {
       round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
@@ -497,7 +321,7 @@ export class HRComponent implements OnInit {
       status: this.newRound.status || '',
       remarks: this.newRound.remarks
     };
-  
+
     // Call the service to add both candidate and round
     this.dataService.addNewCandidateWithRound(candidateData, roundData).subscribe(
       response => {
@@ -507,10 +331,10 @@ export class HRComponent implements OnInit {
         this.newCandidate = { name: '', position: '' }; // Reset candidate form
         this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '' }; // Reset round form
         this.isCustomRound = false; // Reset custom round flag
-  
+
         // Show success alert
         this.showAlert('Candidate and Interview Round added successfully!', 'alert-success');
-  
+
         // Close modal after 2 seconds
         setTimeout(() => {
           this.isModalOpen = false; // Close the modal
@@ -523,7 +347,7 @@ export class HRComponent implements OnInit {
       }
     );
   }
-  
+
   // Helper method to format date in YYYY-MM-DD for the backend
   formatDateForBackend(dateString: string): string {
     const date = new Date(dateString);
@@ -532,7 +356,9 @@ export class HRComponent implements OnInit {
     const day = date.getDate().toString().padStart(2, '0'); // Ensure two digits for day
     return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
   }
-  
+
+
+// -------------- New Round Section -------------
   newRound: {
     round_number: string;
     customRoundNumber?: string;  // Optional custom round number
@@ -553,149 +379,90 @@ export class HRComponent implements OnInit {
       remarks: ''
     };
 
-    addNewRound() {
-
-      // Check if round number is selected
-      if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
-        this.showAlert('Round number or Custom Round Number is required.', 'alert-danger');
-        return;
-      }
+  addNewRound() {
     
-      // Check if interviewer name is selected
-      if (!this.newRound.interviewer) {
-        this.showAlert('Please select an interviewer name.', 'alert-danger');
-        return; // Prevent form submission if interviewer name is not selected
-      }
-    
-      // Check if status is selected
-      if (!this.newRound.status) {
-        this.showAlert('Please select a status.', 'alert-danger');
-        return; // Prevent form submission if status is not selected
-      }
-    
-      // Check if interview date is selected and valid
-      if (!this.newRound.interview_date) {
-        this.showAlert('Please select an interview date.', 'alert-danger');
-        return; // Prevent form submission if date is not selected
-      }
-    
-      const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
-      const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
-      if (isNaN(interviewDate) || interviewDate < today) {
-        this.showAlert('Please select a valid future interview date.', 'alert-danger');
-        return; // Prevent form submission if interview date is in the past
-      }
-    
-      // Prepare final values for each field, using custom round number if selected
-      const roundData = {
-        round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
-        interviewer: this.newRound.interviewer,
-        interview_date: this.formatDateForBackend(this.newRound.interview_date), // Adjust date formatting for backend
-        status: this.newRound.status,
-        remarks: this.newRound.remarks,
-        c_id: this.selectedCandidate.Candidate_ID // Candidate ID
-      };
-    
-      // Send data to backend
-      this.dataService.addNewRound(this.selectedCandidate.Candidate_ID, roundData)
-        .subscribe(
-          () => {
-            this.showAlert('Interview round added successfully!', 'alert-success'); // Success alert
-            this.getCandidates(); // Refresh candidate list
-            this.getInterviewOptions(); // Refetch interview options for dropdowns
-    
-            // Reset form
-            this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '' };
-    
-            // Close modal after success
-            setTimeout(() => {
-              this.showAddRoundModal = false;
-            }, 2000);
-          },
-          error => {
-            console.error('Error adding round:', error);
-            this.showAlert('Please fill all the fields, including the date.', 'alert-danger'); // Error alert
-          }
-        );
-    }
-    showAddRoundSection(candidate: any) {
-      this.selectedCandidate = candidate; // Set the selected candidate for the add round form
-      this.newRound = {
-        round_number: '', // Allow user to input the round number manually
-        interviewer: '',
-        interview_date: '',
-        status: '',
-        remarks: ''
-      };
-      this.getLastRoundData(candidate.Candidate_ID, 'add');
-      this.getCandidateHistory(candidate.Candidate_ID); // Additional step for candidate history
-
-      // this.getCandidateHistory(candidate.Candidate_ID);
-      // this.getLastRoundData(candidate.Candidate_ID);
-  
-      this.showAddRound = true;
-      this.toggleAddRoundModal(); // Open the modal
-  
+    // Check if round number is selected
+    if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
+      this.showAlert('Round number or Custom Round Number is required.', 'alert-danger');
+      return;
     }
 
-  // addNewRound() {
+    // Check if interviewer name is selected
+    if (!this.newRound.interviewer) {
+      this.showAlert('Please select an interviewer name.', 'alert-danger');
+      return; // Prevent form submission if interviewer name is not selected
+    }
 
-  //   // Check if round number is selected
-  //   if (!this.newRound.round_number?.trim() && !this.newRound.customRoundNumber?.trim()) {
-  //     this.showAlert('Round number or Custom Round Number is required.', 'error');
-  //     return;
-  //   }
+    // Check if status is selected
+    if (!this.newRound.status) {
+      this.showAlert('Please select a status.', 'alert-danger');
+      return; // Prevent form submission if status is not selected
+    }
 
-  //   // Check if interviewer name is selected
-  //   if (!this.newRound.interviewer) {
-  //     this.showAlert('Please select an interviewer name.', 'alert-danger');
-  //     return; // Prevent form submission if interviewer name is not selected
-  //   }
+    // Check if interview date is selected and valid
+    if (!this.newRound.interview_date) {
+      this.showAlert('Please select an interview date.', 'alert-danger');
+      return; // Prevent form submission if date is not selected
+    }
 
-  //   // Check if status is selected
-  //   if (!this.newRound.status) {
-  //     this.showAlert('Please select a status.', 'alert-danger');
-  //     return; // Prevent form submission if status is not selected
-  //   }
+    const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
+    const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
+    if (isNaN(interviewDate) || interviewDate < today) {
+      this.showAlert('Please select a valid future interview date.', 'alert-danger');
+      return; // Prevent form submission if interview date is in the past
+    }
 
-  //   // Check if interview date is selected
-  //   if (!this.newRound.interview_date) {
-  //     this.showAlert('Please select an interview date.', 'alert-danger');
-  //     return; // Prevent form submission if date is not selected
-  //   }
+    // Prepare final values for each field, using custom round number if selected
+    const roundData = {
+      round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
+      interviewer: this.newRound.interviewer,
+      interview_date: this.formatDateForBackend(this.newRound.interview_date), // Adjust date formatting for backend
+      status: this.newRound.status,
+      remarks: this.newRound.remarks,
+      c_id: this.selectedCandidate.Candidate_ID // Candidate ID
+    };
 
-  //   // Prepare final values for each field, using custom round number if selected
-  //   const roundData = {
-  //     round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
-  //     interviewer: this.newRound.interviewer,
-  //     interview_date: this.formatLocalDate(this.newRound.interview_date), // Adjust date formatting as needed
-  //     status: this.newRound.status,
-  //     remarks: this.newRound.remarks,
-  //     c_id: this.selectedCandidate.Candidate_ID // Candidate ID
-  //   };
+    // Send data to backend
+    this.dataService.addNewRound(this.selectedCandidate.Candidate_ID, roundData)
+      .subscribe(
+        () => {
+          this.showAlert('Interview round added successfully!', 'alert-success'); // Success alert
+          this.getCandidates(); // Refresh candidate list
+          this.getInterviewOptions(); // Refetch interview options for dropdowns
 
-  //   // Send data to backend
-  //   this.dataService.addNewRound(this.selectedCandidate.Candidate_ID, roundData)
-  //     .subscribe(
-  //       () => {
-  //         this.showAlert('Interview round added successfully!', 'alert-success'); // Success alert
-  //         this.getCandidates(); // Refresh candidate list
-  //         this.getInterviewOptions(); // Refetch interview options for dropdowns
+          // Reset form
+          this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '' };
 
-  //         // Reset form
-  //         this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '' };
+          // Close modal after success
+          setTimeout(() => {
+            this.showAddRoundModal = false;
+          }, 2000);
+        },
+        error => {
+          console.error('Error adding round:', error);
+          this.showAlert('Please fill all the fields, including the date.', 'alert-danger'); // Error alert
+        }
+      );
+  }
 
-  //         // Close modal after success
-  //         setTimeout(() => {
-  //           this.showAddRoundModal = false;
-  //         }, 2000);
-  //       },
-  //       error => {
-  //         console.error('Error adding round:', error);
-  //         this.showAlert('Please fill all the fields, including the date.', 'alert-danger'); // Error alert
-  //       }
-  //     );
-  // }
+  showAddRoundSection(candidate: any) {
+    this.selectedCandidate = candidate; // Set the selected candidate for the add round form
+    this.newRound = {
+      round_number: '', // Allow user to input the round number manually
+      interviewer: '',
+      interview_date: '',
+      status: '',
+      remarks: ''
+    };
+    this.getLastRoundData(candidate.Candidate_ID, 'add');
+    this.getCandidateHistory(candidate.Candidate_ID); // Additional step for candidate history
+
+    this.showAddRound = true;
+    this.toggleAddRoundModal(); // Open the modal
+
+  }
+
+// -------------- Delkete Round Section -------------
 
   deleteInterviewRound(candidateId: number, roundNumber: string, candidateName: string) {
     const confirmDelete = confirm(`Are you sure you want to delete interview round ${roundNumber} for ${candidateName}?`);
@@ -722,8 +489,7 @@ export class HRComponent implements OnInit {
     }
   }
 
-
- 
+// -------------- Update Candidate Section -------------
 
   selectedStatus: string = '';
   isCustomStatus: boolean = false;  // Toggle for custom status input
@@ -765,6 +531,8 @@ export class HRComponent implements OnInit {
 
 
 
+  // -------------- History Section -------------
+
   showHistory: boolean = false; // Control the visibility of the history section
   candidateHistory: any[] = []; // Holds the interview rounds history for the selected candidate
 
@@ -776,31 +544,6 @@ export class HRComponent implements OnInit {
 
   lastInterviewDate: string = ''; // Store the last interview date for the selected candidate
 
-
-  // Fetches all interview rounds for a selected candidate
-  // getCandidateHistory(candidateId: number) {
-  //   console.log("Fetching history for candidate ID:", candidateId);
-  //   this.dataService.getInterviewRounds(candidateId).subscribe(
-  //     (history) => {
-  //       console.log("Interview history fetched:", history);
-  //       this.candidateHistory = history.map(round => ({
-  //         ...round,
-  //         Interview_Date: round.Interview_Date ? this.formatLocalDate(round.Interview_Date) : 'N/A'
-  //       }));
-
-  //       // Get the latest interview date from history and store it
-  //       const lastRound = this.candidateHistory[this.candidateHistory.length - 1];
-  //       if (lastRound && lastRound.Interview_Date !== 'N/A') {
-  //         this.lastInterviewDate = lastRound.Interview_Date; // Set the last interview date
-  //       }
-
-  //       console.log("Formatted candidate history:", this.candidateHistory);
-  //     },
-  //     (error) => {
-  //       console.error("Error fetching interview history:", error);
-  //     }
-  //   );
-  // }
   getCandidateHistory(candidateId: number) {
     console.log("Fetching history for candidate ID:", candidateId);
     this.dataService.getInterviewRounds(candidateId).subscribe(
@@ -810,7 +553,7 @@ export class HRComponent implements OnInit {
           ...round,
           Interview_Date: round.Interview_Date ? this.formatLocalDate(round.Interview_Date) : 'N/A'
         }));
-  
+
         // Get the latest interview date from history and store it
         const lastRound = this.candidateHistory[this.candidateHistory.length - 1];
         if (lastRound && lastRound.Interview_Date !== 'N/A') {
@@ -819,7 +562,7 @@ export class HRComponent implements OnInit {
           // If no rounds, set to today
           this.lastInterviewDate = this.formatDateForInput(new Date());
         }
-  
+
         console.log("Formatted candidate history:", this.candidateHistory);
       },
       (error) => {
@@ -827,7 +570,9 @@ export class HRComponent implements OnInit {
       }
     );
   }
-  
+
+  // --------------Date Section -------------
+
   formatDateForInput(date: string | Date): string {
     const d = new Date(date);
     const year = d.getFullYear();
@@ -835,15 +580,19 @@ export class HRComponent implements OnInit {
     const day = String(d.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format for input
   }
-  
+  formatLocalDate(dateString: string): string {
+    const date = new Date(dateString);
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000; // Get the timezone offset in milliseconds
+    const localDate = new Date(date.getTime() - userTimezoneOffset);
 
-  // In hr.component.ts
-  currentPassword: string = '';
-  newPassword: string = '';
-  confirmPassword: string = '';
-  showChangePasswordForm: boolean = false;
+    const day = localDate.getDate().toString().padStart(2, '0'); // Get day and pad with 0 if needed
+    const month = localDate.toLocaleString('default', { month: 'short' }); // Get short month name (e.g., "Nov")
+    const year = localDate.getFullYear(); // Get full year
 
+    return `${day}-${month}-${year}`;
+  }
 
+  // --------------Admin Section -------------
 
   adminData: {
     positions: { position_id: number, position_name: string }[],
@@ -901,6 +650,9 @@ export class HRComponent implements OnInit {
       return;
     }
 
+    
+    
+
     // Now call the service to add the new entry
     this.dataService.addAdminEntry(type, name).subscribe(
       (response: any) => {
@@ -943,8 +695,22 @@ export class HRComponent implements OnInit {
     }
   }
 
+  isAdminPanelVisible: boolean = false;  // Panel is hidden initially
+  toggleAdminPanel() {
+    this.isAdminPanelVisible = !this.isAdminPanelVisible;
+  }
 
 
+  closeAdminPanel() {
+    this.isAdminPanelVisible = false;
+
+  }
+
+  // In hr.component.ts
+  currentPassword: string = '';
+  newPassword: string = '';
+  confirmPassword: string = '';
+  showChangePasswordForm: boolean = false;
   changePassword() {
     if (this.newPassword !== this.confirmPassword) {
       alert("New passwords do not match!");
@@ -1015,9 +781,6 @@ export class HRComponent implements OnInit {
     this.confirmPassword = '';
   }
 
-
-
-
   currentPage: number = 1;
   pageSize: number = 30;  // Number of candidates per page
   totalCandidates: number = 0;
@@ -1063,8 +826,6 @@ export class HRComponent implements OnInit {
   }
 
 
-  // Modals
-
   // Toggle the section based on the button clicked
   toggleSection(section: string) {
     this.currentSection = section;
@@ -1080,7 +841,7 @@ export class HRComponent implements OnInit {
   closeActionModal() {
     this.showActionModal = false;
   }
- 
+
 
   openUpdateCandidateModal() {
     this.showUpdateCandidate = true;
@@ -1107,7 +868,6 @@ export class HRComponent implements OnInit {
   showAlert(message: string, type: string = 'alert-success') {
     this.alertMessage = message;
     this.alertType = type;
-    
 
     // Hide alert after 3 seconds
     setTimeout(() => {
@@ -1128,62 +888,13 @@ export class HRComponent implements OnInit {
   }
 
 
+  // --------------Dicision Section -------------
 
-
-  //  getUserRole(){
-  //   role=1;
-
-  //  }
-
-  // selectCandidateForNextRound(candidate: any) {
-  //   const newRoundData = {
-  //     round_number: candidate.Round_Number || 1, // Keep the current round number or set to 1 if undefined
-  //     interviewer: candidate.Interviewer || '', // Retain the interviewer
-  //     interview_date: this.todayDate, // Set the current date
-  //     status: 'Selected', // Use 'Selected' status
-  //     remarks: 'Promoted to next round', // Default remark
-  //     c_id: candidate.Candidate_ID, // Candidate ID
-  //   };
-
-  //   this.dataService.addNewRound(candidate.Candidate_ID, newRoundData).subscribe(
-  //     () => {
-  //       this.showAlert(`Candidate ${candidate.Candidate_Name} has been promoted to the next round.`, 'alert-success');
-  //       this.getCandidates(); // Refresh the candidate list
-  //     },
-  //     (error) => {
-  //       console.error('Error promoting candidate:', error);
-  //       this.showAlert('Failed to promote the candidate. Please try again.', 'alert-danger');
-  //     }
-  //   );
-  // }
-
-
-  // rejectCandidate(candidate: any) {
-  //   const rejectedRoundData = {
-  //     round_number: candidate.Round_Number || 1, // Keep the current round number or set to 1 if undefined
-  //     interviewer: candidate.Interviewer || '', // Retain the interviewer
-  //     interview_date: this.todayDate, // Set the current date
-  //     status: 'Rejected', // Use 'Rejected' status
-  //     remarks: 'Candidate rejected', // Default remark
-  //     c_id: candidate.Candidate_ID, // Candidate ID
-  //   };
-
-  //   this.dataService.addNewRound(candidate.Candidate_ID, rejectedRoundData).subscribe(
-  //     () => {
-  //       this.showAlert(`Candidate ${candidate.Candidate_Name} has been rejected.`, 'alert-success');
-  //       this.getCandidates(); // Refresh the candidate list
-  //     },
-  //     (error) => {
-  //       console.error('Error rejecting candidate:', error);
-  //       this.showAlert('Failed to reject the candidate. Please try again.', 'alert-danger');
-  //     }
-  //   );
-  // }
   showModal: boolean = false;
-selectedDecision: string = 'Selected';
-interviewDate: string = this.todayDate; // Default to today's date
-remarks: string = '';
-currentCandidate: any = null; // Store the selected candidate
+  selectedDecision: string = 'Selected';
+  interviewDate: string = this.todayDate; // Default to today's date
+  remarks: string = '';
+  currentCandidate: any = null; // Store the selected candidate
 
   openDecisionModal(candidate: any) {
     this.showModal = true;
@@ -1199,37 +910,35 @@ currentCandidate: any = null; // Store the selected candidate
     this.currentCandidate = null; // Optionally reset the current candidate
   }
 
-// Submit the decision
-submitDecision() {
-  if (!this.currentCandidate) return;
+  // Submit the decision
+  submitDecision() {
+    if (!this.currentCandidate) return;
 
-  const decisionData = {
-    round_number: this.currentCandidate.Round_Number || 1, // Keep current round or default to 1
-    interviewer: this.currentCandidate.Interviewer || '', // Retain interviewer
-    interview_date: this.interviewDate,
-    status: this.selectedDecision,
-    remarks: this.remarks ,
-    // || (this.selectedDecision === 'Selected' ? 'Promoted to next round' : 'Candidate rejected')
-    c_id: this.currentCandidate.Candidate_ID,
-  };
+    const decisionData = {
+      round_number: this.currentCandidate.Round_Number || 1, // Keep current round or default to 1
+      interviewer: this.currentCandidate.Interviewer || '', // Retain interviewer
+      interview_date: this.interviewDate,
+      status: this.selectedDecision,
+      remarks: this.remarks,
+      // || (this.selectedDecision === 'Selected' ? 'Promoted to next round' : 'Candidate rejected')
+      c_id: this.currentCandidate.Candidate_ID,
+    };
 
-  this.dataService.addNewRound(this.currentCandidate.Candidate_ID, decisionData).subscribe(
-    () => {
-      this.showAlert(
-        `Candidate ${this.currentCandidate.Candidate_Name} has been ${this.selectedDecision.toLowerCase()}.`,
-        'alert-success'
-      );
-      this.getCandidates(); // Refresh the candidate list
-      setTimeout(() => {
-        this.closeDecisionModal();
-      }, 2000);
-    },
-    (error) => {
-      console.error('Error processing decision:', error);
-      this.showAlert('Failed to process the decision. Please try again.', 'alert-danger');
-    }
-  );
-}
-
-
+    this.dataService.addNewRound(this.currentCandidate.Candidate_ID, decisionData).subscribe(
+      () => {
+        this.showAlert(
+          `Candidate ${this.currentCandidate.Candidate_Name} has been ${this.selectedDecision.toLowerCase()}.`,
+          'alert-success'
+        );
+        this.getCandidates(); // Refresh the candidate list
+        setTimeout(() => {
+          this.closeDecisionModal();
+        }, 2000);
+      },
+      (error) => {
+        console.error('Error processing decision:', error);
+        this.showAlert('Failed to process the decision. Please try again.', 'alert-danger');
+      }
+    );
+  }
 }
