@@ -725,7 +725,8 @@ exports.deleteInterviewRound = (req, res) => {
           ir.round_number AS Round_Number,  -- Fetch round number from trans_interview_rounds table
           ir.interview_date AS Interview_Date,  -- Fetch interview date from trans_interview_rounds table
           s.status_name AS Status,  -- Fetch interview status from master_statuses table
-          ir.remarks AS Remarks  -- Fetch remarks from trans_interview_rounds table
+          ir.remarks AS Remarks,  -- Fetch remarks from trans_interview_rounds table
+          ir.ir_id 
       FROM 
           trans_candidates c
       LEFT JOIN 
@@ -737,7 +738,7 @@ exports.deleteInterviewRound = (req, res) => {
       LEFT JOIN 
           master_statuses s ON ir.status_id = s.status_id  -- Join with master_statuses to get the status name
       ORDER BY 
-          c.candidate_id DESC, ir.round_number DESC;  -- Order by candidate ID and round number (descending)
+          c.candidate_id DESC, ir.ir_id DESC;  -- Order by candidate ID and round number (descending)
     `;
     
     db.query(query, (err, results) => {
