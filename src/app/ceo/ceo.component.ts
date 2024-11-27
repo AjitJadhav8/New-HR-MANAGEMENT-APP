@@ -44,7 +44,7 @@ export class CEOComponent implements OnInit {
         this.candidates = this.getDistinctCandidates(data);
         this.totalCandidates = this.candidates.length; // Update total candidates count
 
-        console.log('Filtered candidates:', this.candidates);
+        // console.log('Filtered candidates:', this.candidates);
       },
       error => {
         console.error('Error fetching candidates:', error);

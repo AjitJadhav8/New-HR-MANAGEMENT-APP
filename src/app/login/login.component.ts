@@ -38,7 +38,8 @@ export class LoginComponent implements OnInit {
     // Use the AuthService to make a POST request to the login API
     this.authService.login(loginData).subscribe({
       next: (response) => {
-        console.log('Login successful:', response);
+        // console.log('Login successful:', response);
+        console.log('Login successful');
 
         // Store the JWT token in localStorage
         localStorage.setItem('authToken', response.token);

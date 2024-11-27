@@ -2,15 +2,7 @@ const mysql = require('mysql2');
 const jwt = require('jsonwebtoken');
 const db = require('../config/db');  // Import the database connection
 
-// Setup MySQL connection
-// const db = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-// });
 
-// Login function
 // Login function done
 exports.login = (req, res) => {
   const { name, password } = req.body;
@@ -333,187 +325,8 @@ exports.login = (req, res) => {
       });
     });
 };
-// exports.addCandidateWithRound = (req, res) => {
-//   const { candidate, round } = req.body;
-
-//   if (!candidate || !round) {
-//     return res.status(400).json({ error: 'Candidate and round data are required' });
-//   }
-
-//   const { name, position, u_id } = candidate;
-//   const { round_number, interviewer, interview_date, status, remarks } = round;
-
-//   // Validate all required fields
-//   if (!name || !position || !u_id || !round_number || !interviewer || !interview_date || !status) {
-//     return res.status(400).json({ error: 'All fields are required' });
-//   }
-
-//   const finalPosition = position === 'Custom' ? candidate.customPosition : position;
-//   const upperCaseName = name.toUpperCase();
-
-//   // Get position_id based on the position name
-//   const getPositionIdQuery = `
-//     SELECT position_id FROM master_positions WHERE position_name = ?
-//   `;
-
-//   db.query(getPositionIdQuery, [finalPosition], (err, positionResults) => {
-//     if (err) {
-//       console.error('Error fetching position ID:', err);
-//       return res.status(500).json({ error: 'Database error fetching position ID' });
-//     }
-
-//     if (positionResults.length === 0) {
-//       return res.status(400).json({ error: 'Position not found' });
-//     }
-
-//     const positionId = positionResults[0].position_id;
-
-//     // Get interviewer_id based on the interviewer's name
-//     const getInterviewerIdQuery = `
-//       SELECT interviewer_id FROM master_interviewers WHERE interviewer_name = ?
-//     `;
-
-//     db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
-//       if (err) {
-//         console.error('Error fetching interviewer ID:', err);
-//         return res.status(500).json({ error: 'Database error fetching interviewer ID' });
-//       }
-
-//       if (interviewerResults.length === 0) {
-//         return res.status(400).json({ error: 'Interviewer not found' });
-//       }
-
-//       const interviewerId = interviewerResults[0].interviewer_id;
-
-//       // Get status_id based on the status name
-//       const getStatusIdQuery = `
-//         SELECT status_id FROM master_statuses WHERE status_name = ?
-//       `;
-
-//       db.query(getStatusIdQuery, [status], (err, statusResults) => {
-//         if (err) {
-//           console.error('Error fetching status ID:', err);
-//           return res.status(500).json({ error: 'Database error fetching status ID' });
-//         }
-
-//         if (statusResults.length === 0) {
-//           return res.status(400).json({ error: 'Status not found' });
-//         }
-
-//         const statusId = statusResults[0].status_id;
-
-//         // Insert new candidate
-//         const addCandidateQuery = `
-//           INSERT INTO trans_candidates (candidate_name, position_id, user_id) 
-//           VALUES (?, ?, ?)
-//         `;
-
-//         db.query(addCandidateQuery, [upperCaseName, positionId, u_id], (err, result) => {
-//           if (err) {
-//             console.error('Error inserting candidate:', err);
-//             return res.status(500).json({ error: err.message || 'Database error' });
-//           }
-
-//           const candidateId = result.insertId;
-
-//           // Ensure interview_date is in the correct format (YYYY-MM-DD)
-//           const formattedInterviewDate = formatDateForDB(interview_date); 
-
-//           // Insert interview round for the new candidate
-//           const addInterviewRoundQuery = `
-//             INSERT INTO trans_interview_rounds (candidate_id, round_number, interviewer_id, interview_date, status_id, remarks)
-//             VALUES (?, ?, ?, ?, ?, ?)
-//           `;
-
-//           db.query(addInterviewRoundQuery, [candidateId, round_number, interviewerId, formattedInterviewDate, statusId, remarks], (err) => {
-//             if (err) {
-//               console.error('Error inserting interview round:', err);
-//               return res.status(500).json({ error: err.message || 'Database error' });
-//             }
-
-//             res.status(201).json({ message: 'Candidate and interview round added successfully' });
-//           });
-//         });
-//       });
-//     });
-//   });
-// };
-
-// // Helper function to format the date to YYYY-MM-DD for database insertion
-// function formatDateForDB(dateString) {
-//   const date = new Date(dateString);
-//   const year = date.getFullYear();
-//   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-//   const day = date.getDate().toString().padStart(2, '0');
-  
-//   return `${year}-${month}-${day}`;
-// }
-
-  
 
 
-  // ----
-  // Add a new interview round for an existing candidate 
-  // exports.addInterviewRound = (req, res) => {
-  //   const { id } = req.params;  // Candidate ID
-  //   const { round_number, interviewer, interview_date, status, remarks } = req.body;
-  
-  //   if (!round_number || !interviewer || !interview_date || !status) {
-  //     return res.status(400).json({ error: 'All fields are required for the interview round' });
-  //   }
-  
-  //   // Get interviewer_id from the master_interviewers table
-  //   const getInterviewerIdQuery = `
-  //     SELECT interviewer_id FROM master_interviewers WHERE interviewer_name = ?
-  //   `;
-  
-  //   db.query(getInterviewerIdQuery, [interviewer], (err, interviewerResults) => {
-  //     if (err) {
-  //       console.error('Error fetching interviewer ID:', err);
-  //       return res.status(500).json({ error: 'Database error fetching interviewer ID' });
-  //     }
-  
-  //     if (interviewerResults.length === 0) {
-  //       return res.status(400).json({ error: 'Interviewer not found' });
-  //     }
-  
-  //     const interviewerId = interviewerResults[0].interviewer_id;
-  
-  //     // Get status_id from the master_statuses table
-  //     const getStatusIdQuery = `
-  //       SELECT status_id FROM master_statuses WHERE status_name = ?
-  //     `;
-  
-  //     db.query(getStatusIdQuery, [status], (err, statusResults) => {
-  //       if (err) {
-  //         console.error('Error fetching status ID:', err);
-  //         return res.status(500).json({ error: 'Database error fetching status ID' });
-  //       }
-  
-  //       if (statusResults.length === 0) {
-  //         return res.status(400).json({ error: 'Status not found' });
-  //       }
-  
-  //       const statusId = statusResults[0].status_id;
-  
-  //       // Insert interview round for the candidate into trans_interview_rounds
-  //       const addInterviewRoundQuery = `
-  //         INSERT INTO trans_interview_rounds (candidate_id, round_number, interviewer_id, interview_date, status_id, remarks)
-  //         VALUES (?, ?, ?, ?, ?, ?)
-  //       `;
-  
-  //       db.query(addInterviewRoundQuery, [id, round_number, interviewerId, interview_date, statusId, remarks], (err) => {
-  //         if (err) {
-  //           console.error('Error inserting interview round:', err);
-  //           return res.status(500).json({ error: err.message || 'Database error' });
-  //         }
-  
-  //         res.status(201).json({ message: 'Interview round added successfully' });
-  //       });
-  //     });
-  //   });
-  // };
-  
   exports.addInterviewRound = (req, res) => {
     const { id } = req.params; // Candidate ID
     const { round_number, interviewer, interview_date, status, remarks } = req.body;
@@ -589,28 +402,6 @@ exports.login = (req, res) => {
   
   
 
-
-
-  // Delete an interview round for a candidate
-// exports.deleteInterviewRound = (req, res) => {
-//   const { id, round_number } = req.params;
-
-//   // Query to mark the round as deleted in the trans_interview_rounds table
-//   const query = 'UPDATE trans_interview_rounds SET is_deleted = 1 WHERE candidate_id = ? AND round_number = ?';
-
-//   db.query(query, [id, round_number], (err, result) => {
-//     if (err) {
-//       console.error('Error deleting interview round:', err);
-//       return res.status(500).json({ error: err.message || 'Database error' });
-//     }
-
-//     if (result.affectedRows === 0) {
-//       return res.status(404).json({ message: 'Interview round not found' });
-//     }
-
-//     res.json({ message: 'Interview round marked as deleted successfully' });
-//   });
-// };
 exports.deleteInterviewRound = (req, res) => {
   const { id } = req.params; // Only use candidate_id (id)
 
@@ -660,7 +451,6 @@ exports.deleteInterviewRound = (req, res) => {
 
   
   // -----
-
 
 
   // Update a candidate's information 

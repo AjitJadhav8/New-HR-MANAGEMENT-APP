@@ -68,7 +68,7 @@ export class HRComponent implements OnInit {
     // Fetch interview options for dropdowns (positions, statuses, interviewers)
     this.dataService.getInterviewOptions().subscribe((data) => {
       this.interviewOptions = data;
-      console.log('Interview Options:', this.interviewOptions);
+      // console.log('Interview Options:', this.interviewOptions);
     });
 
     // Set today's date in the required format
@@ -83,7 +83,7 @@ export class HRComponent implements OnInit {
 // ----------------Get Candidate Section ------------
 
   getCandidates() {
-    console.log('Fetching candidates for HR ID:', this.loggedInHRId);
+    // console.log('Fetching candidates for HR ID:', this.loggedInHRId);
 
     this.dataService.getCandidates(this.loggedInHRId)
       .subscribe(
@@ -109,7 +109,7 @@ export class HRComponent implements OnInit {
           }));
           this.totalCandidates = this.candidates.length;  // Total number of candidates for pagination
           this.updatePageCandidates();
-          console.log('Fetched candidates:', this.candidates);
+          // console.log('Fetched candidates:', this.candidates);
         },
         (error) => {
           console.error('There was an error fetching the candidates!', error.message || error);
@@ -121,7 +121,7 @@ export class HRComponent implements OnInit {
   getInterviewOptions() {
     this.dataService.getInterviewOptions().subscribe((data) => {
       this.interviewOptions = data;
-      console.log('Interview Options:', this.interviewOptions);
+      // console.log('Interview Options:', this.interviewOptions);
     });
   }
 
@@ -135,10 +135,10 @@ export class HRComponent implements OnInit {
   }
 
   getLastRoundData(candidateId: number, mode: 'add' | 'update') {
-    console.log("Fetching last round data for candidate ID:", candidateId);
+    // console.log("Fetching last round data for candidate ID:", candidateId);
     this.dataService.getInterviewRounds(candidateId).subscribe(
       (history) => {
-        console.log("Interview history fetched:", history);
+        // console.log("Interview history fetched:", history);
 
         // Fetch the latest interview round
         const lastRound = history[history.length - 1];  // Get the last round
@@ -166,7 +166,7 @@ export class HRComponent implements OnInit {
 
           }
 
-          console.log("Last round data set for mode:", mode, lastRoundData);
+          // console.log("Last round data set for mode:", mode, lastRoundData);
         }
       },
       (error) => {
@@ -473,7 +473,7 @@ export class HRComponent implements OnInit {
       this.dataService.deleteInterviewRound(candidateId, encodedRoundNumber)
         .subscribe(
           (response) => {
-            console.log('Interview round deleted:', response);
+            // console.log('Interview round deleted:', response);
             this.showAlert(`Interview round ${roundNumber} for ${candidateName} deleted successfully.`, 'alert-success'); // Success alert
             this.getCandidates(); // Refresh candidate list after deletion
             this.getInterviewOptions(); // Refresh interview options after deleting a round
@@ -511,7 +511,7 @@ export class HRComponent implements OnInit {
       this.dataService.updateCandidate(this.selectedCandidate.Candidate_ID, updatedCandidate)
         .subscribe(
           (response) => {
-            console.log('Candidate updated:', response);
+            // console.log('Candidate updated:', response);
             this.showAlert('Candidate updated successfully!', 'alert-success'); // Success alert
 
             this.getCandidates(); // Refresh the candidate list after updating
@@ -537,7 +537,7 @@ export class HRComponent implements OnInit {
   candidateHistory: any[] = []; // Holds the interview rounds history for the selected candidate
 
   showHistorySection() {
-    console.log("Showing history section for candidate:", this.selectedCandidate);
+    // console.log("Showing history section for candidate:", this.selectedCandidate);
     this.showHistory = true;
     this.getCandidateHistory(this.selectedCandidate.Candidate_ID);
   }
@@ -545,10 +545,10 @@ export class HRComponent implements OnInit {
   lastInterviewDate: string = ''; // Store the last interview date for the selected candidate
 
   getCandidateHistory(candidateId: number) {
-    console.log("Fetching history for candidate ID:", candidateId);
+    // console.log("Fetching history for candidate ID:", candidateId);
     this.dataService.getInterviewRounds(candidateId).subscribe(
       (history) => {
-        console.log("Interview history fetched:", history);
+        // console.log("Interview history fetched:", history);
         this.candidateHistory = history.map(round => ({
           ...round,
           Interview_Date: round.Interview_Date ? this.formatLocalDate(round.Interview_Date) : 'N/A'
@@ -563,7 +563,7 @@ export class HRComponent implements OnInit {
           this.lastInterviewDate = this.formatDateForInput(new Date());
         }
 
-        console.log("Formatted candidate history:", this.candidateHistory);
+        // console.log("Formatted candidate history:", this.candidateHistory);
       },
       (error) => {
         console.error("Error fetching interview history:", error);
@@ -619,7 +619,7 @@ export class HRComponent implements OnInit {
     this.dataService.getAdminData().subscribe(
       (data) => {
         this.adminData = data;
-        console.log('Fetched admin data:', this.adminData);
+        // console.log('Fetched admin data:', this.adminData);
       },
       (error) => {
         console.error('Error fetching admin data:', error);
