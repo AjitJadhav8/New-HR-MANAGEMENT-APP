@@ -11,27 +11,6 @@ import { environment } from '../../../environments/environment';
 export class AuthService {
   private apiUrl = environment.apiUrl;  // Use apiUrl from environment
 
-  // private apiUrl = 'http://localhost:3000'; // Your backend URL
-  // private apiUrl = 'http://3.6.117.163:3000'; // Base URL for your API
-
-
-  // constructor(private http: HttpClient) {}
-  // login(credentials: { name: string; password: string }): Observable<any> {
-  //   return this.http.post<any>(`${this.apiUrl}/api/login`, credentials);
-  // }
-  // saveToken(token: string): void {
-  //   localStorage.setItem('authToken', token);
-  // }
-  // getToken(): string | null {
-  //   return localStorage.getItem('authToken');
-  // }
-  // logout(): void {
-  //   localStorage.removeItem('authToken');
-  // }
-
-
-
-
   constructor(private http: HttpClient) {}
 
   // Login method to authenticate user and get JWT token

@@ -325,13 +325,13 @@
         <select [(ngModel)]="updatedRound.round_number" name="round_number" required>
           <option value="" disabled>Select Round Number</option>
           <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-          <option value="Custom">Custom</option>
+          <!-- <option value="Custom">Custom</option> -->
         </select>
       </div>
-      <div *ngIf="updatedRound.round_number === 'Custom'">
+      <!-- <div *ngIf="updatedRound.round_number === 'Custom'">
         <label for="customRoundNumber">Enter Custom Round Number:</label>
         <input type="text" [(ngModel)]="updatedRound.customRoundNumber" name="customRoundNumber" />
-      </div>
+      </div> -->
 
       <!-- Interviewer Selection -->
       <div>
@@ -455,14 +455,14 @@
           <select [(ngModel)]="selectedCandidate.Position" name="position"
             (change)="isCustomPosition = selectedCandidate.Position === 'Custom'">
             <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
-            <option value="Custom">Custom</option>
+            <!-- <option value="Custom">Custom</option> -->
           </select>
 
           <!-- Custom Position Input -->
-          <div *ngIf="isCustomPosition">
+          <!-- <div *ngIf="isCustomPosition">
             <label for="customPosition">Enter Custom Position:</label>
             <input type="text" [(ngModel)]="selectedCandidate.customPosition" name="customPosition" required>
-          </div>
+          </div> -->
           <br> <br>
           <button type="submit">Update Candidate</button>
 

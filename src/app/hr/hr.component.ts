@@ -328,6 +328,7 @@ export class HRComponent implements OnInit {
         // On success: Refresh candidate list and interview options
         this.getCandidates(); // Refresh candidate list
         this.getInterviewOptions(); // Refetch interview options
+        this.fetchAdminData(); // Fetch updated admin data
         this.newCandidate = { name: '', position: '' }; // Reset candidate form
         this.newRound = { round_number: '', interviewer: '', interview_date: '', status: '', remarks: '', customRoundNumber: '' }; // Reset round form
         this.isCustomRound = false; // Reset custom round flag

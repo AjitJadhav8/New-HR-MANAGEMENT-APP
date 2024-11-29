@@ -10,20 +10,10 @@ const db = require('./config/db'); // Import the database connection
 const app = express();
 const port = process.env.PORT || 3000;
 const secretKey = process.env.JWT_SECRET_KEY || 'your-secret-key';
+const https = require('https');
 
-// Database connection
-// const db = mysql.createConnection({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASSWORD,
-//   database: process.env.DB_NAME,
-// });
 
-// db.connect((err) => {
-//   if (err) throw err;
-//   console.log('Connected to MySQL database');
-// });
-
+https.globalAgent = new https.Agent({ keepAlive:true });
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
