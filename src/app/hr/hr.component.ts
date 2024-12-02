@@ -448,9 +448,12 @@ export class HRComponent implements OnInit {
         }
       );
   }
+  isReschedule: boolean = false; // Flag to determine if it's a reschedule
 
-  showAddRoundSection(candidate: any) {
+  showAddRoundSection(candidate: any, isReschedule: boolean = false) {
     this.selectedCandidate = candidate; // Set the selected candidate for the add round form
+    this.isReschedule = isReschedule;   // Set whether it's reschedule or add round
+
     this.newRound = {
       round_number: '', // Allow user to input the round number manually
       interviewer: '',

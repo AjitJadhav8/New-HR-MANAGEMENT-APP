@@ -243,11 +243,11 @@
               </td>
               <td>
                 <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
-                  <button (click)="showAddRoundSection(candidate)" [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
+                  <button (click)="showAddRoundSection(candidate, true)" [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
                 </ng-container>
                 <ng-template #addRound>
                   <button 
-                    (click)="showAddRoundSection(candidate)" 
+                    (click)="showAddRoundSection(candidate, false)" 
                     [disabled]="candidate.Status === 'Rejected'"
                   >
                     Add Round
@@ -413,16 +413,18 @@
 
 
 
-
-
-
-
     <!-- Add New Interview Round Form for Selected Candidate -->
     <!-- Modal for Adding Interview Round -->
     <div class="modal" *ngIf="showAddRoundModal">
       <div class="modal-content">
         <span class="close" (click)="toggleAddRoundModal()">&times;</span>
-        <h2>Add Interview Round for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2>
+        <!-- <h2>Add Interview Round for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2> -->
+        <h2>
+          <!-- Conditional text based on whether it's reschedule or add round -->
+          <span *ngIf="isReschedule; else addRoundText">Reschedule Round for </span>
+          <ng-template #addRoundText>Add Interview Round for </ng-template>
+          <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span>
+        </h2>
         <form (ngSubmit)="addNewRound()">
           <!-- Round Number Selection -->
           <div>
