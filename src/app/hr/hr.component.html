@@ -215,9 +215,19 @@
               <td>{{ candidate.Round_Number || 'N/A' }}</td>
               <td>{{ candidate.Interviewer || 'N/A' }}</td>
               <td>{{ candidate.Interview_Date || 'N/A' }}</td>
-              <td>{{ candidate.Status || 'N/A' }}</td>
+              <!-- <td>{{ candidate.Status || 'N/A' }}</td> -->
+              <td 
+                [ngClass]="{
+                  'status-selected': candidate.Status === 'Selected' || candidate.Status === 'Final Selected',
+                  'status-rejected': candidate.Status === 'Rejected',
+                  'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
+                }"
+              >
+                {{ candidate.Status || 'N/A' }}
+              </td>
+
               <td class="remarks" [title]="candidate.Remarks || 'N/A'">
-                {{ candidate.Remarks || 'N/A' }}
+                {{ candidate.Remarks  }}
               </td>
               <!-- <td>
                 <button (click)="selectCandidateForNextRound(candidate)">Selected</button>
@@ -226,11 +236,30 @@
               <td>
                 <button (click)="openDecisionModal(candidate)">Decision</button>
               </td>
-              
               <td>
-                <button (click)="showAddRoundSection(candidate)">Add Round</button>
+                <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
+                  <button (click)="showAddRoundSection(candidate)" [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
+                </ng-container>
+                <ng-template #addRound>
+                  <button 
+                    (click)="showAddRoundSection(candidate)" 
+                    [disabled]="candidate.Status === 'Rejected'"
+                  >
+                    Add Round
+                  </button>
+                </ng-template>
                 <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
               </td>
+              
+              <!-- <td>
+                <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
+                  <button (click)="showAddRoundSection(candidate)" >Reschedule</button>
+                </ng-container>
+                <ng-template #addRound>
+                  <button (click)="showAddRoundSection(candidate)">Add Round</button>
+                </ng-template>
+                <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
+              </td> -->
             </tr>
           </tbody>
         </table>
@@ -285,7 +314,9 @@
           <select id="decision" [(ngModel)]="selectedDecision" name="decision" required>
             <option value="Selected">Selected</option>
             <option value="Rejected">Rejected</option>
-          </select>
+            <option value="On Hold">On Hold</option>
+            <option value="Final Selected">Final Selected</option>
+          </select>          
     
           <label for="interviewDate">Interview Date</label>
           <input
@@ -526,7 +557,7 @@
                 <td>{{ round.Interview_Date }}</td>
                 <td>{{ round.Status }}</td>
                 <td class="remarks" [title]="round.Remarks || 'N/A'">
-                  {{ round.Remarks || 'N/A' }}
+                  {{ round.Remarks}}
                 </td>              
               </tr>
             </tbody>

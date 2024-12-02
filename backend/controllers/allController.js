@@ -338,10 +338,11 @@ exports.login = (req, res) => {
     // Check if the request is for a new round from the "Promote" or "Reject" buttons
     if (status === 'Selected' || status === 'Rejected') {
       // Only allow 'Selected' or 'Rejected' for these buttons
-      const allowedStatuses = ['Selected', 'Rejected'];
-      if (!allowedStatuses.includes(status)) {
-        return res.status(400).json({ error: 'Invalid status. Allowed values are "Selected" or "Rejected".' });
-      }
+      const allowedStatuses = ['Selected', 'Rejected', 'On Hold', 'Final Selected'];
+if (!allowedStatuses.includes(status)) {
+  return res.status(400).json({ error: 'Invalid status. Allowed values are "Selected", "Rejected", "On Hold", or "Final Selected".' });
+}
+
     }
   
     // Get interviewer_id from the master_interviewers table

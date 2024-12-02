@@ -462,6 +462,13 @@ export class HRComponent implements OnInit {
     this.toggleAddRoundModal(); // Open the modal
 
   }
+  rescheduleRound(candidate: any): void {
+    // Logic to reschedule the interview round
+    console.log(`Rescheduling round for candidate: ${candidate.Candidate_Name}`);
+  }
+  
+
+
 
 // -------------- Delkete Round Section -------------
 

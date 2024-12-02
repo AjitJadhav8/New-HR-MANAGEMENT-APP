@@ -54,6 +54,43 @@
 
 
 
+
+/* Transparent green background for 'Selected' */
+.status-selected {
+  background-color: rgba(0, 128, 0, 0.2); /* Light green with transparency */
+  color: #006400; /* Dark green text */
+  border: 1px solid #006400; /* Optional border */
+}
+
+/* Transparent red background for 'Rejected' */
+.status-rejected {
+  background-color: rgba(255, 0, 0, 0.2); /* Light red with transparency */
+  color: #8b0000; /* Dark red text */
+  border: 1px solid #8b0000; /* Optional border */
+}
+
+/* Transparent yellow background for all other statuses */
+.status-other {
+  background-color: rgba(255, 255, 0, 0.2); /* Light yellow with transparency */
+  color: #b8860b; /* Dark yellow text */
+  border: 1px solid #b8860b; /* Optional border */
+}
+
+
+
+/* Add this to your component's CSS file */
+.get-candidate-table-container .get-candidate-table button:disabled {
+  background-color: #e0e0e0 !important; /* Light grey background */
+  color: #a0a0a0 !important;           /* Darker grey text */
+  cursor: not-allowed !important;      /* Not-allowed cursor */
+  border: 1px solid #d0d0d0 !important;/* Optional border */
+}
+
+
+
+
+
+
 .admin-section {
   /* Center the admin section both vertically and horizontally */
   position: relative;
