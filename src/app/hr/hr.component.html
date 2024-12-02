@@ -551,6 +551,7 @@
                 <th>Round </th>
                 <th>Interviewer</th>
                 <th>Activity Date</th>
+                <th>Update Date</th> <!-- New column for updated_at -->
                 <th>Status</th>
                 <th>Remarks</th>
               </tr>
@@ -560,6 +561,8 @@
                 <td>{{ round.Round_Number }}</td>
                 <td>{{ round.Interviewer }}</td>
                 <td>{{ round.Interview_Date }}</td>
+                <td>{{ round.Updated_At }}</td> <!-- Display updated_at -->
+
                 <td>{{ round.Status }}</td>
                 <td class="remarks" [title]="round.Remarks || 'N/A'">
                   {{ round.Remarks}}

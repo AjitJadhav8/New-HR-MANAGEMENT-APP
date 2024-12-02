@@ -562,7 +562,11 @@ export class HRComponent implements OnInit {
         // console.log("Interview history fetched:", history);
         this.candidateHistory = history.map(round => ({
           ...round,
-          Interview_Date: round.Interview_Date ? this.formatLocalDate(round.Interview_Date) : 'N/A'
+          Interview_Date: round.Interview_Date ? this.formatLocalDate(round.Interview_Date) : 'N/A',
+          
+          Updated_At: round.Updated_At ? this.formatLocalDate(round.Updated_At) : 'N/A' // Include updated_at
+
+
         }));
 
         // Get the latest interview date from history and store it

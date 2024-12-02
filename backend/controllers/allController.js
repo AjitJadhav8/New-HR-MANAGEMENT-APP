@@ -621,6 +621,10 @@ exports.deleteInterviewRound = (req, res) => {
         ir.round_number AS Round_Number,
         i.interviewer_name AS Interviewer,
         ir.interview_date AS Interview_Date,
+
+        ir.updated_at AS Updated_At,  -- Include the updated_at field
+
+
         s.status_name AS Status,
         ir.remarks AS Remarks
       FROM trans_interview_rounds ir
