@@ -246,7 +246,14 @@
                 <button (click)="rejectCandidate(candidate)">Rejected</button>
               </td> -->
               <td>
-                <button (click)="openDecisionModal(candidate)" [disabled]="candidate.Status === 'Rejected'">Decision</button>
+                <!-- <button (click)="openDecisionModal(candidate)" [disabled]="candidate.Status === 'Rejected'">Decision</button> -->
+                  <!-- Decision button disabled if Status is one of the specified values -->
+    <button 
+    (click)="openDecisionModal(candidate)" 
+    [disabled]="candidate.Status === 'Selected' || candidate.Status === 'Rejected' || candidate.Status === 'On Hold' || candidate.Status === 'Final Selected'"
+  >
+    Decision
+  </button>
               </td>
               <td>
                 <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
@@ -434,14 +441,26 @@
         </h2>
         <form (ngSubmit)="addNewRound()">
           <!-- Round Number Selection -->
-          <div>
+
+          <div *ngIf="!isReschedule">
             <label for="round_number">Round:</label>
             <select [(ngModel)]="newRound.round_number" name="round_number" required>
               <option value="" disabled>Select Round Number</option>
               <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-              <!-- <option value="Custom">Custom</option> -->
             </select>
           </div>
+
+
+          <!-- <div>
+            <label for="round_number">Round:</label>
+            <select [(ngModel)]="newRound.round_number" name="round_number" required>
+              <option value="" disabled>Select Round Number</option>
+              <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+            </select>
+          </div> -->
+
+                        <!-- it was on upperof select <option value="Custom">Custom</option> -->
+
           <!-- <div *ngIf="newRound.round_number === 'Custom'">
             <label for="customRoundNumber">Enter Custom Round Number:</label>
             <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber"
