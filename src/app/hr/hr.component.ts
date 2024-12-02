@@ -906,7 +906,7 @@ export class HRComponent implements OnInit {
   }
 
 
-  // --------------Dicision Section -------------
+  // --------------Decision Section -------------
 
   showModal: boolean = false;
   selectedDecision: string = 'Selected';
@@ -935,7 +935,8 @@ export class HRComponent implements OnInit {
     const decisionData = {
       round_number: this.currentCandidate.Round_Number || 1, // Keep current round or default to 1
       interviewer: this.currentCandidate.Interviewer || '', // Retain interviewer
-      interview_date: this.interviewDate,
+      // interview_date: this.interviewDate,
+      interview_date: this.todayDate, // Automatically set today's date
       status: this.selectedDecision,
       remarks: this.remarks,
       // || (this.selectedDecision === 'Selected' ? 'Promoted to next round' : 'Candidate rejected')
