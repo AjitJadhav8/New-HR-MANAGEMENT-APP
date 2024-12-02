@@ -320,14 +320,14 @@
   table-layout: fixed; /* Allow table to adjust column width based on content */
   border-collapse: collapse;
   background-color: white;
-  font-size: 14px;  /* Smaller font size for compact table */
+  font-size: 13px;  /* Smaller font size for compact table */
 }
 
 /* Styling for table header */
 .view-history-table thead th {
   background-color: #343a40;
   color: white;
-  padding: 8px;  /* Reduced padding for header */
+  padding: 4px;  /* Reduced padding for header */
   text-align: center;
   white-space: nowrap;
   word-wrap: break-word;
@@ -344,7 +344,7 @@
 
 /* Styling for table cells */
 .view-history-table tbody td {
-  padding: 5px;  /* Reduced padding for cells */
+  padding: 2.5px;  /* Reduced padding for cells */
   border: 1px solid #ddd;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -435,7 +435,7 @@
 .get-candidate-table-container {
   width: auto; /* Ensure it stays within modal boundaries */
   overflow-x: auto; /* Horizontal scroll if necessary */
-  padding: 10px; /* Add padding for spacing inside the modal */
+  padding: 5px; /* Add padding for spacing inside the modal */
   box-sizing: border-box;
 }
 
@@ -452,10 +452,10 @@
 .get-candidate-table thead th {
   background-color: #343a40;
   color: white;
-  padding: 5px 6px; /* Adjust padding for smaller row height */
+  padding: 2.5px 3px; /* Adjust padding for smaller row height */
   text-align: center;
   white-space: nowrap; /* Prevents header text from wrapping */
-  font-size: 14px; /* Reduce font size */
+  font-size: 13px; /* Reduce font size */
 }
 
 /* Styling for table rows */
@@ -468,12 +468,12 @@
 }
 
 .get-candidate-table tbody td {
-  padding: 2px 3px; /* Reduced padding to make row height smaller */
+  padding: 0.5px 1.5px; /* Reduced padding to make row height smaller */
   border: 1px solid #ddd;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap; 
-  font-size: 14px; /* Reduce font size */
+  font-size: 13px; /* Reduce font size */
 }
 
 /* Styling for the Remarks column */
@@ -484,7 +484,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 14px; /* Reduced font size for Remarks */
+  font-size: 13px; /* Reduced font size for Remarks */
 }
 
 /* Tooltip appearance on hover */

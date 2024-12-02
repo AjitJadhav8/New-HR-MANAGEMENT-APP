@@ -294,10 +294,14 @@ export class HRComponent implements OnInit {
       return;
     }
 
-    const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
-    const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert selected interview date to the same format
-    if (isNaN(interviewDate) || interviewDate < today) {
-      this.showAlert('Please select a valid future interview date.', 'alert-danger');
+    // const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
+    // const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert selected interview date to the same format
+    // if (isNaN(interviewDate) || interviewDate < today) {
+    //   this.showAlert('Please select a valid future interview date.', 'alert-danger');
+    //   return;
+    // }
+    if (!this.newRound.interview_date) {
+      this.showAlert('Interview date is required.', 'alert-danger');
       return;
     }
 
@@ -377,7 +381,9 @@ export class HRComponent implements OnInit {
       customRoundNumber: '',  // Default to empty string
       interviewer: '',
       customInterviewer: '',  // Default to empty string
-      interview_date: '',
+      // interview_date: '',
+      interview_date: this.formatDateForInput(new Date()), // Default to today's date
+
       status: '',
       customStatus: '',       // Default to empty string
       remarks: ''
@@ -935,8 +941,8 @@ export class HRComponent implements OnInit {
     const decisionData = {
       round_number: this.currentCandidate.Round_Number || 1, // Keep current round or default to 1
       interviewer: this.currentCandidate.Interviewer || '', // Retain interviewer
-      // interview_date: this.interviewDate,
-      interview_date: this.todayDate, // Automatically set today's date
+      interview_date: this.lastInterviewDate,
+      // interview_date: this.todayDate, // Automatically set today's date
       status: this.selectedDecision,
       remarks: this.remarks,
       // || (this.selectedDecision === 'Selected' ? 'Promoted to next round' : 'Candidate rejected')

@@ -158,10 +158,17 @@
           </div>
 
           <!-- Interview Date -->
-          <div>
+          <!-- <div>
             <label for="interview_date">Interview Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
-          </div>
+          </div> -->
+
+          <!-- Interview Date -->
+<div>
+  <label for="interview_date">Interview Date:</label>
+  <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required />
+</div>
+
 
           <!-- Status -->
           <div>
@@ -190,7 +197,7 @@
 
     <!-- candidate list -->
     <div class="get-candidate-table-container">
-      <h2>Candidate List</h2>
+      <h2>Current Recruitment Pipeline</h2>
       <div class="get-candidate-table">
         <table>
           <thead>
@@ -474,7 +481,11 @@
           </div>
           <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
           <!-- Submit Button -->
-          <button type="submit">Add Interview Round</button>
+          <!-- <button type="submit">Add Interview Round</button> -->
+          <button type="submit">
+            <span *ngIf="isReschedule; else addRoundButtonText">Reschedule Round</span>
+            <ng-template #addRoundButtonText>Add Interview Round</ng-template>
+          </button>
         </form>
       </div>
     </div>
