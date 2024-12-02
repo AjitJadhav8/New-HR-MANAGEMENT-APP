@@ -305,10 +305,15 @@ export class HRComponent implements OnInit {
       return;
     }
 
-    if (!this.newRound.status?.trim()) {
-      this.showAlert('Status is required.', 'alert-danger');
-      return;
-    }
+    // if (!this.newRound.status?.trim()) {
+    //   this.showAlert('Status is required.', 'alert-danger');
+    //   return;
+    // }
+    this.newRound.status = 'Schedule';
+
+
+
+
 
     // If round is 'Custom', assign customRoundNumber to round_number
     this.newRound.round_number = this.isCustomRound ? this.newRound.customRoundNumber || '' : this.newRound.round_number;
@@ -325,7 +330,7 @@ export class HRComponent implements OnInit {
       round_number: this.newRound.round_number === 'Custom' ? this.newRound.customRoundNumber : this.newRound.round_number,
       interviewer: this.newRound.interviewer || '',
       interview_date: this.formatDateForBackend(this.newRound.interview_date), // Convert interview date to YYYY-MM-DD format for backend
-      status: this.newRound.status || '',
+      status: this.newRound.status,
       remarks: this.newRound.remarks
     };
 
@@ -403,11 +408,14 @@ export class HRComponent implements OnInit {
       return; // Prevent form submission if interviewer name is not selected
     }
 
-    // Check if status is selected
-    if (!this.newRound.status) {
-      this.showAlert('Please select a status.', 'alert-danger');
-      return; // Prevent form submission if status is not selected
-    }
+    // Check if status is selected 02-12
+    // if (!this.newRound.status) {
+    //   this.showAlert('Please select a status.', 'alert-danger');
+    //   return; // Prevent form submission if status is not selected
+    // }
+
+    this.newRound.status = 'Schedule';
+
 
     // Check if interview date is selected and valid
     if (!this.newRound.interview_date) {
@@ -415,12 +423,24 @@ export class HRComponent implements OnInit {
       return; // Prevent form submission if date is not selected
     }
 
-    const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
-    const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
-    if (isNaN(interviewDate) || interviewDate < today) {
-      this.showAlert('Please select a valid future interview date.', 'alert-danger');
-      return; // Prevent form submission if interview date is in the past
-    }
+    // const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
+    // const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
+    // if (isNaN(interviewDate) || interviewDate < today) {
+    //   this.showAlert('Please select a valid future interview date.', 'alert-danger');
+    //   return; // Prevent form submission if interview date is in the past
+    // }
+
+    const interviewDate = new Date(this.newRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to timestamp
+
+  // Convert lastInterviewDate (string) to a Date object and then get its timestamp
+  const lastInterviewDateTimestamp = new Date(this.lastInterviewDate).getTime();
+
+  if (isNaN(interviewDate) || interviewDate <= lastInterviewDateTimestamp) {
+    this.showAlert('Please select a valid future interview date (after the previous round date).', 'alert-danger');
+    return;
+  }
+
+
 
     // Prepare final values for each field, using custom round number if selected
     const roundData = {
