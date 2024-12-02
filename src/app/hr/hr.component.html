@@ -159,7 +159,7 @@
 
           <!-- Interview Date -->
           <div>
-            <label for="interview_date">Last Activity Date:</label>
+            <label for="interview_date">Interview Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" [min]="todayDate" required />
           </div>
 
@@ -200,7 +200,10 @@
               <th>Position</th>
               <th>Round</th>
               <th>Interviewer</th>
-              <th>Last Activity Date</th>
+              <th>Activity Date</th>
+
+              <th>Update Date</th> <!-- Add this column -->
+
               <th>Status</th>
               <th>Remarks</th>
               <th>Decision</th>
@@ -215,6 +218,8 @@
               <td>{{ candidate.Round_Number || 'N/A' }}</td>
               <td>{{ candidate.Interviewer || 'N/A' }}</td>
               <td>{{ candidate.Interview_Date || 'N/A' }}</td>
+              <td>{{ candidate.Updated_At || 'N/A' }}</td> <!-- Add this field -->
+
               <!-- <td>{{ candidate.Status || 'N/A' }}</td> -->
               <td 
                 [ngClass]="{
@@ -234,7 +239,7 @@
                 <button (click)="rejectCandidate(candidate)">Rejected</button>
               </td> -->
               <td>
-                <button (click)="openDecisionModal(candidate)">Decision</button>
+                <button (click)="openDecisionModal(candidate)" [disabled]="candidate.Status === 'Rejected'">Decision</button>
               </td>
               <td>
                 <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
@@ -375,7 +380,7 @@
 
       <!-- Interview Date -->
       <div>
-        <label for="interview_date">Last Activity Date:</label>
+        <label for="interview_date">Interview Date:</label>
         <input type="date" [(ngModel)]="updatedRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
       </div>
 
@@ -446,7 +451,7 @@
 
           <!-- Interview Date Selection -->
           <div>
-            <label for="interview_date">Last Activity Date:</label>
+            <label for="interview_date">Interview Date:</label>
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required
               [attr.min]="lastInterviewDate" />
           </div>
@@ -545,7 +550,7 @@
               <tr>
                 <th>Round </th>
                 <th>Interviewer</th>
-                <th>Last Activity Date</th>
+                <th>Activity Date</th>
                 <th>Status</th>
                 <th>Remarks</th>
               </tr>
@@ -566,6 +571,5 @@
       </div>
     </div>
     
-
   </div>
 </div>

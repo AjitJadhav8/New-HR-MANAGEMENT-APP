@@ -147,6 +147,9 @@ exports.login = (req, res) => {
         p.position_name AS Position,
         ir.round_number AS Round_Number,
         ir.interview_date AS Interview_Date,
+
+        ir.updated_at AS Updated_At,  -- Add updated_at field
+
         ir.is_deleted AS Is_Deleted,  -- Add is_deleted for clarity
         i.interviewer_name AS Interviewer,
         s.status_name AS Status,
@@ -192,6 +195,7 @@ exports.login = (req, res) => {
               Round_Number: candidate.Round_Number,
               Interviewer: candidate.Interviewer,
               Interview_Date: candidate.Interview_Date,
+              Updated_At: candidate.Updated_At, // Include updated_at
               Status: candidate.Status,
               Remarks: candidate.Remarks
             });
@@ -206,6 +210,8 @@ exports.login = (req, res) => {
               Round_Number: candidate.Round_Number,
               Interviewer: candidate.Interviewer,
               Interview_Date: candidate.Interview_Date,
+              Updated_At: candidate.Updated_At,
+
               Status: candidate.Status,
               Remarks: candidate.Remarks
             }] : []  // If no interview rounds, set to empty array

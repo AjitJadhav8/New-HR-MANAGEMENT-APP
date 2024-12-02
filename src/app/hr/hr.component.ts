@@ -94,6 +94,9 @@ export class HRComponent implements OnInit {
             Interview_Date: candidate.interviewRounds.length > 0
               ? (candidate.interviewRounds[0].Interview_Date ? this.formatLocalDate(candidate.interviewRounds[0].Interview_Date) : 'N/A')
               : 'N/A',
+            Updated_At: candidate.interviewRounds.length > 0
+               ? (candidate.interviewRounds[0].Updated_At ? this.formatLocalDate(candidate.interviewRounds[0].Updated_At) : 'N/A')
+               : 'N/A',
             Round_Number: candidate.interviewRounds.length > 0
               ? candidate.interviewRounds[0].Round_Number
               : 'N/A',
