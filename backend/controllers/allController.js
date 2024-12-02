@@ -94,7 +94,19 @@ exports.login = (req, res) => {
       // Fetch distinct round numbers from the "trans_interview_rounds" table
       const [roundNumbers] = await db
         .promise()
-        .query("SELECT DISTINCT round_number FROM trans_interview_rounds ORDER BY round_number ASC");
+        .query(`
+          SELECT DISTINCT round_number
+          FROM trans_interview_rounds
+          ORDER BY 
+            CASE
+              WHEN round_number = 'Screening Round 1' THEN 1
+              WHEN round_number = 'HR Round' THEN 3
+              WHEN round_number LIKE 'Round%' THEN 2
+              ELSE 4
+            END,
+            round_number ASC
+        `);
+        // .query("SELECT DISTINCT round_number FROM trans_interview_rounds ORDER BY round_number ASC");
 
       // Fetch distinct interviewers from the "master_interviewers" table
       const [interviewers] = await db
