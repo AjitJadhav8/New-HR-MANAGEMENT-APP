@@ -429,6 +429,28 @@
 
 
 
+/* Styling for the filter container */
+.filter-container {
+  display: flex; /* Flexbox layout to arrange elements side by side */
+  flex-wrap: wrap; /* Allows inputs to wrap if the container width is too small */
+  gap: 10px; /* Adds space between the filter inputs */
+  margin-bottom: 15px; /* Adds space below the filter container */
+}
+
+/* Individual filter input field styling */
+.filter-container input {
+  flex: 1; /* Allows inputs to take equal space */
+  min-width: 150px; /* Ensures inputs have a minimum width */
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box; /* Includes padding in the width calculation */
+}
+
+.filter-container input::placeholder {
+  color: #888; /* Light color for placeholder text */
+}
 
 
 /* Container for the candidate table */

@@ -80,45 +80,190 @@ export class HRComponent implements OnInit {
 
 
 
+
 // ----------------Get Candidate Section ------------
 
-  getCandidates() {
-    // console.log('Fetching candidates for HR ID:', this.loggedInHRId);
+getCandidates() {
+  // console.log('Fetching candidates for HR ID:', this.loggedInHRId);
 
-    this.dataService.getCandidates(this.loggedInHRId)
-      .subscribe(
-        (data) => {
-          // Process candidates data to format the Interview_Date field
-          this.candidates = data.map(candidate => ({
-            ...candidate,
-            Interview_Date: candidate.interviewRounds.length > 0
-              ? (candidate.interviewRounds[0].Interview_Date ? this.formatLocalDate(candidate.interviewRounds[0].Interview_Date) : 'N/A')
-              : 'N/A',
-            Updated_At: candidate.interviewRounds.length > 0
-               ? (candidate.interviewRounds[0].Updated_At ? this.formatLocalDate(candidate.interviewRounds[0].Updated_At) : 'N/A')
-               : 'N/A',
-            Round_Number: candidate.interviewRounds.length > 0
-              ? candidate.interviewRounds[0].Round_Number
-              : 'N/A',
-            Interviewer: candidate.interviewRounds.length > 0
-              ? candidate.interviewRounds[0].Interviewer
-              : 'N/A',
-            Status: candidate.interviewRounds.length > 0
-              ? candidate.interviewRounds[0].Status
-              : 'N/A',
-            Remarks: candidate.interviewRounds.length > 0
-              ? candidate.interviewRounds[0].Remarks
-              : 'N/A'
-          }));
-          this.totalCandidates = this.candidates.length;  // Total number of candidates for pagination
-          this.updatePageCandidates();
-          // console.log('Fetched candidates:', this.candidates);
-        },
-        (error) => {
-          console.error('There was an error fetching the candidates!', error.message || error);
-        }
-      );
+  this.dataService.getCandidates(this.loggedInHRId)
+    .subscribe(
+      (data) => {
+        // Process candidates data to format the Interview_Date field
+        this.candidates = data.map(candidate => ({
+          ...candidate,
+          Interview_Date: candidate.interviewRounds.length > 0
+            ? (candidate.interviewRounds[0].Interview_Date ? this.formatLocalDate(candidate.interviewRounds[0].Interview_Date) : 'N/A')
+            : 'N/A',
+          Updated_At: candidate.interviewRounds.length > 0
+             ? (candidate.interviewRounds[0].Updated_At ? this.formatLocalDate(candidate.interviewRounds[0].Updated_At) : 'N/A')
+             : 'N/A',
+          Round_Number: candidate.interviewRounds.length > 0
+            ? candidate.interviewRounds[0].Round_Number
+            : 'N/A',
+          Interviewer: candidate.interviewRounds.length > 0
+            ? candidate.interviewRounds[0].Interviewer
+            : 'N/A',
+          Status: candidate.interviewRounds.length > 0
+            ? candidate.interviewRounds[0].Status
+            : 'N/A',
+          Remarks: candidate.interviewRounds.length > 0
+            ? candidate.interviewRounds[0].Remarks
+            : 'N/A'
+        }));
+        this.filteredCandidates = [...this.candidates];  // Initially show all candidates
+        this.totalCandidates = this.filteredCandidates.length;  
+
+        // this.totalCandidates = this.candidates.length;  // Total number of candidates for pagination
+        this.updatePageCandidates();
+
+        // console.log('Fetched candidates:', this.candidates);
+      },
+      (error) => {
+        console.error('There was an error fetching the candidates!', error.message || error);
+      }
+    );
+}
+
+
+
+
+
+
+
+
+
+  filteredCandidates: any[] = [];
+  nameFilter: string = '';
+  positionFilter: string = '';
+  roundFilter: string = '';
+  interviewerFilter: string = '';
+  activityDateFilterInput: string = '';  // Stores the date in yyyy-mm-dd format
+  activityDateFilter: string = '';
+  statusFilter: string = '';
+  
+// This method is triggered when the date changes
+onDateChange() {
+  if (this.activityDateFilterInput) {
+    // Convert the input date (yyyy-mm-dd) to dd-mmm-yyyy format using the existing function
+    this.activityDateFilter = this.formatLocalDate(this.activityDateFilterInput);
+  } else {
+    // Clear the filter if no date is selected
+    this.activityDateFilter = '';
   }
+  // Apply the filters after the date change
+  this.applyFilters();
+}
+
+
+// Apply filters based on the selected criteria
+applyFilters() {
+  this.filteredCandidates = this.candidates.filter(candidate => {
+    return (
+      (this.nameFilter ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase()) : true) &&
+      (this.positionFilter ? candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase()) : true) &&
+      (this.roundFilter ? candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase()) : true) &&
+      (this.interviewerFilter ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilter.toLowerCase()) : true) &&
+      (this.activityDateFilter ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilter) : true) &&
+      (this.statusFilter ? candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()) : true)
+    );
+  });
+
+  // After applying filters, update the pagination based on the filtered list
+  this.totalCandidates = this.filteredCandidates.length;  // Update the total number of filtered candidates
+  this.currentPage = 1;  // Reset to first page after filter
+  this.updatePageCandidates();  // Recalculate the paginated candidates
+}
+
+clearFilters() {
+  // Reset all filter variables
+  this.nameFilter = '';
+  this.positionFilter = '';
+  this.roundFilter = '';
+  this.interviewerFilter = '';
+  this.activityDateFilterInput = '';  // Reset activity date input
+  this.activityDateFilter = '';       // Reset formatted activity date
+  this.statusFilter = '';
+
+  // Apply the filters (this will now show all candidates as filters are reset)
+  this.applyFilters();
+}
+  
+  // applyFilters() {
+  //   this.filteredCandidates = this.candidates.filter(candidate => {
+  //     return (
+  //       (this.nameFilter ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase()) : true) &&
+  //       (this.positionFilter ? candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase()) : true) &&
+  //       (this.roundFilter ? candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase()) : true) &&
+  //       (this.interviewerFilter ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilter.toLowerCase()) : true) &&
+  //       (this.activityDateFilter ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilter) : true) &&
+  //       (this.statusFilter ? candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()) : true)
+  //     );
+  //   });
+    
+  //   // After applying filters, update the pagination based on the filtered list
+  //   this.totalCandidates = this.filteredCandidates.length;  // Update the total number of filtered candidates
+  //   this.currentPage = 1;  // Reset to first page after filter
+  //   this.updatePageCandidates();  // Recalculate the paginated candidates
+  // }
+
+
+  currentPage: number = 1;
+  pageSize: number = 30;  // Number of candidates per page
+  totalCandidates: number = 0;
+
+  get paginatedCandidates() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = this.currentPage * this.pageSize;
+    return this.filteredCandidates.slice(startIndex, endIndex);
+  }
+
+  // Function to go to the next page
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePageCandidates();
+    }
+  }
+
+  // Function to go to the previous page
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePageCandidates();
+    }
+  }
+
+  // Function to go to a specific page
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePageCandidates();
+    }
+  }
+
+  // Calculate the total number of pages
+  get totalPages() {
+    return Math.ceil(this.totalCandidates / this.pageSize);
+  }
+
+  // Update the displayed candidates for the current page
+  updatePageCandidates() {
+    this.paginatedCandidates;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   getInterviewOptions() {
@@ -310,10 +455,6 @@ export class HRComponent implements OnInit {
     //   return;
     // }
     this.newRound.status = 'Schedule';
-
-
-
-
 
     // If round is 'Custom', assign customRoundNumber to round_number
     this.newRound.round_number = this.isCustomRound ? this.newRound.customRoundNumber || '' : this.newRound.round_number;
@@ -825,49 +966,6 @@ export class HRComponent implements OnInit {
     this.confirmPassword = '';
   }
 
-  currentPage: number = 1;
-  pageSize: number = 30;  // Number of candidates per page
-  totalCandidates: number = 0;
-
-  get paginatedCandidates() {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = this.currentPage * this.pageSize;
-    return this.candidates.slice(startIndex, endIndex);
-  }
-
-  // Function to go to the next page
-  nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-      this.updatePageCandidates();
-    }
-  }
-
-  // Function to go to the previous page
-  previousPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
-      this.updatePageCandidates();
-    }
-  }
-
-  // Function to go to a specific page
-  goToPage(page: number) {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.updatePageCandidates();
-    }
-  }
-
-  // Calculate the total number of pages
-  get totalPages() {
-    return Math.ceil(this.totalCandidates / this.pageSize);
-  }
-
-  // Update the displayed candidates for the current page
-  updatePageCandidates() {
-    this.paginatedCandidates;
-  }
 
 
   // Toggle the section based on the button clicked

@@ -102,13 +102,9 @@
 
 <!-- hr  if role -->
 <div *ngIf="isHR">
-
-
   <div class="container">
-
     <!-- Button to Open Modal -->
     <button (click)="openModal()">Add New Candidate</button>
-
     <!-- Modal for Adding New Candidate -->
     <div class="modal" *ngIf="isModalOpen">
       <div class="modal-content">
@@ -197,6 +193,21 @@
     <!-- candidate list -->
     <div class="get-candidate-table-container">
       <h2>Current Recruitment Pipeline</h2>
+    
+      <!-- Filter Section -->
+      <div class="filter-container">
+        <input type="text" [(ngModel)]="nameFilter" placeholder="Search by Name" (input)="applyFilters()">
+        <input type="text" [(ngModel)]="positionFilter" placeholder="Search by Position" (input)="applyFilters()">
+        <input type="text" [(ngModel)]="roundFilter" placeholder="Search by Round" (input)="applyFilters()">
+        <input type="text" [(ngModel)]="interviewerFilter" placeholder="Search by Interviewer" (input)="applyFilters()">
+        <!-- Activity Date Filter with Calendar -->
+    
+        <input type="date" [(ngModel)]="activityDateFilterInput" (change)="onDateChange()" />
+        <input type="text" [(ngModel)]="statusFilter" placeholder="Search by Status" (input)="applyFilters()">
+        <button (click)="clearFilters()">Clear Filters</button>
+
+      </div>
+    
       <div class="get-candidate-table">
         <table>
           <thead>
@@ -207,7 +218,7 @@
               <th>Round</th>
               <th>Interviewer</th>
               <th>Activity Date</th>
-              <th>Update Date</th> <!-- Add this column -->
+              <th>Update Date</th>
               <th>Status</th>
               <th>Remarks</th>
               <th>Decision</th>
@@ -222,73 +233,52 @@
               <td>{{ candidate.Round_Number || 'N/A' }}</td>
               <td>{{ candidate.Interviewer || 'N/A' }}</td>
               <td>{{ candidate.Interview_Date || 'N/A' }}</td>
-              <td>{{ candidate.Updated_At || 'N/A' }}</td> <!-- Add this field -->
-
+              <td>{{ candidate.Updated_At || 'N/A' }}</td>
               <!-- <td>{{ candidate.Status || 'N/A' }}</td> -->
-              <td 
-                [ngClass]="{
-                  'status-selected': candidate.Status === 'Selected' || candidate.Status === 'Final Selected',
-                  'status-rejected': candidate.Status === 'Rejected',
-                  'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
-                }"
-              >
+    
+              <td [ngClass]="{
+                        'status-selected': candidate.Status === 'Selected' || candidate.Status === 'Final Selected',
+                        'status-rejected': candidate.Status === 'Rejected',
+                        'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
+                      }">
                 {{ candidate.Status || 'N/A' }}
               </td>
-
-              <td class="remarks" [title]="candidate.Remarks || 'N/A'">
-                {{ candidate.Remarks  }}
-              </td>
-              <!-- <td>
-                <button (click)="selectCandidateForNextRound(candidate)">Selected</button>
-                <button (click)="rejectCandidate(candidate)">Rejected</button>
-              </td> -->
+    
+              <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks }}</td>
+    
               <td>
-                <!-- <button (click)="openDecisionModal(candidate)" [disabled]="candidate.Status === 'Rejected'">Decision</button> -->
-                  <!-- Decision button disabled if Status is one of the specified values -->
-    <button 
-    (click)="openDecisionModal(candidate)" 
-    [disabled]="candidate.Status === 'Selected' || candidate.Status === 'Rejected' || candidate.Status === 'On Hold' || candidate.Status === 'Final Selected'"
-  >
-    Decision
-  </button>
+                <button (click)="openDecisionModal(candidate)"
+                  [disabled]="candidate.Status === 'Selected' || candidate.Status === 'Rejected' || candidate.Status === 'On Hold' || candidate.Status === 'Final Selected'">
+                  Decision
+                </button>
               </td>
+              <!-- Reschedule/Add Round buttons with conditions -->
               <td>
                 <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
-                  <button (click)="showAddRoundSection(candidate, true)" [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
+                  <button (click)="showAddRoundSection(candidate, true)"
+                    [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
                 </ng-container>
+    
                 <ng-template #addRound>
-                  <button 
-                    (click)="showAddRoundSection(candidate, false)" 
-                    [disabled]="candidate.Status === 'Rejected'"
-                  >
+                  <button (click)="showAddRoundSection(candidate, false)" [disabled]="candidate.Status === 'Rejected'">
                     Add Round
                   </button>
                 </ng-template>
+    
+                <!-- Ellipsis button to select candidate -->
                 <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
               </td>
-              
-              <!-- <td>
-                <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
-                  <button (click)="showAddRoundSection(candidate)" >Reschedule</button>
-                </ng-container>
-                <ng-template #addRound>
-                  <button (click)="showAddRoundSection(candidate)">Add Round</button>
-                </ng-template>
-                <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
-              </td> -->
             </tr>
           </tbody>
         </table>
       </div>
-
-      <!-- Pagination Controls -->
+    
       <!-- Pagination Controls -->
       <div class="pagination-controls">
         <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-button">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="pagination-button">Next</button>
       </div>
-
     </div>
 
 
