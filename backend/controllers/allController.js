@@ -530,6 +530,10 @@ exports.deleteInterviewRound = (req, res) => {
           u.user_name AS HR_Name,  -- Fetch HR name from the trans_users table
           ir.round_number AS Round_Number,  -- Fetch round number from trans_interview_rounds table
           ir.interview_date AS Interview_Date,  -- Fetch interview date from trans_interview_rounds table
+
+          ir.updated_at AS Updated_At,  -- Include the updated_at field
+
+
           s.status_name AS Status,  -- Fetch interview status from master_statuses table
           ir.remarks AS Remarks,  -- Fetch remarks from trans_interview_rounds table
           ir.ir_id 
@@ -572,6 +576,10 @@ exports.deleteInterviewRound = (req, res) => {
         ir.round_number AS Round_Number,
         iv.interviewer_name AS Interviewer,
         ir.interview_date AS Interview_Date,
+
+        ir.updated_at AS Updated_At,  -- Include the updated_at field
+
+
         s.status_name AS Status,
         ir.remarks AS Remarks
       FROM 
@@ -608,6 +616,10 @@ exports.deleteInterviewRound = (req, res) => {
           Round_Number: r.Round_Number,
           Interviewer: r.Interviewer,
           Interview_Date: r.Interview_Date,
+
+          Updated_At: r.Updated_At,  // Add updated_at to interview rounds
+
+
           Status: r.Status,
           Remarks: r.Remarks
         })) : []  // Empty array if no rounds found

@@ -78,15 +78,23 @@ export class CEOComponent implements OnInit {
   }
 
 
+  // formatCandidateDetails(data: any) {
+  //   if (data.interviewRounds) {
+  //     data.interviewRounds.forEach((round: { Interview_Date: string; }) => {
+  //       round.Interview_Date = this.formatDate(round.Interview_Date);
+  //     });
+  //   }
+  //   return data;
+  // }
   formatCandidateDetails(data: any) {
     if (data.interviewRounds) {
-      data.interviewRounds.forEach((round: { Interview_Date: string; }) => {
+      data.interviewRounds.forEach((round: { Interview_Date: string; Updated_At: string }) => {
         round.Interview_Date = this.formatDate(round.Interview_Date);
+        round.Updated_At = this.formatDate(round.Updated_At); // Format updated_at as well
       });
     }
     return data;
   }
-
 
   
 

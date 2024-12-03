@@ -54,7 +54,6 @@
 
 
 
-
 /* Transparent green background for 'Selected' */
 .status-selected {
   background-color: rgba(0, 128, 0, 0.2); /* Light green with transparency */
@@ -64,7 +63,7 @@
 
 .status-final-selected {
   background-color: rgba(0, 50, 0, 0.4); /* Much darker green with higher opacity */
-  color: #002800; /* Almost black green text */
+  color: #e9e9e9; /* Almost black green text */
   border: 1px solid #002800; /* Dark green border */
 }
 
@@ -84,13 +83,7 @@
 
 
 
-/* Add this to your component's CSS file */
-.get-candidate-table-container .get-candidate-table button:disabled {
-  background-color: #e0e0e0 !important; /* Light grey background */
-  color: #a0a0a0 !important;           /* Darker grey text */
-  cursor: not-allowed !important;      /* Not-allowed cursor */
-  border: 1px solid #d0d0d0 !important;/* Optional border */
-}
+
 
 
 
@@ -477,6 +470,11 @@
 .filter-container button:hover {
   background-color: #0056b3;
 }
+
+
+/* Add this to your component's CSS file */
+
+
 /* Styling for buttons in the candidate table */
 .get-candidate-table button {
   font-size: 13px; /* Match font size with table body text */
@@ -487,20 +485,26 @@
   border-radius: 4px; /* Slightly rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
   text-align: center;
-  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+  /* transition: background-color 0.3s ease, transform 0.2s ease; Smooth hover effect */
 }
 
 /* Hover effect for buttons */
 .get-candidate-table button:hover {
   background-color: #003f73; /* Darker blue on hover */
-  transform: scale(1.05); /* Slight scaling on hover */
+  /* transform: scale(1.05); Slight scaling on hover */
 }
 
 /* Disabled button styling */
 .get-candidate-table button:disabled {
-  background-color: #cccccc; /* Gray background for disabled state */
-  color: #666666; /* Gray text */
-  cursor: not-allowed; /* Not-allowed cursor */
+  background-color: #e0e0e0 !important; /* Light grey background */
+  color: #a0a0a0 !important;           /* Darker grey text */
+  cursor: not-allowed !important;      /* Not-allowed cursor */
+  border: none !important;/* Optional border */
+  border-radius: 4px;
+  width: auto !important; /* Ensure disabled buttons have the same width */
+  text-align: center;
+  padding: 3px 6px; /* Same padding as normal buttons */
+  font-size: 13px; /* Same font size as normal buttons */
 }
 
 
