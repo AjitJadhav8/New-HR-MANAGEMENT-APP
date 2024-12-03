@@ -62,6 +62,12 @@
   border: 1px solid #006400; /* Optional border */
 }
 
+.status-final-selected {
+  background-color: rgba(0, 50, 0, 0.4); /* Much darker green with higher opacity */
+  color: #002800; /* Almost black green text */
+  border: 1px solid #002800; /* Dark green border */
+}
+
 /* Transparent red background for 'Rejected' */
 .status-rejected {
   background-color: rgba(255, 0, 0, 0.2); /* Light red with transparency */
@@ -437,20 +443,41 @@
   margin-bottom: 15px; /* Adds space below the filter container */
 }
 
-/* Individual filter input field styling */
-.filter-container input {
+/* Common styling for all form elements inside the filter container */
+.filter-container input,
+.filter-container select {
   flex: 1; /* Allows inputs to take equal space */
   min-width: 150px; /* Ensures inputs have a minimum width */
-  padding: 5px 10px;
+  padding: 4px 5px; /* Add padding to make the inputs bigger */
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  height: 40px; /* Set a fixed height for uniformity */
   box-sizing: border-box; /* Includes padding in the width calculation */
 }
 
+/* Placeholder styling for input fields */
 .filter-container input::placeholder {
   color: #888; /* Light color for placeholder text */
 }
+
+/* Additional styling for the button (optional) */
+.filter-container button {
+  padding: 4px 12px; /* Add padding for the button */
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  height: 40px; /* Make button height consistent with the inputs */
+}
+
+/* Button hover effect */
+.filter-container button:hover {
+  background-color: #0056b3;
+}
+
 
 
 /* Container for the candidate table */

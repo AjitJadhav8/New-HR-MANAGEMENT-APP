@@ -197,15 +197,40 @@
       <!-- Filter Section -->
       <div class="filter-container">
         <input type="text" [(ngModel)]="nameFilter" placeholder="Search by Name" (input)="applyFilters()">
-        <input type="text" [(ngModel)]="positionFilter" placeholder="Search by Position" (input)="applyFilters()">
-        <input type="text" [(ngModel)]="roundFilter" placeholder="Search by Round" (input)="applyFilters()">
-        <input type="text" [(ngModel)]="interviewerFilter" placeholder="Search by Interviewer" (input)="applyFilters()">
-        <!-- Activity Date Filter with Calendar -->
-    
-        <input type="date" [(ngModel)]="activityDateFilterInput" (change)="onDateChange()" />
-        <input type="text" [(ngModel)]="statusFilter" placeholder="Search by Status" (input)="applyFilters()">
-        <button (click)="clearFilters()">Clear Filters</button>
+        <!-- <input type="text" [(ngModel)]="positionFilter" placeholder="Search by Position" (input)="applyFilters()"> -->
 
+        <select [(ngModel)]="positionFilter" (change)="applyFilters()">
+          <option value="" disabled>Select Position</option>
+          <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
+        </select>
+      
+        
+      
+        <!-- <input type="text" [(ngModel)]="roundFilter" placeholder="Search by Round" (input)="applyFilters()"> -->
+        <!-- Round Filter -->
+        <select [(ngModel)]="roundFilter" (change)="applyFilters()">
+          <option value="" disabled>Select Round</option>
+          <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+        </select>
+      
+      
+        <!-- <input type="text" [(ngModel)]="interviewerFilter" placeholder="Search by Interviewer" (input)="applyFilters()"> -->
+        <!-- Interviewer Filter -->
+        <select [(ngModel)]="interviewerFilter" (change)="applyFilters()">
+          <option value="" disabled>Select Interviewer</option>
+          <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
+        </select>
+        <!-- Activity Date Filter with Calendar -->
+      
+        <input type="date" [(ngModel)]="activityDateFilterInput" (change)="onDateChange()" />
+        <!-- <input type="text" [(ngModel)]="statusFilter" placeholder="Search by Status" (input)="applyFilters()"> -->
+        <!-- Status Filter -->
+        <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+          <option value="" disabled>Select Status</option>
+          <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+        </select>
+        <button (click)="clearFilters()">Clear Filters</button>
+      
       </div>
     
       <div class="get-candidate-table">
@@ -236,14 +261,22 @@
               <td>{{ candidate.Updated_At || 'N/A' }}</td>
               <!-- <td>{{ candidate.Status || 'N/A' }}</td> -->
     
-              <td [ngClass]="{
+              <!-- <td [ngClass]="{
                         'status-selected': candidate.Status === 'Selected' || candidate.Status === 'Final Selected',
                         'status-rejected': candidate.Status === 'Rejected',
                         'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
                       }">
                 {{ candidate.Status || 'N/A' }}
-              </td>
-    
+              </td> -->
+              <td [ngClass]="{
+                'status-selected': candidate.Status === 'Selected',
+                'status-final-selected': candidate.Status === 'Final Selected',
+                'status-rejected': candidate.Status === 'Rejected',
+                'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
+              }">
+            {{ candidate.Status || 'N/A' }}
+          </td>
+          
               <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks }}</td>
     
               <td>
