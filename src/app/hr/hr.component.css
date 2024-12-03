@@ -211,7 +211,7 @@
 .modal-content h2 {
   text-align: center;
   font-size: 24px;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
 /* Close Button */
@@ -221,7 +221,7 @@
 .modal-content form {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 0.5px;
 }
 
 .modal-content form div {
@@ -232,7 +232,7 @@
 /* Label Styling */
 .modal-content label {
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 1px;
 }
 
 /* Input, Select, and Textarea Styling */
@@ -434,48 +434,73 @@
 
 
 
-
 /* Styling for the filter container */
 .filter-container {
   display: flex; /* Flexbox layout to arrange elements side by side */
   flex-wrap: wrap; /* Allows inputs to wrap if the container width is too small */
-  gap: 10px; /* Adds space between the filter inputs */
-  margin-bottom: 15px; /* Adds space below the filter container */
+  gap: 8px; /* Decreased space between the filter inputs */
+  margin-bottom: 10px; /* Reduced space below the filter container */
 }
 
 /* Common styling for all form elements inside the filter container */
 .filter-container input,
 .filter-container select {
   flex: 1; /* Allows inputs to take equal space */
-  min-width: 150px; /* Ensures inputs have a minimum width */
-  padding: 4px 5px; /* Add padding to make the inputs bigger */
+  min-width: 120px; /* Reduced minimum width */
+  padding: 2px 6px; /* Reduced padding to make inputs smaller */
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 14px;
-  height: 40px; /* Set a fixed height for uniformity */
+  font-size: 12px; /* Reduced font size */
+  height: 32px; /* Decreased height for smaller inputs */
   box-sizing: border-box; /* Includes padding in the width calculation */
 }
 
 /* Placeholder styling for input fields */
 .filter-container input::placeholder {
   color: #888; /* Light color for placeholder text */
+  font-size: 12px; /* Reduced placeholder font size */
 }
 
 /* Additional styling for the button (optional) */
 .filter-container button {
-  padding: 4px 12px; /* Add padding for the button */
+  padding: 2px 10px; /* Reduced padding for a smaller button */
   border: none;
   background-color: #007bff;
   color: white;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  height: 40px; /* Make button height consistent with the inputs */
+  font-size: 12px; /* Smaller font size */
+  height: 32px; /* Make button height consistent with the inputs */
 }
 
 /* Button hover effect */
 .filter-container button:hover {
   background-color: #0056b3;
+}
+/* Styling for buttons in the candidate table */
+.get-candidate-table button {
+  font-size: 13px; /* Match font size with table body text */
+  padding: 3px 6px; /* Smaller padding for compact buttons */
+  background-color: #026faa; /* Default blue background */
+  color: white; /* White text */
+  border: none; /* Remove borders */
+  border-radius: 4px; /* Slightly rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+/* Hover effect for buttons */
+.get-candidate-table button:hover {
+  background-color: #003f73; /* Darker blue on hover */
+  transform: scale(1.05); /* Slight scaling on hover */
+}
+
+/* Disabled button styling */
+.get-candidate-table button:disabled {
+  background-color: #cccccc; /* Gray background for disabled state */
+  color: #666666; /* Gray text */
+  cursor: not-allowed; /* Not-allowed cursor */
 }
 
 

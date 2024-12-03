@@ -488,7 +488,7 @@
           </div> -->
 
           <!-- Interviewer Selection (No Custom Option) -->
-          <div>
+          <div *ngIf="!isReschedule">
             <label for="interviewer">Interviewer:</label>
             <select [(ngModel)]="newRound.interviewer" name="interviewer" required>
               <option value="" disabled>Select Interviewer</option>
@@ -514,10 +514,19 @@
           </div> -->
 
           <!-- Remarks -->
-          <div>
+          <!-- <div>
             <label for="remarks">Remarks:</label>
             <textarea [(ngModel)]="newRound.remarks" name="remarks"></textarea>
+          </div> -->
+
+          <div>
+            <label for="remarks">
+              <span *ngIf="isReschedule; else remarksText">Reason:</span>
+              <ng-template #remarksText>Remarks:</ng-template>
+            </label>
+            <textarea [(ngModel)]="newRound.remarks" name="remarks" placeholder="{{ isReschedule ? 'Enter reason for reschedule' : 'Enter remarks' }}"></textarea>
           </div>
+          
           <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
           <!-- Submit Button -->
           <!-- <button type="submit">Add Interview Round</button> -->

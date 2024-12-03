@@ -236,10 +236,7 @@ exports.login = (req, res) => {
     });
 };
 
-  
 
-  
-  
   // Add a new candidate with interview round done
   exports.addCandidateWithRound = (req, res) => {
     const { candidate, round } = req.body;
