@@ -365,12 +365,18 @@ clearFilters() {
       return;
     }
 
-    const today = new Date().setHours(0, 0, 0, 0); // Reset time to compare only the date
-    const interviewDate = new Date(this.updatedRound.interview_date).setHours(0, 0, 0, 0); // Convert interview date to same format
-    if (isNaN(interviewDate) || interviewDate < today) {
-      this.showAlert('Please select a valid future interview date.', 'alert-danger');
-      return;
-    }
+        // Get the last interview date (assuming you have it from the candidate data or a previous round)
+        const lastInterviewDate = new Date(this.selectedCandidate.lastInterviewDate); // Replace this with actual value from your data source
+        const lastInterviewDateTimestamp = lastInterviewDate.setHours(0, 0, 0, 0); // Convert last interview date to timestamp (ignoring time)
+    
+        // Convert the new interview date to timestamp (ignore time)
+        const interviewDate = new Date(this.updatedRound.interview_date).setHours(0, 0, 0, 0);
+    
+        // Check if the new interview date is before the last interview date
+        if (isNaN(interviewDate) || interviewDate < lastInterviewDateTimestamp) {
+          this.showAlert('Please select a valid interview date (it must be on or after the last interview date).', 'alert-danger');
+          return;
+        }
 
     // Prepare the final data for updating the round (use custom round number if applicable)
     const roundData = {

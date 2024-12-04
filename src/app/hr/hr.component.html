@@ -293,7 +293,7 @@
                 </ng-container>
     
                 <ng-template #addRound>
-                  <button (click)="showAddRoundSection(candidate, false)" [disabled]="candidate.Status === 'Rejected'">
+                  <button (click)="showAddRoundSection(candidate, false)" [disabled]="candidate.Status === 'Rejected' || candidate.Status === 'Final Selected'">
                     Add Round
                   </button>
                 </ng-template>
