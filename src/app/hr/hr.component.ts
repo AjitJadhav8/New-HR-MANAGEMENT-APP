@@ -189,25 +189,6 @@ clearFilters() {
   this.applyFilters();
 }
   
-  // applyFilters() {
-  //   this.filteredCandidates = this.candidates.filter(candidate => {
-  //     return (
-  //       (this.nameFilter ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase()) : true) &&
-  //       (this.positionFilter ? candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase()) : true) &&
-  //       (this.roundFilter ? candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase()) : true) &&
-  //       (this.interviewerFilter ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilter.toLowerCase()) : true) &&
-  //       (this.activityDateFilter ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilter) : true) &&
-  //       (this.statusFilter ? candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()) : true)
-  //     );
-  //   });
-    
-  //   // After applying filters, update the pagination based on the filtered list
-  //   this.totalCandidates = this.filteredCandidates.length;  // Update the total number of filtered candidates
-  //   this.currentPage = 1;  // Reset to first page after filter
-  //   this.updatePageCandidates();  // Recalculate the paginated candidates
-  // }
-
-
   currentPage: number = 1;
   pageSize: number = 30;  // Number of candidates per page
   totalCandidates: number = 0;
@@ -1043,16 +1024,23 @@ clearFilters() {
   interviewDate: string = this.todayDate; // Default to today's date
   remarks: string = '';
   currentCandidate: any = null; // Store the selected candidate
+  // Create a new property in the component to store the filtered statuses
+  filteredStatuses: string[] = [];
 
-  openDecisionModal(candidate: any) {
-    this.showModal = true;
-    this.currentCandidate = candidate;
-    this.getLastRoundData(this.currentCandidate.Candidate_ID, 'update'); // 'add' mode to use for setting last interview date
+// This will be called when you open the decision modal
+openDecisionModal(candidate: any) {
+  this.showModal = true;
+  this.currentCandidate = candidate;
 
-    this.selectedDecision = 'Selected';
-    // this.interviewDate = this.todayDate;
-    this.remarks = '';
-  }
+  // Filter the statuses for the decision modal, excluding 'Schedule'
+  this.filteredStatuses = this.interviewOptions.statuses.filter((status: string) => status !== 'Schedule');
+  
+  this.getLastRoundData(this.currentCandidate.Candidate_ID, 'update'); // Fetch last interview data
+  
+  this.selectedDecision = 'Selected';  // Default to 'Selected'
+  this.remarks = '';  // Reset remarks
+}
+
   closeDecisionModal() {
     this.showModal = false;
     this.currentCandidate = null; // Optionally reset the current candidate

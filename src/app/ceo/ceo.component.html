@@ -191,6 +191,38 @@
 
   <div *ngIf="showDetailView">
     <div class="table-container-detail">
+        <!-- Filter Section -->
+  <div class="filter-container">
+    <input type="text" placeholder="Filter by Name" [(ngModel)]="nameFilter" (input)="applyFilters()" />
+
+
+    <!-- <input type="text" placeholder="Filter by Position" [(ngModel)]="positionFilter" (input)="applyFilters()" /> -->
+       <!-- Position Dropdown -->
+  <select [(ngModel)]="positionFilter" (change)="applyFilters()">
+    <option value="">Select Position</option>
+    <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
+  </select>
+
+    <input type="text" placeholder="Filter by HR Name" [(ngModel)]="hrNameFilter" (input)="applyFilters()" />
+
+    <!-- <input type="text" placeholder="Filter by Round Number" [(ngModel)]="roundFilter" (input)="applyFilters()" /> -->
+       <!-- Round Dropdown -->
+  <select [(ngModel)]="roundFilter" (change)="applyFilters()">
+    <option value="">Select Round</option>
+    <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+  </select>
+
+    <input type="date" placeholder="Filter by Activity Date" [(ngModel)]="activityDateFilterInput" (change)="onDateChange()" />
+    <!-- <input type="text" placeholder="Filter by Status" [(ngModel)]="statusFilter" (input)="applyFilters()" /> -->
+    <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+      <option value="">Select Status</option>
+      <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+    </select>
+    <button (click)="clearFilters()">Clear Filters</button>
+  </div>
+
+
+
       <table class="candidate-table-detail">
         <thead>
           <tr>
@@ -201,7 +233,7 @@
             <th>Round Number</th>
             <th>Activity Date</th>
 
-            <th>Update Date</th> <!-- New column for Update Date -->
+            <th>Update Date</th> 
 
 
             <th>Status</th>
@@ -217,7 +249,7 @@
             <td>{{ candidate.Round_Number }}</td>
             <td>{{ candidate.Interview_Date | date: 'dd-MMM-yyyy' }}</td>
 
-            <td>{{ candidate.Updated_At | date: 'dd-MMM-yyyy' }}</td> <!-- Display Update Date -->
+            <td>{{ candidate.Updated_At | date: 'dd-MMM-yyyy' }}</td> 
 
 
             <td  class="remarks" [title]="candidate.Status || 'N/A'">{{ candidate.Status }}</td>
@@ -262,10 +294,7 @@
             <td>{{ round.Round_Number }}</td>
             <td>{{ round.Interviewer }}</td>
             <td>{{ round.Interview_Date }}</td>
-
             <td>{{ round.Updated_At }}</td> <!-- Display Update Date -->
-
-
             <td title="{{ round.Status }}">{{ round.Status }}</td> <!-- Tooltip for Status -->
       <td title="{{ round.Remarks }}">{{ round.Remarks }}</td> <!-- Tooltip for Remarks -->
           </tr>

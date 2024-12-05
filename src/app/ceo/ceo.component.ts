@@ -24,7 +24,10 @@ export class CEOComponent implements OnInit {
     this.getAllCandidates();
     this.getAllUsers();
     this.getAllRoles();
-    this.getAllCandidates();
+    this.dataService.getInterviewOptions().subscribe((data) => {
+      this.interviewOptions = data; // Populate dropdown options
+      console.log('Interview Options for CEO:', this.interviewOptions);
+    });
   }
 
 
@@ -36,13 +39,18 @@ export class CEOComponent implements OnInit {
     this.showDetailView = !this.showDetailView; // Toggle the value of showDetailView
   }
 
+  filteredCandidates: any[] = [];
 
   getAllCandidates() {
     this.dataService.getAllCandidates().subscribe(
       data => {
         // Filter for distinct candidates using the Candidate_ID to avoid duplicates
         this.candidates = this.getDistinctCandidates(data);
-        this.totalCandidates = this.candidates.length; // Update total candidates count
+
+        this.filteredCandidates = [...this.candidates]; // Initialize filtered data
+
+
+        this.totalCandidates = this.filteredCandidates.length;
 
         // console.log('Filtered candidates:', this.candidates);
       },
@@ -61,6 +69,65 @@ export class CEOComponent implements OnInit {
     });
     return Array.from(distinctCandidates.values());
   }
+
+
+  nameFilter: string = '';
+  positionFilter: string = '';
+  hrNameFilter: string = '';
+  roundFilter: string = '';
+  activityDateFilterInput: string = '';
+  activityDateFilter: string = '';
+  statusFilter: string = '';
+
+  interviewOptions: any = {};
+
+
+  applyFilters(): void {
+    this.filteredCandidates = this.candidates.filter((candidate) => {
+      return (
+        (!this.nameFilter || candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase())) &&
+        (!this.positionFilter || candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase())) &&
+        (!this.hrNameFilter || candidate.HR_Name.toLowerCase().includes(this.hrNameFilter.toLowerCase())) &&
+        (!this.roundFilter || candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase())) &&
+        (!this.activityDateFilter || this.formatDate(candidate.Interview_Date).includes(this.activityDateFilter)) &&
+        (!this.statusFilter || candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()))
+      );
+    });
+  
+    this.totalCandidates = this.filteredCandidates.length;
+    this.currentPage = 1; // Reset page to 1 when applying new filters
+    this.updatePageCandidates(); // Update the current page candidates based on filtered data
+  }
+  
+
+  clearFilters(): void {
+    this.nameFilter = '';
+    this.positionFilter = '';
+    this.hrNameFilter = '';
+    this.roundFilter = '';
+    this.activityDateFilterInput = '';
+    this.activityDateFilter = '';
+    this.statusFilter = '';
+    
+    this.filteredCandidates = [...this.candidates]; // Reset to all candidates
+    this.totalCandidates = this.filteredCandidates.length;
+    this.currentPage = 1;
+    this.updatePageCandidates(); // Update the current page candidates after clearing filters
+  }
+  
+
+  onDateChange(): void {
+    if (this.activityDateFilterInput) {
+      this.activityDateFilter = this.formatDate(this.activityDateFilterInput);
+    } else {
+      this.activityDateFilter = '';
+    }
+    this.applyFilters();
+  }
+
+
+
+
 
 
   closeModal() {
@@ -194,20 +261,31 @@ export class CEOComponent implements OnInit {
  get paginatedCandidates() {
   const startIndex = (this.currentPage - 1) * this.pageSize;
   const endIndex = this.currentPage * this.pageSize;
-  return this.candidates.slice(startIndex, endIndex);
+  return this.filteredCandidates.slice(startIndex, endIndex); // Use filtered candidates here
 }
 
+
+
+updatePageCandidates() {
+  this.paginatedCandidates;
+}
+
+
+
+
+
 // Function to go to the next page
-nextPage() {
+nextPage(): void {
   if (this.currentPage < this.totalPages) {
     this.currentPage++;
+    this.updatePageCandidates();
   }
 }
 
-// Function to go to the previous page
-previousPage() {
+previousPage(): void {
   if (this.currentPage > 1) {
     this.currentPage--;
+    this.updatePageCandidates();
   }
 }
 

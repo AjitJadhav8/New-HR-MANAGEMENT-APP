@@ -5,6 +5,64 @@
   align-items: center;
   padding: 20px;
 }
+/* Styling for Filter Section */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;  /* Reduced gap between elements */
+  margin-bottom: 15px;  /* Reduced bottom margin */
+  justify-content: center;
+}
+
+/* Style for input fields */
+.filter-container input {
+  padding: 6px 10px;  /* Reduced padding for a smaller height */
+  font-size: 13px;  /* Slightly smaller font size */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 160px;  /* Adjusted width */
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.filter-container input:focus {
+  border-color: #3498db;  /* Blue border on focus */
+  outline: none;
+}
+
+/* Style for filter button */
+.filter-container button {
+  padding: 6px 14px;  /* Reduced padding for a more compact button */
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;  /* Slightly smaller font size */
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 6px;  /* Reduced top margin */
+}
+
+.filter-container button:hover {
+  background-color: #2980b9;  /* Darker blue on hover */
+}
+
+/* Clear Filters Button */
+.clear-filters-button {
+  background-color: #e74c3c;
+  border: none;
+  padding: 6px 14px;  /* Smaller padding */
+  color: white;
+  border-radius: 4px;
+  font-size: 13px;  /* Smaller font size */
+  cursor: pointer;
+  margin-top: 6px;  /* Reduced top margin */
+  transition: background-color 0.3s ease;
+}
+
+.clear-filters-button:hover {
+  background-color: #c0392b;  /* Darker red on hover */
+}
 
 
 /* Styling for Candidate Table */

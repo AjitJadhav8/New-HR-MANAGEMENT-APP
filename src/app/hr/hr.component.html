@@ -350,12 +350,19 @@
       <div class="modal-content">
         <form (submit)="submitDecision()">
           <h2>Make a Decision for <span class="underlined">{{ currentCandidate.Candidate_Name }}</span></h2>
-          <select id="decision" [(ngModel)]="selectedDecision" name="decision" required>
+          
+          <select [(ngModel)]="selectedDecision" name="decision" required>
+            <option value="" disabled>Select Status</option>
+            <option *ngFor="let status of filteredStatuses" [value]="status">{{ status }}</option>
+          </select>
+          
+          
+          <!-- <select id="decision" [(ngModel)]="selectedDecision" name="decision" required>
             <option value="Selected">Selected</option>
             <option value="Rejected">Rejected</option>
             <option value="On Hold">On Hold</option>
             <option value="Final Selected">Final Selected</option>
-          </select>          
+          </select>           -->
     
           <!-- <label for="interviewDate">Interview Date</label>
           <input
