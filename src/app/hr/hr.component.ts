@@ -446,7 +446,7 @@ clearFilters() {
     //   this.showAlert('Status is required.', 'alert-danger');
     //   return;
     // }
-    this.newRound.status = 'Schedule';
+    this.newRound.status = 'Scheduled';
 
     // If round is 'Custom', assign customRoundNumber to round_number
     this.newRound.round_number = this.isCustomRound ? this.newRound.customRoundNumber || '' : this.newRound.round_number;
@@ -547,7 +547,7 @@ clearFilters() {
     //   return; // Prevent form submission if status is not selected
     // }
 
-    this.newRound.status = 'Schedule';
+    this.newRound.status = 'Scheduled';
 
 
     // Check if interview date is selected and valid
@@ -1038,7 +1038,7 @@ openDecisionModal(candidate: any) {
   this.currentCandidate = candidate;
 
   // Filter the statuses for the decision modal, excluding 'Schedule'
-  this.filteredStatuses = this.interviewOptions.statuses.filter((status: string) => status !== 'Schedule');
+  this.filteredStatuses = this.interviewOptions.statuses.filter((status: string) => status !== 'Scheduled');
   
   this.getLastRoundData(this.currentCandidate.Candidate_ID, 'update'); // Fetch last interview data
   

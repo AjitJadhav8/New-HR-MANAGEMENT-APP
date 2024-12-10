@@ -296,7 +296,7 @@
               </td>
               <!-- Reschedule/Add Round buttons with conditions -->
               <td>
-                <ng-container *ngIf="candidate.Status === 'Schedule'; else addRound">
+                <ng-container *ngIf="candidate.Status === 'Scheduled'; else addRound">
                   <button (click)="showAddRoundSection(candidate, true)"
                     [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
                 </ng-container>
