@@ -121,47 +121,15 @@
     </form>
   </div>
 
-
-
-
-  <button class="dy-button" (click)="toggleDetailView()">{{ showDetailView ? 'Normal View' : 'Show Detail View' }}</button>
-
-
-
-
-
-
-
-
-
+  <!-- <button class="dy-button" (click)="toggleDetailView()">{{ showDetailView ? 'Normal View' : 'Show Detail View' }}</button> -->
 
 <div>
-  <!-- <div class="table-container">
-    <table class="candidate-table">
-      <thead>
-        <tr>
-          <th>#</th> 
-          <th>Name</th>
-          <th>Position</th>
-          <th>HR Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let candidate of candidates; let i = index" (click)="openModal(candidate)">
-          <td>{{ i + 1 }}</td> 
-          <td>{{ candidate.Candidate_Name }}</td>
-          <td>{{ candidate.Position }}</td>
-          <td>{{ candidate.HR_Name }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div> -->
-  <div *ngIf="!showDetailView"> <!-- Hide first table when showDetailView is true -->
+  <!-- <div *ngIf="!showDetailView"> >
     <div class="table-container">
       <table class="candidate-table">
         <thead>
           <tr>
-            <th>#</th> <!-- Serial number column -->
+            <th>#</th>
             <th>Name</th>
             <th>Position</th>
             <th>HR Name</th>
@@ -169,7 +137,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let candidate of paginatedCandidates; let i = index" (click)="openModal(candidate)">
-            <td>{{ i + 1 }}</td> <!-- Displaying serial number, +1 to make it 1-based -->
+            <td>{{ i + 1 }}</td> 
             <td>{{ candidate.Candidate_Name }}</td>
             <td>{{ candidate.Position }}</td>
             <td>{{ candidate.HR_Name }}</td>
@@ -184,86 +152,98 @@
       <span>Page {{ currentPage }} of {{ totalPages }}</span>
       <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
     </div>
-    <!-- Pagination Controls -->
     
-  </div>
+  </div> -->
+
+<div>
+  <div class="table-container-detail">
+
+    <h2>Current Recruitment Pipeline</h2>
 
 
-  <div *ngIf="showDetailView">
-    <div class="table-container-detail">
-        <!-- Filter Section -->
-  <div class="filter-container">
-    <input type="text" placeholder="Filter by Name" [(ngModel)]="nameFilter" (input)="applyFilters()" />
+    <!-- Filter Section -->
+    <div class="filter-container">
+      <input type="text" placeholder="Filter by Name" [(ngModel)]="nameFilter" (input)="applyFilters()" />
+      <!-- <input type="text" placeholder="Filter by Position" [(ngModel)]="positionFilter" (input)="applyFilters()" /> -->
+      <!-- Position Dropdown -->
+      <select [(ngModel)]="positionFilter" (change)="applyFilters()">
+        <option value="">Select Position</option>
+        <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
+      </select>
+
+      <input type="text" placeholder="Filter by HR Name" [(ngModel)]="hrNameFilter" (input)="applyFilters()" />
+
+      <!-- <input type="text" placeholder="Filter by Round Number" [(ngModel)]="roundFilter" (input)="applyFilters()" /> -->
+      <!-- Round Dropdown -->
+      <select [(ngModel)]="roundFilter" (change)="applyFilters()">
+        <option value="">Select Round</option>
+        <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+      </select>
 
 
-    <!-- <input type="text" placeholder="Filter by Position" [(ngModel)]="positionFilter" (input)="applyFilters()" /> -->
-       <!-- Position Dropdown -->
-  <select [(ngModel)]="positionFilter" (change)="applyFilters()">
-    <option value="">Select Position</option>
-    <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
+  <!-- Interviewer Dropdown -->
+  <select [(ngModel)]="interviewerFilter" (change)="applyFilters()">
+    <option value="">Select Interviewer</option>
+    <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
   </select>
 
-    <input type="text" placeholder="Filter by HR Name" [(ngModel)]="hrNameFilter" (input)="applyFilters()" />
-
-    <!-- <input type="text" placeholder="Filter by Round Number" [(ngModel)]="roundFilter" (input)="applyFilters()" /> -->
-       <!-- Round Dropdown -->
-  <select [(ngModel)]="roundFilter" (change)="applyFilters()">
-    <option value="">Select Round</option>
-    <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-  </select>
-
-    <input type="date" placeholder="Filter by Activity Date" [(ngModel)]="activityDateFilterInput" (change)="onDateChange()" />
-    <!-- <input type="text" placeholder="Filter by Status" [(ngModel)]="statusFilter" (input)="applyFilters()" /> -->
-    <select [(ngModel)]="statusFilter" (change)="applyFilters()">
-      <option value="">Select Status</option>
-      <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-    </select>
-    <button (click)="clearFilters()">Clear Filters</button>
-  </div>
-
-
-
-      <table class="candidate-table-detail">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Position</th>
-            <th>HR Name</th>
-            <th>Round Number</th>
-            <th>Activity Date</th>
-
-            <th>Update Date</th> 
-
-
-            <th>Status</th>
-            <th>Remarks</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let candidate of paginatedCandidates; let i = index" (click)="openModal(candidate)">
-            <td>{{ i + 1 }}</td>
-            <td>{{ candidate.Candidate_Name }}</td>
-            <td>{{ candidate.Position }}</td>
-            <td>{{ candidate.HR_Name }}</td>
-            <td>{{ candidate.Round_Number }}</td>
-            <td>{{ candidate.Interview_Date | date: 'dd-MMM-yyyy' }}</td>
-
-            <td>{{ candidate.Updated_At | date: 'dd-MMM-yyyy' }}</td> 
-
-
-            <td  class="remarks" [title]="candidate.Status || 'N/A'">{{ candidate.Status }}</td>
-            <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks || 'N/A' }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <input type="date" placeholder="Filter by Activity Date" [(ngModel)]="activityDateFilterInput"
+        (change)="onDateChange()" />
+      <!-- <input type="text" placeholder="Filter by Status" [(ngModel)]="statusFilter" (input)="applyFilters()" /> -->
+      <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+        <option value="">Select Status</option>
+        <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+      </select>
+      <button (click)="clearFilters()">Clear Filters</button>
     </div>
-    <div class="pagination-controls">
-      <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
-    </div>
+    <table class="candidate-table-detail">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>HR Name</th>
+          <th>Round</th>
+          <th>Interviewer</th> <!-- New Column -->
+          <th>Activity Date</th>
+          <th>Update Date</th>
+          <th>Status</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let candidate of paginatedCandidates; let i = index" (click)="openModal(candidate)">
+          <td>{{ i + 1 }}</td>
+          <td>{{ candidate.Candidate_Name }}</td>
+          <td>{{ candidate.Position }}</td>
+          <td>{{ candidate.HR_Name }}</td>
+          <td>{{ candidate.Round_Number }}</td>
+          <td>{{ candidate.Interviewer}}</td> <!-- Display Interviewer -->
+
+          <td>{{ candidate.Interview_Date | date: 'dd-MMM-yyyy' }}</td>
+          <td>{{ candidate.Updated_At | date: 'dd-MMM-yyyy' }}</td>
+          <!-- <td class="remarks" [title]="candidate.Status || 'N/A'">{{ candidate.Status }}</td> -->
+          <td [ngClass]="{
+            'status-selected': candidate.Status === 'Selected',
+            'status-final-selected': candidate.Status === 'Final Selected',
+            'status-rejected': candidate.Status === 'Rejected',
+            'status-other': candidate.Status !== 'Selected' &&
+                            candidate.Status !== 'Final Selected' &&
+                            candidate.Status !== 'Rejected'
+        }">
+        {{ candidate.Status || 'N/A' }}
+    </td>
+          <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks || 'N/A' }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+  <div class="pagination-controls">
+    <button (click)="previousPage()" [disabled]="currentPage === 1">Previous</button>
+    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+  </div>
+</div>
   
 
   <!-- Modal -->
@@ -273,7 +253,6 @@
       <h3>{{ selectedCandidate.Candidate_Name }} - Details</h3>
       <p><strong>Position:</strong> {{ selectedCandidate.Position }}</p>
       <p><strong>HR Name:</strong> {{ selectedCandidate.HR_Name }}</p>
-
       <h4>Interview Rounds:</h4>
       <table>
         <thead>

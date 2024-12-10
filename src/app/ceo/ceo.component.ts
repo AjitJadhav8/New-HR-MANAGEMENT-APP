@@ -46,12 +46,8 @@ export class CEOComponent implements OnInit {
       data => {
         // Filter for distinct candidates using the Candidate_ID to avoid duplicates
         this.candidates = this.getDistinctCandidates(data);
-
         this.filteredCandidates = [...this.candidates]; // Initialize filtered data
-
-
         this.totalCandidates = this.filteredCandidates.length;
-
         // console.log('Filtered candidates:', this.candidates);
       },
       error => {
@@ -78,6 +74,7 @@ export class CEOComponent implements OnInit {
   activityDateFilterInput: string = '';
   activityDateFilter: string = '';
   statusFilter: string = '';
+  interviewerFilter: string = '';  // Add the interviewer filter property
 
   interviewOptions: any = {};
 
@@ -89,6 +86,7 @@ export class CEOComponent implements OnInit {
         (!this.positionFilter || candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase())) &&
         (!this.hrNameFilter || candidate.HR_Name.toLowerCase().includes(this.hrNameFilter.toLowerCase())) &&
         (!this.roundFilter || candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase())) &&
+        (!this.interviewerFilter || candidate.Interviewer?.toLowerCase().includes(this.interviewerFilter.toLowerCase())) &&
         (!this.activityDateFilter || this.formatDate(candidate.Interview_Date).includes(this.activityDateFilter)) &&
         (!this.statusFilter || candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()))
       );
@@ -105,6 +103,8 @@ export class CEOComponent implements OnInit {
     this.positionFilter = '';
     this.hrNameFilter = '';
     this.roundFilter = '';
+    this.interviewerFilter = '';  // Clear the interviewer filter
+
     this.activityDateFilterInput = '';
     this.activityDateFilter = '';
     this.statusFilter = '';

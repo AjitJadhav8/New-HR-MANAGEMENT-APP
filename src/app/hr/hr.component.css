@@ -425,7 +425,7 @@
   overflow: hidden; /* Prevent text overflow */
 }
 
-
+/* ----------------- */
 
 /* Styling for the filter container */
 .filter-container {
@@ -596,8 +596,6 @@
 .get-candidate-table-container::-webkit-scrollbar {
   height: 6px;
 }
-
-
 
 
 

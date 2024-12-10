@@ -1,85 +1,286 @@
+:host {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-color: rgba(240, 240, 240, 0.9);
+  color: #333;
+  padding: 0;
+}
+
+
+
 /* Center Container */
-.table-container {
+/* .table-container {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
-}
-/* Styling for Filter Section */
+} */
+
+
+/* 
 .filter-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;  /* Reduced gap between elements */
-  margin-bottom: 15px;  /* Reduced bottom margin */
+  gap: 10px;  
+  margin-bottom: 15px; 
   justify-content: center;
 }
 
-/* Style for input fields */
 .filter-container input {
-  padding: 6px 10px;  /* Reduced padding for a smaller height */
-  font-size: 13px;  /* Slightly smaller font size */
+  padding: 6px 10px;  
+  font-size: 13px; 
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 160px;  /* Adjusted width */
+  width: 160px;  
   box-sizing: border-box;
   transition: border-color 0.3s ease;
 }
 
 .filter-container input:focus {
-  border-color: #3498db;  /* Blue border on focus */
+  border-color: #3498db;  
   outline: none;
 }
 
-/* Style for filter button */
 .filter-container button {
-  padding: 6px 14px;  /* Reduced padding for a more compact button */
+  padding: 6px 14px;  
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 13px;  /* Slightly smaller font size */
+  font-size: 13px;  
   cursor: pointer;
   transition: background-color 0.3s ease;
-  margin-top: 6px;  /* Reduced top margin */
+  margin-top: 6px;  
 }
 
 .filter-container button:hover {
-  background-color: #2980b9;  /* Darker blue on hover */
+  background-color: #2980b9;  
 }
 
-/* Clear Filters Button */
 .clear-filters-button {
   background-color: #e74c3c;
   border: none;
-  padding: 6px 14px;  /* Smaller padding */
+  padding: 6px 14px;  
   color: white;
   border-radius: 4px;
-  font-size: 13px;  /* Smaller font size */
+  font-size: 13px; 
   cursor: pointer;
-  margin-top: 6px;  /* Reduced top margin */
+  margin-top: 6px;  
   transition: background-color 0.3s ease;
 }
 
 .clear-filters-button:hover {
-  background-color: #c0392b;  /* Darker red on hover */
+  background-color: #c0392b;  
+} */
+
+/* Styling for the filter container */
+/* Container for the candidate detail table */
+.table-container-detail {
+  width: auto;
+  overflow-x: auto; /* Horizontal scroll if necessary */
+  padding: 5px;
+  box-sizing: border-box;
+}
+.table-container-detail h2 {
+  color: #333;
+  font-size: 24;
+  font-weight: 650;
+  margin-bottom: 15px;
+}
+/* Custom scrollbar styling */
+.table-container-detail::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* Filter Section */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.filter-container input,
+.filter-container select {
+  flex: 1;
+  min-width: 120px;
+  padding: 2px 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 12px;
+  height: 32px;
+  box-sizing: border-box;
+}
+
+.filter-container input::placeholder {
+  color: #888;
+  font-size: 12px;
+}
+
+.filter-container button {
+  padding: 2px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  height: 32px;
+}
+
+.filter-container button:hover {
+  background-color: #0056b3;
+}
+
+/* Reduce the width of the first column */
+.candidate-table-detail th:first-child,
+.candidate-table-detail td:first-child {
+  width: 50px; /* Adjust this value as needed */
+  text-align: center;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* Table styling */
+.candidate-table-detail {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background-color: white;
+  text-align: center;
+}
+
+/* Header row styling */
+.candidate-table-detail thead th {
+  background-color: #343a40;
+  color: white;
+  padding: 2.5px 3px;
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Table rows styling */
+.candidate-table-detail tbody tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+.candidate-table-detail tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.candidate-table-detail tbody td {
+  padding: 0.5px 1.5px;
+  border: 1px solid #ddd;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+/* Remarks column with tooltip */
+.candidate-table-detail tbody td.remarks {
+  position: relative;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.candidate-table-detail tbody td.remarks:hover::after {
+  content: attr(title);
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  background-color: black;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* Pagination controls */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination-controls button {
+  padding: 6px 12px;
+  font-size: 13px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.pagination-controls button:hover {
+  background-color: #0056b3;
+}
+
+.pagination-controls button:disabled {
+  background-color: #e0e0e0;
+  color: #a0a0a0;
+  cursor: not-allowed;
+  border: none;
+}
+/* Transparent green background for 'Selected' */
+.status-selected {
+  background-color: rgba(0, 128, 0, 0.2);
+  color: #006400;
+  border: 1px solid #006400;
+}
+
+/* Transparent darker green background for 'Final Selected' */
+.status-final-selected {
+  background-color: rgba(0, 50, 0, 0.4);
+  color: #e9e9e9;
+  border: 1px solid #002800;
+}
+
+/* Transparent red background for 'Rejected' */
+.status-rejected {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: #8b0000;
+  border: 1px solid #8b0000;
+}
+
+/* Transparent yellow background for all other statuses */
+.status-other {
+  background-color: rgba(255, 255, 0, 0.2);
+  color: #b8860b;
+  border: 1px solid #b8860b;
 }
 
 
-/* Styling for Candidate Table */
-.candidate-table-detail {
-  width: 80%; /* Increased width for the second table */
+/* .candidate-table-detail {
+  width: 80%; 
   border-collapse: collapse;
   font-size: 14px;
   font-family: Arial, sans-serif;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 0 auto; /* Center the table */
+  margin: 0 auto; 
 }
 
 .candidate-table-detail thead tr {
   background-color: #3498db;
   color: #fff;
-  text-transform: uppercase;
+  text-transform: none;
   letter-spacing: 0.05em;
 }
 
@@ -107,7 +308,6 @@
   color: #333;
 }
 
-/* Tooltip for Remarks Column */
 .candidate-table-detail tbody td.remarks {
   position: relative;
   max-width: 120px;
@@ -115,22 +315,21 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   cursor: pointer;
-  font-size: 14px; /* Adjusted font size for remarks */
+  font-size: 14px; 
 }
 
-/* Tooltip appearance on hover for remarks */
 .candidate-table-detail tbody td.remarks:hover::after {
-  content: attr(title); /* Use the 'title' attribute content */
+  content: attr(title); 
   position: absolute;
   left: 50%;
   top: 100%;
   transform: translateX(-50%);
   margin-top: 5px;
-  background-color: black; /* Black background */
-  color: white; /* White text */
+  background-color: black; 
+  color: white;
   padding: 5px 10px;
   border-radius: 4px;
-  font-size: 14px; /* Smaller font size for tooltip */
+  font-size: 14px; 
   white-space: normal;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 10;
@@ -140,10 +339,9 @@
   pointer-events: none;
 }
 
-/* Optional: Style when the content is truncated and hovering over the remarks */
 .candidate-table-detail tbody td.remarks:hover {
-  overflow: hidden; /* Prevent text overflow */
-}
+  overflow: hidden;
+} */
 
 .pagination-controls {
   display: flex;
@@ -257,7 +455,7 @@
 
 
 /* Candidate Table Styling */
-.candidate-table {
+/* .candidate-table {
   width: 60%;
   border-collapse: collapse;
   font-size: 14px;
@@ -295,7 +493,7 @@
 
 .candidate-table tbody td {
   color: #333;
-}
+} */
 
 .pagination-controls {
   display: flex;
@@ -561,7 +759,7 @@ h2 {
     width: 95%;
   }
 
-  .candidate-table thead {
+  /* .candidate-table thead {
     display: none;
   }
 
@@ -591,7 +789,7 @@ h2 {
 
   .candidate-table tbody tr {
     margin-bottom: 15px;
-  }
+  } */
 
   .change-password-form {
     width: 90%;

@@ -521,44 +521,83 @@ exports.deleteInterviewRound = (req, res) => {
 
   
   // Get all distinct candidates from all HRs (no interview details in the list) for CEO Done
-  exports.getAllCandidates = (req, res) => {
-    const query = `
-      SELECT DISTINCT 
-          c.candidate_id AS Candidate_ID,
-          c.candidate_name AS Candidate_Name,
-          p.position_name AS Position,  -- Fetch position name from the master_positions table
-          u.user_name AS HR_Name,  -- Fetch HR name from the trans_users table
-          ir.round_number AS Round_Number,  -- Fetch round number from trans_interview_rounds table
-          ir.interview_date AS Interview_Date,  -- Fetch interview date from trans_interview_rounds table
+//   exports.getAllCandidates = (req, res) => {
+//     const query = `
+//       SELECT DISTINCT 
+//           c.candidate_id AS Candidate_ID,
+//           c.candidate_name AS Candidate_Name,
+//           p.position_name AS Position,  -- Fetch position name from the master_positions table
+//           u.user_name AS HR_Name,  -- Fetch HR name from the trans_users table
+//           ir.round_number AS Round_Number,  -- Fetch round number from trans_interview_rounds table
+//           ir.interview_date AS Interview_Date,  -- Fetch interview date from trans_interview_rounds table
 
-          ir.updated_at AS Updated_At,  -- Include the updated_at field
+//           ir.updated_at AS Updated_At,  -- Include the updated_at field
 
 
-          s.status_name AS Status,  -- Fetch interview status from master_statuses table
-          ir.remarks AS Remarks,  -- Fetch remarks from trans_interview_rounds table
-          ir.ir_id 
-      FROM 
-          trans_candidates c
-      LEFT JOIN 
-          trans_users u ON c.user_id = u.user_id  -- Join with trans_users to get HR name
-      LEFT JOIN 
-          master_positions p ON c.position_id = p.position_id  -- Join with master_positions to get position name
-      LEFT JOIN 
-          trans_interview_rounds ir ON c.candidate_id = ir.candidate_id  -- Join with trans_interview_rounds to get interview round details
-      LEFT JOIN 
-          master_statuses s ON ir.status_id = s.status_id  -- Join with master_statuses to get the status name
-      ORDER BY 
-          c.candidate_id DESC, ir.ir_id DESC;  -- Order by candidate ID and round number (descending)
-    `;
+//           s.status_name AS Status,  -- Fetch interview status from master_statuses table
+//           ir.remarks AS Remarks,  -- Fetch remarks from trans_interview_rounds table
+//           ir.ir_id 
+//       FROM 
+//           trans_candidates c
+//       LEFT JOIN 
+//           trans_users u ON c.user_id = u.user_id  -- Join with trans_users to get HR name
+//       LEFT JOIN 
+//           master_positions p ON c.position_id = p.position_id  -- Join with master_positions to get position name
+//       LEFT JOIN 
+//           trans_interview_rounds ir ON c.candidate_id = ir.candidate_id  -- Join with trans_interview_rounds to get interview round details
+//       LEFT JOIN 
+//           master_statuses s ON ir.status_id = s.status_id  -- Join with master_statuses to get the status name
+//       ORDER BY 
+//           c.candidate_id DESC, ir.ir_id DESC;  -- Order by candidate ID and round number (descending)
+//     `;
     
-    db.query(query, (err, results) => {
-      if (err) {
-        console.error('Database query error:', err);
-        return res.status(500).json({ error: 'Database query error' });
-      }
-      console.log('Distinct candidates with interview rounds results:', results);
-      res.json(results);
-    });
+//     db.query(query, (err, results) => {
+//       if (err) {
+//         console.error('Database query error:', err);
+//         return res.status(500).json({ error: 'Database query error' });
+//       }
+//       console.log('Distinct candidates with interview rounds results:', results);
+//       res.json(results);
+//     });
+// };
+exports.getAllCandidates = (req, res) => {
+  const query = `
+    SELECT DISTINCT 
+        c.candidate_id AS Candidate_ID,
+        c.candidate_name AS Candidate_Name,
+        p.position_name AS Position,
+        u.user_name AS HR_Name,
+        ir.round_number AS Round_Number,
+        iv.interviewer_name AS Interviewer,  -- Include the Interviewer
+        ir.interview_date AS Interview_Date,
+        ir.updated_at AS Updated_At,
+        s.status_name AS Status,
+        ir.remarks AS Remarks,
+        ir.ir_id 
+    FROM 
+        trans_candidates c
+    LEFT JOIN 
+        trans_users u ON c.user_id = u.user_id
+    LEFT JOIN 
+        master_positions p ON c.position_id = p.position_id
+    LEFT JOIN 
+        trans_interview_rounds ir ON c.candidate_id = ir.candidate_id
+    LEFT JOIN 
+        master_interviewers iv ON ir.interviewer_id = iv.interviewer_id  -- Join with master_interviewers
+    LEFT JOIN 
+        master_statuses s ON ir.status_id = s.status_id
+    ORDER BY 
+        c.candidate_id DESC, ir.ir_id DESC;
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+    console.log('Candidates with interview rounds:', results);
+    res.json(results);
+  });
 };
 
 
