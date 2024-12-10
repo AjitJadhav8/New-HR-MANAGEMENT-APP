@@ -77,6 +77,13 @@
   background-color: #c0392b;  
 } */
 
+
+
+
+
+.underlined {
+  text-decoration: underline;
+}
 /* Styling for the filter container */
 /* Container for the candidate detail table */
 .table-container-detail {
@@ -641,21 +648,21 @@
   white-space: nowrap; /* Prevent wrapping */
   overflow: hidden;
   text-overflow: ellipsis; /* Display ellipsis for truncated text */
-  padding: 8px 10px; /* Consistent padding */
+  padding: 4px 5px; /* Consistent padding */
   border: 1px solid #ddd;
 }
 
 .modal-content table th {
-  padding: 6px 8px;
-  background-color: #3498db;
+  padding: 3px 4px;
+  background-color: #343a40;
   color: white;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .modal-content table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 16px;
+  font-size: 13px;
 }
 
 .modal-content table tr:hover td {
@@ -667,12 +674,12 @@
   width: 100%;
   margin-top: 15px;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .modal-content th, 
 .modal-content td {
-  padding: 6px;
+  padding: 3px;
   border: 1px solid #ddd;
   text-align: center;
 }
@@ -680,7 +687,7 @@
 .modal-content th {
   background-color: #3498db;
   color: white;
-  text-transform: uppercase;
+  text-transform: none;
 }
 
 .modal-content td {

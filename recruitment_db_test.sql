@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `recruitment_db_main` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `recruitment_db_main`;
+CREATE DATABASE  IF NOT EXISTS `recruitment_db_test` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `recruitment_db_test`;
 -- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
--- Host: localhost    Database: recruitment_db_main
+-- Host: localhost    Database: recruitment_db_test
 -- ------------------------------------------------------
 -- Server version	8.0.39
 
@@ -230,4 +230,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-26 14:47:48
+-- Dump completed on 2024-12-10 16:34:08

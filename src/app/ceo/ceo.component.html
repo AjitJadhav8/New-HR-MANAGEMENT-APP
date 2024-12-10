@@ -8,7 +8,6 @@
     <button class="logout-button" (click)="showChangePasswordForm = !showChangePasswordForm">Change Password</button>
 
     <button class="logout-button" (click)="logout()">Logout</button>
-   
   </div>
 </div>
  
@@ -250,14 +249,14 @@
   <div class="modal" *ngIf="selectedCandidate">
     <div class="modal-content">
       <span class="close" (click)="closeModal()">&times;</span>
-      <h3>{{ selectedCandidate.Candidate_Name }} - Details</h3>
+      <h3> <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span> - Details</h3>
       <p><strong>Position:</strong> {{ selectedCandidate.Position }}</p>
       <p><strong>HR Name:</strong> {{ selectedCandidate.HR_Name }}</p>
       <h4>Interview Rounds:</h4>
       <table>
         <thead>
           <tr>
-            <th>Round Number</th>
+            <th>Rounds</th>
             <th>Interviewer</th>
             <th>Last Activity Date</th>
 

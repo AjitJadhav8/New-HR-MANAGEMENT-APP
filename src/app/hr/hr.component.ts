@@ -25,6 +25,9 @@ export class HRComponent implements OnInit {
   isHR: boolean = false;
   isAdmin: boolean = false; // New property to check if the user is Admin
 
+
+
+  
   ngOnInit(): void {
     // Fetch the logged-in HR details and permission from localStorage
     this.loggedInHR = localStorage.getItem('loggedInHR') || '';
@@ -84,6 +87,8 @@ export class HRComponent implements OnInit {
 // ----------------Get Candidate Section ------------
 
 getCandidates() {
+
+
   // console.log('Fetching candidates for HR ID:', this.loggedInHRId);
 
   this.dataService.getCandidates(this.loggedInHRId)
