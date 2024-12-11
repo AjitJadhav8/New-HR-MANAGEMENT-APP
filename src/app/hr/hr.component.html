@@ -1,6 +1,6 @@
 <div class="navbar-main">
   <img src="credenca-logo.png" alt="Logo" class="navbar-logo" />
-  <p class="navbar-center"> &nbsp; </p>
+  <p class="navbar-center"> &nbsp; Testing Environment &nbsp;</p>
   <div class="navbar-right">
     <p>Welcome, {{ loggedInHR }}</p>
     <button *ngIf="isAdmin" (click)="toggleAdminPanel()">Open Admin Panel</button>
@@ -101,9 +101,75 @@
 
 
 
+<div *ngIf="isAdmin && isHR">
+  
+  <div class="get-all-candidates-table">
+    <h3>All Candidates Information</h3>
 
+    <!-- Candidates Table -->
+    <div class="get-candidate-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Serial No.</th>
+            <th>Name</th>
+            <th>Position</th>
+            <th>HR Name</th>
+            <th>Round</th>
+            <th>Interviewer</th>
+            <th>Activity Date</th>
+            <th>Update Date</th>
+            <th>Status</th>
+            <th>Remarks</th>
+            <th>Actions</th> <!-- New column for actions -->
 
+          </tr>
+        </thead>
 
+        <tbody>
+          <tr *ngFor="let allCandidate of paginatedAllCandidates; let i = index">
+            <td>{{ (currentPageAllCandidates - 1) * pageSizeAllCandidates + (i + 1) }}</td>
+            <td>{{ allCandidate.Candidate_Name }}</td>
+            <td>{{ allCandidate.Position }}</td>
+            <td>{{ allCandidate.HR_Name }}</td>
+            <td>{{ allCandidate.Round_Number || 'N/A' }}</td>
+            <td>{{ allCandidate.Interviewer || 'N/A' }}</td>
+            <td>{{ allCandidate.Interview_Date || 'N/A' }}</td>
+            <td>{{ allCandidate.Updated_At || 'N/A' }}</td>
+
+            <td [ngClass]="{
+              'status-selected': allCandidate.Status === 'Selected',
+              'status-final-selected': allCandidate.Status === 'Final Selected',
+              'status-rejected': allCandidate.Status === 'Rejected',
+              'status-other': allCandidate.Status !== 'Selected' && allCandidate.Status !== 'Final Selected' && allCandidate.Status !== 'Rejected'
+            }">
+              {{ allCandidate.Status || 'N/A' }}
+            </td>
+
+            <td class="remarks" [title]="allCandidate.Remarks">{{ allCandidate.Remarks }}</td>
+
+            <!-- Actions Column -->
+            <td>
+              <button class="action-button" (click)="openHistoryModalForCandidate(allCandidate)">
+                History
+              </button>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+
+     
+
+    </div>
+     <!-- Pagination Controls -->
+     <div class="pagination-controls">
+      <button (click)="previousPageAllCandidates()" [disabled]="currentPageAllCandidates === 1" class="pagination-button">Previous</button>
+      <span>Page {{ currentPageAllCandidates }} of {{ totalPagesAllCandidates }}</span>
+      <button (click)="nextPageAllCandidates()" [disabled]="currentPageAllCandidates === totalPagesAllCandidates" class="pagination-button">Next</button>
+    </div>
+  </div>
+</div>
 
 
 
@@ -112,6 +178,8 @@
 <!-- hr  if role -->
 <div *ngIf="isHR">
   <div class="container">
+
+
     <!-- Button to Open Modal -->
     <button (click)="openModal()">Add New Candidate</button>
     <!-- Modal for Adding New Candidate -->
@@ -197,7 +265,6 @@
       </div>
     </div>
 
-    
 
     <!-- candidate list -->
     <div class="get-candidate-table-container">
@@ -241,7 +308,7 @@
         <button (click)="clearFilters()">Clear Filters</button>
       
       </div>
-    
+
       <div class="get-candidate-table">
         <table>
           <thead>
@@ -359,22 +426,6 @@
           </select>
           
           
-          <!-- <select id="decision" [(ngModel)]="selectedDecision" name="decision" required>
-            <option value="Selected">Selected</option>
-            <option value="Rejected">Rejected</option>
-            <option value="On Hold">On Hold</option>
-            <option value="Final Selected">Final Selected</option>
-          </select>           -->
-    
-          <!-- <label for="interviewDate">Interview Date</label>
-          <input
-            type="date"
-            id="interviewDate"
-            [(ngModel)]="interviewDate"
-            name="interviewDate"
-            [min]="lastInterviewDate" 
-            required 
-          /> -->
     
           <label for="remarks">Remarks</label>
           <textarea id="remarks" [(ngModel)]="remarks" name="remarks"></textarea>
@@ -404,13 +455,9 @@
         <select [(ngModel)]="updatedRound.round_number" name="round_number" required>
           <option value="" disabled>Select Round Number</option>
           <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-          <!-- <option value="Custom">Custom</option> -->
         </select>
       </div>
-      <!-- <div *ngIf="updatedRound.round_number === 'Custom'">
-        <label for="customRoundNumber">Enter Custom Round Number:</label>
-        <input type="text" [(ngModel)]="updatedRound.customRoundNumber" name="customRoundNumber" />
-      </div> -->
+
 
       <!-- Interviewer Selection -->
       <div>
@@ -480,22 +527,6 @@
           </div>
 
 
-          <!-- <div>
-            <label for="round_number">Round:</label>
-            <select [(ngModel)]="newRound.round_number" name="round_number" required>
-              <option value="" disabled>Select Round Number</option>
-              <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-            </select>
-          </div> -->
-
-                        <!-- it was on upperof select <option value="Custom">Custom</option> -->
-
-          <!-- <div *ngIf="newRound.round_number === 'Custom'">
-            <label for="customRoundNumber">Enter Custom Round Number:</label>
-            <input type="text" [(ngModel)]="newRound.customRoundNumber" name="customRoundNumber"
-              placeholder="Type custom round number" />
-          </div> -->
-
           <!-- Interviewer Selection (No Custom Option) -->
           <div *ngIf="!isReschedule">
             <label for="interviewer">Interviewer:</label>
@@ -512,21 +543,6 @@
             <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required
               [attr.min]="lastInterviewDate" />
           </div>
-
-          <!-- Remove Status Selection 02-12 (No Custom Option) -->
-          <!-- <div>
-            <label for="status">Status:</label>
-            <select [(ngModel)]="newRound.status" name="status" required>
-              <option value="" disabled>Select Status</option>
-              <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-            </select>
-          </div> -->
-
-          <!-- Remarks -->
-          <!-- <div>
-            <label for="remarks">Remarks:</label>
-            <textarea [(ngModel)]="newRound.remarks" name="remarks"></textarea>
-          </div> -->
 
           <div>
             <label for="remarks">
@@ -561,14 +577,8 @@
           <select [(ngModel)]="selectedCandidate.Position" name="position"
             (change)="isCustomPosition = selectedCandidate.Position === 'Custom'">
             <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
-            <!-- <option value="Custom">Custom</option> -->
           </select>
 
-          <!-- Custom Position Input -->
-          <!-- <div *ngIf="isCustomPosition">
-            <label for="customPosition">Enter Custom Position:</label>
-            <input type="text" [(ngModel)]="selectedCandidate.customPosition" name="customPosition" required>
-          </div> -->
           <br> <br>
           <button type="submit">Update Candidate</button>
 
@@ -580,35 +590,6 @@
     </div>
 
     <!-- Interview History Modal -->
-    <!-- <div *ngIf="showHistory" class="modal-history">
-      <div class="modal-content-history">
-        <span class="close-btn" (click)="closeHistoryModal()">&lt;</span>
-        <h3>Interview History for {{ selectedCandidate.Candidate_Name }}</h3>
-        <table class="view-history-table">
-          <thead>
-            <tr>
-              <th>Round </th>
-              <th>Interviewer</th>
-              <th>Interview Date</th>
-              <th>Status</th>
-              <th>Remarks</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let round of candidateHistory">
-              <td>{{ round.Round_Number }}</td>
-              <td>{{ round.Interviewer }}</td>
-              <td>{{ round.Interview_Date }}</td>
-              <td>{{ round.Status }}</td>
-              <td class="remarks" [title]="round.Remarks || 'N/A'">
-                {{ round.Remarks || 'N/A' }}
-              </td>              
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div> -->
-
 
     <div *ngIf="showHistory" class="modal-history">
       <div class="modal-content-history">

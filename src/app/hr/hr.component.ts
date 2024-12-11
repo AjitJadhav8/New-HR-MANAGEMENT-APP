@@ -16,7 +16,6 @@ export class HRComponent implements OnInit {
 
   loggedInHR: string = '';
   loggedInHRId: string | null = '';
-  candidates: any[] = [];
   selectedCandidate: any = null;
   showAddRound: boolean = false;  // New property to control Add Round section visibility
   showUpdateCandidate: boolean = false;
@@ -54,19 +53,34 @@ export class HRComponent implements OnInit {
     console.log('Is HR:', this.isHR);
     console.log('Logged in HR:', this.loggedInHR);
     console.log('Logged in HR ID:', this.loggedInHRId);
+  // Call `getAllCandidates` only if the user is `HrAdmin`
+  if (userPermission === 'HrAdmin') {
+    this.getAllCandidatesHrAdmin();
+  }
 
+  // Fetch candidates if the logged-in user has an HR ID
+  if (this.loggedInHRId && this.isHR) {
+    this.getCandidates();
+  }
+
+  // Fetch admin-specific data if the user has Admin rights
+  if (this.isAdmin) {
+    this.fetchAdminData();
+  } else {
+    console.error('Access denied: You do not have Admin permissions.');
+  }
     // Fetch data if the logged-in HR exists
-    if (this.loggedInHRId) {
-      // Fetch candidates if the HR is logged in
-      this.getCandidates();
+    // if (this.loggedInHRId) {
+    //   // Fetch candidates if the HR is logged in
+    //   this.getCandidates();
 
-      // Fetch admin data if the user has Admin rights
-      if (this.isAdmin) {
-        this.fetchAdminData();
-      }
-    } else {
-      console.error('No HR is logged in!');
-    }
+    //   // Fetch admin data if the user has Admin rights
+    //   if (this.isAdmin) {
+    //     this.fetchAdminData();
+    //   }
+    // } else {
+    //   console.error('No HR is logged in!');
+    // }
 
     // Fetch interview options for dropdowns (positions, statuses, interviewers)
     this.dataService.getInterviewOptions().subscribe((data) => {
@@ -81,13 +95,84 @@ export class HRComponent implements OnInit {
 
 
 
+  allCandidates: any[] = [];
+
+  getAllCandidatesHrAdmin() {
+    this.dataService.getAllCandidatesHrAdmin()
+      .subscribe(
+        (data) => {
+          this.allCandidates = data.map(candidate => ({
+            ...candidate,
+            Interview_Date: candidate.interviewRounds.length > 0
+              ? (candidate.interviewRounds[0].Interview_Date ? this.formatLocalDate(candidate.interviewRounds[0].Interview_Date) : 'N/A')
+              : 'N/A',
+            Updated_At: candidate.interviewRounds.length > 0
+              ? (candidate.interviewRounds[0].Updated_At ? this.formatLocalDate(candidate.interviewRounds[0].Updated_At) : 'N/A')
+              : 'N/A',
+            Round_Number: candidate.interviewRounds.length > 0
+              ? candidate.interviewRounds[0].Round_Number
+              : 'N/A',
+            Interviewer: candidate.interviewRounds.length > 0
+              ? candidate.interviewRounds[0].Interviewer
+              : 'N/A',
+            Status: candidate.interviewRounds.length > 0
+              ? candidate.interviewRounds[0].Status
+              : 'N/A',
+            Remarks: candidate.interviewRounds.length > 0
+              ? candidate.interviewRounds[0].Remarks
+              : 'N/A',
+            HR_Name: candidate.HR_Name  // Include HR_Name for display
+          }));
+  
+          this.totalCandidatesAll = this.allCandidates.length;
+          this.updatePageAllCandidates();
+        },
+        (error) => {
+          console.error('Error fetching all candidates for HR Admin:', error.message || error);
+        }
+      );
+  }
+  
+  
+  // For All Candidates (HR Admin Table)
+currentPageAllCandidates: number = 1;
+pageSizeAllCandidates: number = 30;
+totalCandidatesAll: number = 0;
+paginatedAllCandidates: any[] = [];
+  
+  
+updatePageAllCandidates() {
+  const startIndex = (this.currentPageAllCandidates - 1) * this.pageSizeAllCandidates;
+  const endIndex = this.currentPageAllCandidates * this.pageSizeAllCandidates;
+  this.paginatedAllCandidates = this.allCandidates.slice(startIndex, endIndex);
+}
+// For All Candidates Pagination Controls
+nextPageAllCandidates() {
+  if (this.currentPageAllCandidates < this.totalPagesAllCandidates) {
+    this.currentPageAllCandidates++;
+    this.updatePageAllCandidates();
+  }
+}
+
+previousPageAllCandidates() {
+  if (this.currentPageAllCandidates > 1) {
+    this.currentPageAllCandidates--;
+    this.updatePageAllCandidates();
+  }
+}
+
+get totalPagesAllCandidates() {
+  return Math.ceil(this.allCandidates.length / this.pageSizeAllCandidates);
+}
+
+  
 
 
+  candidates: any[] = [];
 
 // ----------------Get Candidate Section ------------
 
 getCandidates() {
-
 
   // console.log('Fetching candidates for HR ID:', this.loggedInHRId);
 
@@ -121,6 +206,7 @@ getCandidates() {
 
         // this.totalCandidates = this.candidates.length;  // Total number of candidates for pagination
         this.updatePageCandidates();
+        console.log('Processed Candidates:', this.candidates);
 
         // console.log('Fetched candidates:', this.candidates);
       },
@@ -129,12 +215,6 @@ getCandidates() {
       }
     );
 }
-
-
-
-
-
-
 
 
 
@@ -209,6 +289,7 @@ clearFilters() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
       this.updatePageCandidates();
+
     }
   }
 
@@ -217,6 +298,7 @@ clearFilters() {
     if (this.currentPage > 1) {
       this.currentPage--;
       this.updatePageCandidates();
+
     }
   }
 
@@ -715,6 +797,11 @@ clearFilters() {
     this.getCandidateHistory(this.selectedCandidate.Candidate_ID);
   }
 
+  // Open history modal for a specific candidate
+openHistoryModalForCandidate(candidate: any) {
+  this.selectedCandidate = candidate; // Save the selected candidate details
+  this.showHistorySection(); // Trigger the history modal
+}
   lastInterviewDate: string = ''; // Store the last interview date for the selected candidate
 
   getCandidateHistory(candidateId: number) {

@@ -140,6 +140,9 @@ updateInterviewRound(candidateId: number, roundData: any): Observable<any> {
 
 
 
+getAllCandidatesHrAdmin() {
+  return this.http.get<any[]>(`${this.apiUrl}/api/getAllCandidatesHrAdmin`);
+}
 
 
 

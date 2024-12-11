@@ -56,6 +56,7 @@ router.delete('/users/:userId', allController.deleteUser);
 
 router.put('/interview-rounds/:id', allController.updateInterviewRound);
 
+router.get('/getAllCandidatesHrAdmin', allController.getAllCandidatesHrAdmin);
 
 
 module.exports = router;

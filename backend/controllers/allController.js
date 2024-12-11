@@ -1052,3 +1052,81 @@ exports.updateInterviewRound = (req, res) => {
   });
 };
 
+
+
+
+// New API to get all candidates for HR Admin
+exports.getAllCandidatesHrAdmin = (req, res) => {
+  const query = `
+    SELECT 
+      c.candidate_id AS Candidate_ID,
+      c.candidate_name AS Candidate_Name,
+      p.position_name AS Position,
+      ir.round_number AS Round_Number,
+      ir.interview_date AS Interview_Date,
+      ir.updated_at AS Updated_At,  
+      ir.is_deleted AS Is_Deleted,  
+      i.interviewer_name AS Interviewer,
+      s.status_name AS Status,
+      ir.remarks AS Remarks,
+      u.user_name AS HR_Name  -- Include the HR name from trans_users
+    FROM 
+      trans_candidates c
+    LEFT JOIN 
+      trans_interview_rounds ir ON c.candidate_id = ir.candidate_id AND ir.is_deleted = 0
+    LEFT JOIN 
+      master_positions p ON c.position_id = p.position_id
+    LEFT JOIN 
+      master_interviewers i ON ir.interviewer_id = i.interviewer_id
+    LEFT JOIN 
+      master_statuses s ON ir.status_id = s.status_id
+    LEFT JOIN 
+      trans_users u ON c.user_id = u.user_id  -- Join with trans_users to get HR name
+    ORDER BY 
+      c.candidate_id DESC, ir.ir_id DESC;
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+
+    const candidates = results.reduce((acc, candidate) => {
+      const existingCandidate = acc.find(c => c.Candidate_ID === candidate.Candidate_ID);
+
+      if (existingCandidate) {
+        if (candidate.Round_Number && candidate.Is_Deleted === 0) {
+          existingCandidate.interviewRounds.push({
+            Round_Number: candidate.Round_Number,
+            Interviewer: candidate.Interviewer,
+            Interview_Date: candidate.Interview_Date,
+            Updated_At: candidate.Updated_At,
+            Status: candidate.Status,
+            Remarks: candidate.Remarks
+          });
+        }
+      } else {
+        acc.push({
+          Candidate_ID: candidate.Candidate_ID,
+          Candidate_Name: candidate.Candidate_Name,
+          Position: candidate.Position,
+          HR_Name: candidate.HR_Name,  // Include HR_Name here
+          interviewRounds: candidate.Round_Number && candidate.Is_Deleted === 0 ? [{
+            Round_Number: candidate.Round_Number,
+            Interviewer: candidate.Interviewer,
+            Interview_Date: candidate.Interview_Date,
+            Updated_At: candidate.Updated_At,
+            Status: candidate.Status,
+            Remarks: candidate.Remarks
+          }] : []
+        });
+      }
+
+      return acc;
+    }, []);
+
+    res.json(candidates);
+  });
+};
+
