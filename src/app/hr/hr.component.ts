@@ -23,6 +23,7 @@ export class HRComponent implements OnInit {
   todayDate: string = ''; 
   isHR: boolean = false;
   isAdmin: boolean = false; // New property to check if the user is Admin
+  isHrAdmin: boolean = false; // New property for HrAdmin role
 
 
 
@@ -37,6 +38,8 @@ export class HRComponent implements OnInit {
     if (userPermission === 'HrAdmin') {
       this.isAdmin = true;
       this.isHR = true;
+      this.isHrAdmin = true; // Only HrAdmin gets this property set to true
+
     } else if (userPermission === 'Admin') {
       this.isAdmin = true;
       this.isHR = false;
@@ -51,6 +54,8 @@ export class HRComponent implements OnInit {
     // Log the role details for debugging
     console.log('Is Admin:', this.isAdmin);
     console.log('Is HR:', this.isHR);
+    console.log('Is HrAdmin:', this.isHrAdmin);
+
     console.log('Logged in HR:', this.loggedInHR);
     console.log('Logged in HR ID:', this.loggedInHRId);
   // Call `getAllCandidates` only if the user is `HrAdmin`
@@ -93,6 +98,12 @@ export class HRComponent implements OnInit {
     this.todayDate = today.toISOString().split('T')[0];
   }
 
+  isHRDetailsVisible: boolean = false; // Track visibility of HR details table
+
+toggleHRDetails() {
+  this.isHRDetailsVisible = !this.isHRDetailsVisible;
+}
+
 
 
   allCandidates: any[] = [];
@@ -123,16 +134,88 @@ export class HRComponent implements OnInit {
               : 'N/A',
             HR_Name: candidate.HR_Name  // Include HR_Name for display
           }));
-  
-          this.totalCandidatesAll = this.allCandidates.length;
-          this.updatePageAllCandidates();
+          this.filteredAllCandidates = this.allCandidates;
+      this.totalCandidatesAll = this.filteredAllCandidates.length;
+      this.updatePageAllCandidates();
+          // this.totalCandidatesAll = this.allCandidates.length;
+          // this.updatePageAllCandidates();
         },
         (error) => {
           console.error('Error fetching all candidates for HR Admin:', error.message || error);
         }
       );
   }
+
+
+  filteredAllCandidates: any[] = [];
+
+nameFilterAll: string = '';
+positionFilterAll: string = '';
+roundFilterAll: string = '';
+interviewerFilterAll: string = '';
+activityDateFilterInputAll: string = '';
+statusFilterAll: string = '';
+activityDateFilterAll: string = '';
+hrNameFilterAll: string = '';  // Added HR name filter
+
+
+// This method is triggered when the date changes for HR Admin table
+onDateChangeAll() {
+  if (this.activityDateFilterInputAll) {
+    // Convert the input date (yyyy-mm-dd) to dd-mmm-yyyy format using the existing function
+    this.activityDateFilterAll = this.formatLocalDate(this.activityDateFilterInputAll);
+  } else {
+    // Clear the filter if no date is selected
+    this.activityDateFilterAll = '';
+  }
+  // Apply the filters after the date change
+  this.applyFiltersAllCandidates();
+}
+
   
+// Apply filters to All Candidates
+applyFiltersAllCandidates() {
+  this.filteredAllCandidates = this.allCandidates.filter(candidate => {
+    return (
+      (this.nameFilterAll ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilterAll.toLowerCase()) : true) &&
+      (this.positionFilterAll ? candidate.Position.toLowerCase().includes(this.positionFilterAll.toLowerCase()) : true) &&
+      (this.roundFilterAll ? candidate.Round_Number.toLowerCase().includes(this.roundFilterAll.toLowerCase()) : true) &&
+      (this.interviewerFilterAll ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilterAll.toLowerCase()) : true) &&
+      (this.hrNameFilterAll ? candidate.HR_Name.toLowerCase().includes(this.hrNameFilterAll.toLowerCase()) : true) &&  // Filter for HR name
+
+      (this.activityDateFilterAll ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilterAll) : true) &&
+      (this.statusFilterAll ? candidate.Status.toLowerCase().includes(this.statusFilterAll.toLowerCase()) : true)
+    );
+  });
+
+  // Update the total candidates for pagination
+  this.totalCandidatesAll = this.filteredAllCandidates.length;
+  this.currentPageAllCandidates = 1;
+  this.updatePageAllCandidates();
+}
+
+
+// Clear filters
+clearAllFilters() {
+  this.nameFilterAll = '';
+  this.positionFilterAll = '';
+  this.roundFilterAll = '';
+  this.interviewerFilterAll = '';
+  this.hrNameFilterAll = '';  // Clearing HR name filter
+
+  this.activityDateFilterInputAll = '';
+  this.statusFilterAll = '';
+  this.applyFiltersAllCandidates();
+}
+
+
+
+
+
+
+
+
+
   
   // For All Candidates (HR Admin Table)
 currentPageAllCandidates: number = 1;
@@ -141,12 +224,14 @@ totalCandidatesAll: number = 0;
 paginatedAllCandidates: any[] = [];
   
   
+// Pagination
 updatePageAllCandidates() {
   const startIndex = (this.currentPageAllCandidates - 1) * this.pageSizeAllCandidates;
   const endIndex = this.currentPageAllCandidates * this.pageSizeAllCandidates;
-  this.paginatedAllCandidates = this.allCandidates.slice(startIndex, endIndex);
+  this.paginatedAllCandidates = this.filteredAllCandidates.slice(startIndex, endIndex);
 }
 // For All Candidates Pagination Controls
+
 nextPageAllCandidates() {
   if (this.currentPageAllCandidates < this.totalPagesAllCandidates) {
     this.currentPageAllCandidates++;
@@ -159,13 +244,32 @@ previousPageAllCandidates() {
     this.currentPageAllCandidates--;
     this.updatePageAllCandidates();
   }
+
 }
 
 get totalPagesAllCandidates() {
-  return Math.ceil(this.allCandidates.length / this.pageSizeAllCandidates);
+  return Math.ceil(this.totalCandidatesAll / this.pageSizeAllCandidates);
 }
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   candidates: any[] = [];
@@ -206,7 +310,6 @@ getCandidates() {
 
         // this.totalCandidates = this.candidates.length;  // Total number of candidates for pagination
         this.updatePageCandidates();
-        console.log('Processed Candidates:', this.candidates);
 
         // console.log('Fetched candidates:', this.candidates);
       },

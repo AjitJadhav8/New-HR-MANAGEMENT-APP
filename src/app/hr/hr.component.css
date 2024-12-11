@@ -302,6 +302,33 @@
   overflow-y: auto; 
   overflow-x: hidden; 
 }
+hr {
+  margin-top: 20px; /* Space above the line */
+  margin-bottom: 30px; /* Space below the line */
+  border: none; /* Removes the default border */
+  border-top: 2px solid #cccccc; /* Custom border styling */
+  width: 100%; /* Full-width line */
+  max-width: 1200px; /* Optional: restrict max width */
+  margin-left: auto; /* Center align */
+  margin-right: auto; /* Center align */
+}
+.close-btn-right {
+  position: absolute;
+  top: 150px; /* Adjust according to your requirement */
+  right: 10px; /* Aligns the button to the right */
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  z-index: 1000; /* Ensures it's above other elements */
+}
+
+.close-btn-right:hover {
+  background-color: #e60000;
+}
 
 
 .view-history-table-container {

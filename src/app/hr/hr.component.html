@@ -4,10 +4,14 @@
   <div class="navbar-right">
     <p>Welcome, {{ loggedInHR }}</p>
     <button *ngIf="isAdmin" (click)="toggleAdminPanel()">Open Admin Panel</button>
-
+    <button *ngIf="isHrAdmin" (click)="toggleHRDetails()">Open HR's Details</button>
+    <!-- <button *ngIf="isHrAdmin" (click)="toggleHRDetails()">
+      {{ isHRDetailsVisible ? 'Close HR\'s Details' : 'Open HR\'s Details' }}
+    </button> -->
+    
     <button class="change-password-button" (click)="showChangePasswordForm = !showChangePasswordForm">Change
       Password</button>
-      <button class="logout-button" (click)="logout()">Logout</button>
+    <button class="logout-button" (click)="logout()">Logout</button>
   </div>
 </div>
 
@@ -93,18 +97,51 @@
 
 </div>
 
-
-
 <br><br>
 
 
 
 
 
-<div *ngIf="isAdmin && isHR">
-  
-  <div class="get-all-candidates-table">
+<div *ngIf="isHRDetailsVisible">
+  <button class="close-btn-right" (click)="isHRDetailsVisible = false">Close HR's Details</button>
+
+  <div class="get-candidate-table-container">
     <h3>All Candidates Information</h3>
+
+    <div class="filter-container">
+      <input type="text" [(ngModel)]="nameFilterAll" placeholder="Search by Name" (input)="applyFiltersAllCandidates()">
+      <select [(ngModel)]="positionFilterAll" (change)="applyFiltersAllCandidates()">
+        <option value="" disabled>Select Position</option>
+        <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
+      </select>
+    
+      <input type="text" placeholder="Search HR Name" [(ngModel)]="hrNameFilterAll" (input)="applyFiltersAllCandidates()">
+
+
+
+      <select [(ngModel)]="roundFilterAll" (change)="applyFiltersAllCandidates()">
+        <option value="" disabled>Select Round</option>
+        <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+      </select>
+    
+      <select [(ngModel)]="interviewerFilterAll" (change)="applyFiltersAllCandidates()">
+        <option value="" disabled>Select Interviewer</option>
+        <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
+      </select>
+    
+      <input type="date" [(ngModel)]="activityDateFilterInputAll" (change)="onDateChangeAll()" />
+      
+      <select [(ngModel)]="statusFilterAll" (change)="applyFiltersAllCandidates()">
+        <option value="" disabled>Select Status</option>
+        <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+      </select>
+    
+      <button (click)="clearAllFilters()">Clear Filters</button>
+    </div>
+    
+
+
 
     <!-- Candidates Table -->
     <div class="get-candidate-table">
@@ -159,19 +196,20 @@
         </tbody>
       </table>
 
-     
+
 
     </div>
-     <!-- Pagination Controls -->
-     <div class="pagination-controls">
-      <button (click)="previousPageAllCandidates()" [disabled]="currentPageAllCandidates === 1" class="pagination-button">Previous</button>
+    <!-- Pagination Controls -->
+    <div class="pagination-controls">
+      <button (click)="previousPageAllCandidates()" [disabled]="currentPageAllCandidates === 1"
+        class="pagination-button">Previous</button>
       <span>Page {{ currentPageAllCandidates }} of {{ totalPagesAllCandidates }}</span>
-      <button (click)="nextPageAllCandidates()" [disabled]="currentPageAllCandidates === totalPagesAllCandidates" class="pagination-button">Next</button>
+      <button (click)="nextPageAllCandidates()" [disabled]="currentPageAllCandidates === totalPagesAllCandidates"
+        class="pagination-button">Next</button>
     </div>
   </div>
+  <hr>
 </div>
-
-
 
 
 
@@ -179,10 +217,9 @@
 <div *ngIf="isHR">
   <div class="container">
 
-
+    <div *ngIf="!isHRDetailsVisible">
     <!-- Button to Open Modal -->
     <button (click)="openModal()">Add New Candidate</button>
-    <!-- Modal for Adding New Candidate -->
     <div class="modal" *ngIf="isModalOpen">
       <div class="modal-content">
         <span class="close" (click)="closeModal()">&times;</span>
@@ -237,10 +274,10 @@
           </div> -->
 
           <!-- Interview Date -->
-<div>
-  <label for="interview_date">Interview Date:</label>
-  <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required />
-</div>
+          <div>
+            <label for="interview_date">Interview Date:</label>
+            <input type="date" [(ngModel)]="newRound.interview_date" name="interview_date" required />
+          </div>
 
 
           <!-- Remove Status 02-12-2024 -->
@@ -269,7 +306,7 @@
     <!-- candidate list -->
     <div class="get-candidate-table-container">
       <h2>Current Recruitment Pipeline</h2>
-    
+
       <!-- Filter Section -->
       <div class="filter-container">
         <input type="text" [(ngModel)]="nameFilter" placeholder="Search by Name" (input)="applyFilters()">
@@ -279,25 +316,26 @@
           <option value="" disabled>Select Position</option>
           <option *ngFor="let position of interviewOptions.positions" [value]="position">{{ position }}</option>
         </select>
-      
-        
-      
+
+
+
         <!-- <input type="text" [(ngModel)]="roundFilter" placeholder="Search by Round" (input)="applyFilters()"> -->
         <!-- Round Filter -->
         <select [(ngModel)]="roundFilter" (change)="applyFilters()">
           <option value="" disabled>Select Round</option>
           <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
         </select>
-      
-      
+
+
         <!-- <input type="text" [(ngModel)]="interviewerFilter" placeholder="Search by Interviewer" (input)="applyFilters()"> -->
         <!-- Interviewer Filter -->
         <select [(ngModel)]="interviewerFilter" (change)="applyFilters()">
           <option value="" disabled>Select Interviewer</option>
-          <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
+          <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}
+          </option>
         </select>
         <!-- Activity Date Filter with Calendar -->
-      
+
         <input type="date" [(ngModel)]="activityDateFilterInput" (change)="onDateChange()" />
         <!-- <input type="text" [(ngModel)]="statusFilter" placeholder="Search by Status" (input)="applyFilters()"> -->
         <!-- Status Filter -->
@@ -306,7 +344,7 @@
           <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
         </select>
         <button (click)="clearFilters()">Clear Filters</button>
-      
+
       </div>
 
       <div class="get-candidate-table">
@@ -335,26 +373,18 @@
               <td>{{ candidate.Interviewer || 'N/A' }}</td>
               <td>{{ candidate.Interview_Date || 'N/A' }}</td>
               <td>{{ candidate.Updated_At || 'N/A' }}</td>
-              <!-- <td>{{ candidate.Status || 'N/A' }}</td> -->
-    
-              <!-- <td [ngClass]="{
-                        'status-selected': candidate.Status === 'Selected' || candidate.Status === 'Final Selected',
-                        'status-rejected': candidate.Status === 'Rejected',
-                        'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
-                      }">
-                {{ candidate.Status || 'N/A' }}
-              </td> -->
+
               <td [ngClass]="{
                 'status-selected': candidate.Status === 'Selected',
                 'status-final-selected': candidate.Status === 'Final Selected',
                 'status-rejected': candidate.Status === 'Rejected',
                 'status-other': candidate.Status !== 'Selected' && candidate.Status !== 'Final Selected' && candidate.Status !== 'Rejected'
               }">
-            {{ candidate.Status || 'N/A' }}
-          </td>
-          
+                {{ candidate.Status || 'N/A' }}
+              </td>
+
               <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks }}</td>
-    
+
               <td>
                 <button (click)="openDecisionModal(candidate)"
                   [disabled]="candidate.Status === 'Selected' || candidate.Status === 'Rejected' || candidate.Status === 'On Hold' || candidate.Status === 'Final Selected'">
@@ -367,13 +397,14 @@
                   <button (click)="showAddRoundSection(candidate, true)"
                     [disabled]="candidate.Status === 'Rejected'">Reschedule</button>
                 </ng-container>
-    
+
                 <ng-template #addRound>
-                  <button (click)="showAddRoundSection(candidate, false)" [disabled]="candidate.Status === 'Rejected' || candidate.Status === 'Final Selected'">
+                  <button (click)="showAddRoundSection(candidate, false)"
+                    [disabled]="candidate.Status === 'Rejected' || candidate.Status === 'Final Selected'">
                     Add Round
                   </button>
                 </ng-template>
-    
+
                 <!-- Ellipsis button to select candidate -->
                 <button (click)="selectCandidate(candidate); $event.stopPropagation()">...</button>
               </td>
@@ -381,7 +412,7 @@
           </tbody>
         </table>
       </div>
-    
+
       <!-- Pagination Controls -->
       <div class="pagination-controls">
         <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-button">Previous</button>
@@ -389,7 +420,7 @@
         <button (click)="nextPage()" [disabled]="currentPage === totalPages" class="pagination-button">Next</button>
       </div>
     </div>
-
+  </div>
 
     <!-- Modal for Actions (Update, View History, Delete) -->
     <div *ngIf="showActionModal" class="modal">
@@ -400,10 +431,10 @@
 
           <button class="action-button" (click)="showUpdateCandidateSection()">Update Candidate</button>
           <button class="action-button" (click)="showHistorySection()">View History</button>
-<!-- Add a button to update the last interview round -->
+          <!-- Add a button to update the last interview round -->
           <button class="action-button" (click)="openUpdateLastRoundModal()">Update Round</button>
 
-          <button  *ngIf="isAdmin && isHR" class="action-button"
+          <button *ngIf="isAdmin && isHR" class="action-button"
             (click)="deleteInterviewRound(selectedCandidate.Candidate_ID, selectedCandidate.Round_Number, selectedCandidate.Candidate_Name)">
             Delete Round
           </button>
@@ -413,23 +444,21 @@
     </div>
 
 
-
-
     <div *ngIf="showModal" class="modal">
       <div class="modal-content">
         <form (submit)="submitDecision()">
           <h2>Make a Decision for <span class="underlined">{{ currentCandidate.Candidate_Name }}</span></h2>
-          
+
           <select [(ngModel)]="selectedDecision" name="decision" required>
             <option value="" disabled>Select Status</option>
             <option *ngFor="let status of filteredStatuses" [value]="status">{{ status }}</option>
           </select>
-          
-          
-    
+
+
+
           <label for="remarks">Remarks</label>
           <textarea id="remarks" [(ngModel)]="remarks" name="remarks"></textarea>
-    
+
           <div class="modal-actions">
             <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
 
@@ -440,66 +469,62 @@
         </form>
       </div>
     </div>
-    
 
 
-<!-- Modal for Updating Last Interview Round -->
-<div class="modal" *ngIf="showUpdateLastRoundModal">
-  <div class="modal-content">
-    <span class="close" (click)="toggleUpdateLastRoundModal()">&times;</span>
-    <h2>Update Interview Round for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2>
-    <form (ngSubmit)="updateLastRound()">
-      <!-- Round Number Selection -->
-      <div>
-        <label for="round_number">Round:</label>
-        <select [(ngModel)]="updatedRound.round_number" name="round_number" required>
-          <option value="" disabled>Select Round Number</option>
-          <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
-        </select>
+    <!-- Modal for Updating Last Interview Round -->
+    <div class="modal" *ngIf="showUpdateLastRoundModal">
+      <div class="modal-content">
+        <span class="close" (click)="toggleUpdateLastRoundModal()">&times;</span>
+        <h2>Update Interview Round for <span class="underlined">{{ selectedCandidate.Candidate_Name }}</span></h2>
+        <form (ngSubmit)="updateLastRound()">
+          <!-- Round Number Selection -->
+          <div>
+            <label for="round_number">Round:</label>
+            <select [(ngModel)]="updatedRound.round_number" name="round_number" required>
+              <option value="" disabled>Select Round Number</option>
+              <option *ngFor="let round of interviewOptions.roundNumbers" [value]="round">{{ round }}</option>
+            </select>
+          </div>
+
+
+          <!-- Interviewer Selection -->
+          <div>
+            <label for="interviewer">Interviewer:</label>
+            <select [(ngModel)]="updatedRound.interviewer" name="interviewer" required>
+              <option value="" disabled>Select Interviewer</option>
+              <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Interview Date -->
+          <div>
+            <label for="interview_date">Interview Date:</label>
+            <input type="date" [(ngModel)]="updatedRound.interview_date" name="interview_date" required
+              [attr.min]="lastInterviewDate" />
+          </div>
+
+          <!-- Status -->
+          <div>
+            <label for="status">Status:</label>
+            <select [(ngModel)]="updatedRound.status" name="status" required>
+              <option value="" disabled>Select Status</option>
+              <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+
+          <!-- Remarks -->
+          <div>
+            <label for="remarks">Remarks:</label>
+            <textarea [(ngModel)]="updatedRound.remarks" name="remarks"></textarea>
+          </div>
+          <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
+
+          <!-- Submit Button -->
+          <button type="submit">Update Interview Round</button>
+        </form>
       </div>
-
-
-      <!-- Interviewer Selection -->
-      <div>
-        <label for="interviewer">Interviewer:</label>
-        <select [(ngModel)]="updatedRound.interviewer" name="interviewer" required>
-          <option value="" disabled>Select Interviewer</option>
-          <option *ngFor="let interviewer of interviewOptions.interviewers" [value]="interviewer">{{ interviewer }}</option>
-        </select>
-      </div>
-
-      <!-- Interview Date -->
-      <div>
-        <label for="interview_date">Interview Date:</label>
-        <input type="date" [(ngModel)]="updatedRound.interview_date" name="interview_date" required [attr.min]="lastInterviewDate" />
-      </div>
-
-      <!-- Status -->
-      <div>
-        <label for="status">Status:</label>
-        <select [(ngModel)]="updatedRound.status" name="status" required>
-          <option value="" disabled>Select Status</option>
-          <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
-        </select>
-      </div>
-
-      <!-- Remarks -->
-      <div>
-        <label for="remarks">Remarks:</label>
-        <textarea [(ngModel)]="updatedRound.remarks" name="remarks"></textarea>
-      </div>
-      <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
-
-      <!-- Submit Button -->
-      <button type="submit">Update Interview Round</button>
-    </form>
-  </div>
-</div>
-
-
-
-
-
+    </div>
 
 
 
@@ -549,9 +574,10 @@
               <span *ngIf="isReschedule; else remarksText">Reason:</span>
               <ng-template #remarksText>Remarks:</ng-template>
             </label>
-            <textarea [(ngModel)]="newRound.remarks" name="remarks" placeholder="{{ isReschedule ? 'Enter reason for reschedule' : 'Enter remarks' }}"></textarea>
+            <textarea [(ngModel)]="newRound.remarks" name="remarks"
+              placeholder="{{ isReschedule ? 'Enter reason for reschedule' : 'Enter remarks' }}"></textarea>
           </div>
-          
+
           <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
           <!-- Submit Button -->
           <!-- <button type="submit">Add Interview Round</button> -->
@@ -584,7 +610,6 @@
 
         </form>
         <div *ngIf="alertMessage" class="alert" [ngClass]="alertType">{{ alertMessage }}</div>
-
       </div>
 
     </div>
@@ -617,13 +642,13 @@
                 <td>{{ round.Status }}</td>
                 <td class="remarks" [title]="round.Remarks || 'N/A'">
                   {{ round.Remarks}}
-                </td>              
+                </td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-    
+
   </div>
 </div>
