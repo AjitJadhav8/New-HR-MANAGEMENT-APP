@@ -101,10 +101,17 @@
 .underlined {
   text-decoration: underline;
 }
+
+/* Allow horizontal scrolling */
+.table-container-detail::-webkit-scrollbar {
+  height: 6px;
+  background-color: #f1f1f1; /* Light background for the scrollbar */
+
+}
 /* Styling for the filter container */
 /* Container for the candidate detail table */
 .table-container-detail {
-  width: auto;
+  width: 100%;
   overflow-x: auto; /* Horizontal scroll if necessary */
   padding: 5px;
   box-sizing: border-box;
@@ -172,10 +179,11 @@
 /* Table styling */
 .candidate-table-detail {
   width: 100%;
-  table-layout: fixed;
+  table-layout: auto; /* Dynamic column widths */
   border-collapse: collapse;
   background-color: white;
   text-align: center;
+  min-width: 1200px; 
 }
 
 /* Header row styling */
