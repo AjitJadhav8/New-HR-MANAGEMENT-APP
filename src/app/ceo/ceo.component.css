@@ -78,6 +78,23 @@
 } */
 
 
+.candidate-table-detail button {
+  font-size: 13px; /* Match font size with table body text */
+  padding: 3px 6px; /* Smaller padding for compact buttons */
+  background-color: #026faa; /* Default blue background */
+  color: white; /* White text */
+  border: none; /* Remove borders */
+  border-radius: 4px; /* Slightly rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: center;
+  /* transition: background-color 0.3s ease, transform 0.2s ease; Smooth hover effect */
+}
+
+/* Hover effect for buttons */
+.candidate-table-detail button:hover {
+  background-color: #003f73; /* Darker blue on hover */
+  /* transform: scale(1.05); Slight scaling on hover */
+}
 
 
 
@@ -187,6 +204,38 @@
   white-space: nowrap;
   font-size: 13px;
 }
+
+/* Tooltip for Status Column */
+.candidate-table-detail tbody td.status {
+  position: relative;
+  max-width: 120px; /* Adjust as necessary */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.candidate-table-detail tbody td.status:hover::after {
+  content: attr(title); /* Display full text from the title attribute */
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 5px;
+  background-color: black;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+
+
 
 /* Remarks column with tooltip */
 .candidate-table-detail tbody td.remarks {

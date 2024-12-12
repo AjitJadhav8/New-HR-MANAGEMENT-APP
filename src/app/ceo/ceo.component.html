@@ -208,10 +208,12 @@
           <th>Update Date</th>
           <th>Status</th>
           <th>Remarks</th>
+          <th>Actions</th> <!-- New Actions Column -->
+
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let candidate of paginatedCandidates; let i = index" (click)="openModal(candidate)">
+        <tr *ngFor="let candidate of paginatedCandidates; let i = index" >
           <td>{{ i + 1 }}</td>
           <td>{{ candidate.Candidate_Name }}</td>
           <td>{{ candidate.Position }}</td>
@@ -222,17 +224,24 @@
           <td>{{ candidate.Interview_Date | date: 'dd-MMM-yyyy' }}</td>
           <td>{{ candidate.Updated_At | date: 'dd-MMM-yyyy' }}</td>
           <!-- <td class="remarks" [title]="candidate.Status || 'N/A'">{{ candidate.Status }}</td> -->
-          <td [ngClass]="{
+          <td class="status" [title]="candidate.Status" 
+          [ngClass]="{
             'status-selected': candidate.Status === 'Selected',
             'status-final-selected': candidate.Status === 'Final Selected',
             'status-rejected': candidate.Status === 'Rejected',
             'status-other': candidate.Status !== 'Selected' &&
                             candidate.Status !== 'Final Selected' &&
                             candidate.Status !== 'Rejected'
-        }">
+        }" >
         {{ candidate.Status || 'N/A' }}
     </td>
-          <td class="remarks" [title]="candidate.Remarks || 'N/A'">{{ candidate.Remarks || 'N/A' }}</td>
+          <td class="remarks" [title]="candidate.Remarks ">{{ candidate.Remarks  }}</td>
+
+          <td>
+            <button class="history-btn" (click)="openModal(candidate)">
+              History
+            </button>
+          </td>
         </tr>
       </tbody>
     </table>
