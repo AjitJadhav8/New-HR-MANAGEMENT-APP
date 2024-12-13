@@ -185,7 +185,7 @@ exports.login = (req, res) => {
       ON 
         ir.status_id = s.status_id
       WHERE 
-        c.user_id = ?  -- Adjusted to match the correct column name for user ID
+    c.user_id = ? AND c.candidate_name != 'Demo Candidate' -- Exc
       ORDER BY 
         c.candidate_id DESC, ir.ir_id DESC;
     `;
@@ -586,6 +586,8 @@ exports.getAllCandidates = (req, res) => {
         master_interviewers iv ON ir.interviewer_id = iv.interviewer_id  -- Join with master_interviewers
     LEFT JOIN 
         master_statuses s ON ir.status_id = s.status_id
+     WHERE 
+      c.candidate_name != 'Demo Candidate' -- Exclude Demo Candidate
     ORDER BY 
         c.candidate_id DESC, ir.ir_id DESC;
   `;
@@ -1082,6 +1084,8 @@ exports.getAllCandidatesHrAdmin = (req, res) => {
       master_statuses s ON ir.status_id = s.status_id
     LEFT JOIN 
       trans_users u ON c.user_id = u.user_id  -- Join with trans_users to get HR name
+    WHERE 
+      c.candidate_name != 'Demo Candidate' -- Exclude Demo Candidate
     ORDER BY 
       c.candidate_id DESC, ir.ir_id DESC;
   `;
