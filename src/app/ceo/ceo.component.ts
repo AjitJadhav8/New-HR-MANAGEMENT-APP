@@ -79,22 +79,53 @@ export class CEOComponent implements OnInit {
   interviewOptions: any = {};
 
 
+  // applyFilters(): void {
+  //   this.filteredCandidates = this.candidates.filter((candidate) => {
+  //     return (
+  //       (!this.nameFilter || candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase())) &&
+  //       (!this.positionFilter || candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase())) &&
+  //       (!this.hrNameFilter || candidate.HR_Name.toLowerCase().includes(this.hrNameFilter.toLowerCase())) &&
+  //       (!this.roundFilter || candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase())) &&
+  //       (!this.interviewerFilter || candidate.Interviewer?.toLowerCase().includes(this.interviewerFilter.toLowerCase())) &&
+  //       (!this.activityDateFilter || this.formatDate(candidate.Interview_Date).includes(this.activityDateFilter)) &&
+  //       (!this.statusFilter || candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()))
+  //     );
+  //   });
+  
+  //   this.totalCandidates = this.filteredCandidates.length;
+  //   this.currentPage = 1; // Reset page to 1 when applying new filters
+  //   this.updatePageCandidates(); // Update the current page candidates based on filtered data
+  // }
   applyFilters(): void {
     this.filteredCandidates = this.candidates.filter((candidate) => {
       return (
+        // Partial match for Candidate Name
         (!this.nameFilter || candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase())) &&
-        (!this.positionFilter || candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase())) &&
-        (!this.hrNameFilter || candidate.HR_Name.toLowerCase().includes(this.hrNameFilter.toLowerCase())) &&
-        (!this.roundFilter || candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase())) &&
-        (!this.interviewerFilter || candidate.Interviewer?.toLowerCase().includes(this.interviewerFilter.toLowerCase())) &&
+        
+        // Exact match for Position
+        (!this.positionFilter || candidate.Position === this.positionFilter) &&
+  
+        // Exact match for HR Name
+        (!this.hrNameFilter || candidate.HR_Name?.toLowerCase().includes(this.hrNameFilter.toLowerCase())) &&
+        
+        // Exact match for Round Number
+        (!this.roundFilter || candidate.Round_Number === this.roundFilter) &&
+  
+        // Exact match for Interviewer
+        (!this.interviewerFilter || candidate.Interviewer?.toLowerCase() === this.interviewerFilter.toLowerCase()) &&
+  
+        // Date filter (partial match)
         (!this.activityDateFilter || this.formatDate(candidate.Interview_Date).includes(this.activityDateFilter)) &&
-        (!this.statusFilter || candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()))
+  
+        // Exact match for Status
+        (!this.statusFilter || candidate.Status === this.statusFilter)
       );
     });
   
+    // After applying filters, update the pagination based on the filtered list
     this.totalCandidates = this.filteredCandidates.length;
-    this.currentPage = 1; // Reset page to 1 when applying new filters
-    this.updatePageCandidates(); // Update the current page candidates based on filtered data
+    this.currentPage = 1; // Reset pagination to the first page
+    this.updatePageCandidates();
   }
   
 

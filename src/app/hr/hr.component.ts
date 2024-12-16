@@ -174,17 +174,41 @@ onDateChangeAll() {
 
   
 // Apply filters to All Candidates
+// applyFiltersAllCandidates() {
+//   this.filteredAllCandidates = this.allCandidates.filter(candidate => {
+//     return (
+//       (this.nameFilterAll ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilterAll.toLowerCase()) : true) &&
+//       (this.positionFilterAll ? candidate.Position.toLowerCase().includes(this.positionFilterAll.toLowerCase()) : true) &&
+//       (this.roundFilterAll ? candidate.Round_Number.toLowerCase().includes(this.roundFilterAll.toLowerCase()) : true) &&
+//       (this.interviewerFilterAll ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilterAll.toLowerCase()) : true) &&
+//       (this.hrNameFilterAll ? candidate.HR_Name.toLowerCase().includes(this.hrNameFilterAll.toLowerCase()) : true) &&  // Filter for HR name
+
+//       (this.activityDateFilterAll ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilterAll) : true) &&
+//       (this.statusFilterAll ? candidate.Status.toLowerCase().includes(this.statusFilterAll.toLowerCase()) : true)
+//     );
+//   });
+
+//   // Update the total candidates for pagination
+//   this.totalCandidatesAll = this.filteredAllCandidates.length;
+//   this.currentPageAllCandidates = 1;
+//   this.updatePageAllCandidates();
+// }
+
+
+
+
+
+
 applyFiltersAllCandidates() {
   this.filteredAllCandidates = this.allCandidates.filter(candidate => {
     return (
       (this.nameFilterAll ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilterAll.toLowerCase()) : true) &&
-      (this.positionFilterAll ? candidate.Position.toLowerCase().includes(this.positionFilterAll.toLowerCase()) : true) &&
-      (this.roundFilterAll ? candidate.Round_Number.toLowerCase().includes(this.roundFilterAll.toLowerCase()) : true) &&
-      (this.interviewerFilterAll ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilterAll.toLowerCase()) : true) &&
-      (this.hrNameFilterAll ? candidate.HR_Name.toLowerCase().includes(this.hrNameFilterAll.toLowerCase()) : true) &&  // Filter for HR name
-
+      (this.positionFilterAll ? candidate.Position === this.positionFilterAll : true) && // Exact match for Position
+      (this.roundFilterAll ? candidate.Round_Number === this.roundFilterAll : true) && // Exact match for Round
+      (this.interviewerFilterAll ? candidate.Interviewer === this.interviewerFilterAll : true) && // Exact match for Interviewer
+      (this.hrNameFilterAll ? candidate.HR_Name.toLowerCase().includes(this.hrNameFilterAll.toLowerCase()) : true) &&
       (this.activityDateFilterAll ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilterAll) : true) &&
-      (this.statusFilterAll ? candidate.Status.toLowerCase().includes(this.statusFilterAll.toLowerCase()) : true)
+      (this.statusFilterAll ? candidate.Status === this.statusFilterAll : true) // Exact match for Status
     );
   });
 
@@ -193,6 +217,19 @@ applyFiltersAllCandidates() {
   this.currentPageAllCandidates = 1;
   this.updatePageAllCandidates();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Clear filters
@@ -345,23 +382,43 @@ onDateChange() {
 
 
 // Apply filters based on the selected criteria
+// applyFilters() {
+//   this.filteredCandidates = this.candidates.filter(candidate => {
+//     return (
+//       (this.nameFilter ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase()) : true) &&
+//       (this.positionFilter ? candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase()) : true) &&
+//       (this.roundFilter ? candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase()) : true) &&
+//       (this.interviewerFilter ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilter.toLowerCase()) : true) &&
+//       (this.activityDateFilter ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilter) : true) &&
+//       (this.statusFilter ? candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()) : true)
+//     );
+//   });
+
+//   // After applying filters, update the pagination based on the filtered list
+//   this.totalCandidates = this.filteredCandidates.length;  // Update the total number of filtered candidates
+//   this.currentPage = 1;  // Reset to first page after filter
+//   this.updatePageCandidates();  // Recalculate the paginated candidates
+// }
 applyFilters() {
   this.filteredCandidates = this.candidates.filter(candidate => {
     return (
       (this.nameFilter ? candidate.Candidate_Name.toLowerCase().includes(this.nameFilter.toLowerCase()) : true) &&
-      (this.positionFilter ? candidate.Position.toLowerCase().includes(this.positionFilter.toLowerCase()) : true) &&
-      (this.roundFilter ? candidate.Round_Number.toLowerCase().includes(this.roundFilter.toLowerCase()) : true) &&
-      (this.interviewerFilter ? candidate.Interviewer.toLowerCase().includes(this.interviewerFilter.toLowerCase()) : true) &&
+      (this.positionFilter ? candidate.Position === this.positionFilter : true) && // Exact match for Position
+      (this.roundFilter ? candidate.Round_Number === this.roundFilter : true) && // Exact match for Round
+      (this.interviewerFilter ? candidate.Interviewer === this.interviewerFilter : true) && // Exact match for Interviewer
       (this.activityDateFilter ? this.formatLocalDate(candidate.Interview_Date).includes(this.activityDateFilter) : true) &&
-      (this.statusFilter ? candidate.Status.toLowerCase().includes(this.statusFilter.toLowerCase()) : true)
+      (this.statusFilter ? candidate.Status === this.statusFilter : true) // Exact match for Status
     );
   });
 
   // After applying filters, update the pagination based on the filtered list
-  this.totalCandidates = this.filteredCandidates.length;  // Update the total number of filtered candidates
-  this.currentPage = 1;  // Reset to first page after filter
-  this.updatePageCandidates();  // Recalculate the paginated candidates
+  this.totalCandidates = this.filteredCandidates.length; // Update the total number of filtered candidates
+  this.currentPage = 1; // Reset to the first page after applying filters
+  this.updatePageCandidates(); // Recalculate the paginated candidates
 }
+
+
+
 
 clearFilters() {
   // Reset all filter variables

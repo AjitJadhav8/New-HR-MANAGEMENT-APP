@@ -132,11 +132,15 @@
     
       <input type="date" [(ngModel)]="activityDateFilterInputAll" (change)="onDateChangeAll()" />
       
+      <!-- <select [(ngModel)]="statusFilterAll" (change)="applyFiltersAllCandidates()">
+        <option value="" disabled>Select Status</option>
+        <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
+      </select> -->
       <select [(ngModel)]="statusFilterAll" (change)="applyFiltersAllCandidates()">
         <option value="" disabled>Select Status</option>
         <option *ngFor="let status of interviewOptions.statuses" [value]="status">{{ status }}</option>
       </select>
-    
+      
       <button (click)="clearAllFilters()">Clear Filters</button>
     </div>
     
