@@ -430,7 +430,7 @@ deleteUser(userId: number): void {
       },
       (error) => {
         console.error('Error deleting user:', error);
-        this.showAlert('Failed to delete user.', 'error');
+        this.showAlert('User cannot be deleted as they are associated with candidates.', 'error');
 
       }
     );
@@ -439,10 +439,18 @@ deleteUser(userId: number): void {
 currentSection: string | null = null; // Track current visible section
 
 showUserManagement = false; // Controls visibility of User Management section
-
+closeUserManagement() {
+  this.showUserManagement = false;
+}
 toggleUserManagementSection(section: string): void {
   this.currentSection = this.currentSection === section ? null : section;
 }
+
+
+
+
+
+
 
 alertMessage: string = '';
 alertType: string = '';
@@ -456,9 +464,7 @@ alertType: string = '';
       this.alertMessage = '';  // Clear the alert message
     }, 3000);  // 3000ms = 3 seconds
   }
-  closeUserManagement() {
-    this.showUserManagement = false;
-  }
+
   
   
 }

@@ -1113,7 +1113,7 @@ openHistoryModalForCandidate(candidate: any) {
         },
         (error: any) => {
           console.error('Error deleting entry:', error);
-          this.showAlert('Error deleting entry. Please try again.', 'alert-danger');
+          this.showAlert('Cannot delete this because there are candidates associated with it', 'alert-danger');
         }
       );
     }
