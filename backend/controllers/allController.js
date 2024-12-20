@@ -4,49 +4,131 @@ const db = require('../config/db');  // Import the database connection
 
 
 // Login function done
+// exports.login = (req, res) => {
+//   const { name, password } = req.body;
+
+//   // Modify the query to reflect your updated schema without using aliases
+//   const query = `
+//       SELECT trans_users.user_id, trans_users.user_name, master_role.role_name
+//       FROM trans_users
+//       JOIN master_role ON trans_users.role_id = master_role.role_id
+//       WHERE trans_users.user_name = ? AND trans_users.password = ?
+//   `;
+
+//   db.query(query, [name, password], (err, results) => {
+//       if (err) {
+//           return res.status(500).json({ error: 'Database error' });
+//       }
+
+//       // Check if user exists
+//       if (results.length > 0) {
+//           const user = results[0]; // Assuming user data is in the first result
+
+//           // Generate JWT tokens
+//           const token = jwt.sign(
+//               { id: user.user_id, name: user.user_name, permission: user.role_name }, // Include permission in payload
+//               'your-secret-key',  // Replace with a secure secret key
+//               { expiresIn: '1h' }
+//           );
+
+//           // Send response with token, user details, and permission
+//           return res.json({
+//               message: 'Login successful',
+//               token: token,
+//               user: {
+//                   id: user.user_id,
+//                   name: user.user_name,
+//                   permission: user.role_name // Include permission in response
+//               }
+//           });
+//       } else {
+//           return res.status(401).json({ error: 'Invalid username or password' });
+//       }
+//   });
+// };
+
 exports.login = (req, res) => {
-  const { name, password } = req.body;
+  const { name, password, userType } = req.body; // Include `userType` to differentiate between user and interviewer
 
-  // Modify the query to reflect your updated schema without using aliases
-  const query = `
-      SELECT trans_users.user_id, trans_users.user_name, master_role.role_name
-      FROM trans_users
-      JOIN master_role ON trans_users.role_id = master_role.role_id
-      WHERE trans_users.user_name = ? AND trans_users.password = ?
-  `;
+  if (userType === 'interviewer') {
+      // Query to validate interviewer credentials
+      const query = `
+          SELECT interviewer_id, role_id, interviewer_name 
+          FROM master_interviewers 
+          WHERE interviewer_name = ? AND password = ? AND is_deleted = 0
+      `;
 
-  db.query(query, [name, password], (err, results) => {
-      if (err) {
-          return res.status(500).json({ error: 'Database error' });
-      }
+      db.query(query, [name, password], (err, results) => {
+          if (err) {
+              return res.status(500).json({ error: 'Database error' });
+          }
 
-      // Check if user exists
-      if (results.length > 0) {
-          const user = results[0]; // Assuming user data is in the first result
+          // Check if interviewer exists
+          if (results.length > 0) {
+              const interviewer = results[0];
 
-          // Generate JWT tokens
-          const token = jwt.sign(
-              { id: user.user_id, name: user.user_name, permission: user.role_name }, // Include permission in payload
-              'your-secret-key',  // Replace with a secure secret key
-              { expiresIn: '1h' }
-          );
+              // Generate JWT token for interviewer
+              const token = jwt.sign(
+                  { id: interviewer.interviewer_id, name: interviewer.interviewer_name, permission: 'Interviewer' },
+                  'your-secret-key',
+                  { expiresIn: '1h' }
+              );
 
-          // Send response with token, user details, and permission
-          return res.json({
-              message: 'Login successful',
-              token: token,
-              user: {
-                  id: user.user_id,
-                  name: user.user_name,
-                  permission: user.role_name // Include permission in response
-              }
-          });
-      } else {
-          return res.status(401).json({ error: 'Invalid username or password' });
-      }
-  });
+              // Send response for interviewer login
+              return res.json({
+                  message: 'Login successful',
+                  token: token,
+                  user: {
+                      id: interviewer.interviewer_id,
+                      name: interviewer.interviewer_name,
+                      permission: 'Interviewer'
+                  }
+              });
+          } else {
+              return res.status(401).json({ error: 'Invalid interviewer credentials' });
+          }
+      });
+  } else {
+      // Query to validate general user credentials
+      const query = `
+          SELECT trans_users.user_id, trans_users.user_name, master_role.role_name
+          FROM trans_users
+          JOIN master_role ON trans_users.role_id = master_role.role_id
+          WHERE trans_users.user_name = ? AND trans_users.password = ?
+      `;
+
+      db.query(query, [name, password], (err, results) => {
+          if (err) {
+              return res.status(500).json({ error: 'Database error' });
+          }
+
+          // Check if user exists
+          if (results.length > 0) {
+              const user = results[0];
+
+              // Generate JWT token for general user
+              const token = jwt.sign(
+                  { id: user.user_id, name: user.user_name, permission: user.role_name },
+                  'your-secret-key',
+                  { expiresIn: '1h' }
+              );
+
+              // Send response for general user login
+              return res.json({
+                  message: 'Login successful',
+                  token: token,
+                  user: {
+                      id: user.user_id,
+                      name: user.user_name,
+                      permission: user.role_name
+                  }
+              });
+          } else {
+              return res.status(401).json({ error: 'Invalid user credentials' });
+          }
+      });
+  }
 };
-
 
 
   // Change password function done
@@ -1722,3 +1804,116 @@ exports.getAllCandidatesHrAdmin = (req, res) => {
   });
 };
 //done
+
+
+
+//phase 2
+// Fetch a specific template by ID
+// Get all interview templates
+exports.getAllTemplates = (req, res) => {
+  db.query('SELECT * FROM master_template WHERE is_deleted = 0', (err, results) => {
+    if (err) {
+      console.error('Error fetching templates:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    res.status(200).json(results);
+  });
+};
+
+// Function to fetch candidates by interviewer_id
+exports.getCandidatesByInterviewerId = (req, res) => {
+  const interviewerId = req.params.interviewer_id;
+  
+  const query = `
+    SELECT t.candidate_id, c.candidate_name, t.interview_date, t.ir_id, t.status_id, t.round_id
+    FROM trans_interview_rounds t
+    JOIN trans_candidates c ON t.candidate_id = c.candidate_id
+    WHERE t.interviewer_id = ?
+      AND t.ir_id = (
+        SELECT MAX(ir_id)
+        FROM trans_interview_rounds
+        WHERE candidate_id = t.candidate_id
+          AND is_deleted = 0 -- Exclude deleted rounds
+      )
+      AND t.status_id = 3
+      AND t.is_deleted = 0`; // Exclude deleted rounds in the main query
+
+  db.query(query, [interviewerId], (err, results) => {
+    if (err) {
+      console.error('Error fetching candidates:', err);
+      return res.status(500).json({ message: 'Error fetching candidates', error: err });
+    }
+
+    // Log the results to check the data structure
+    console.log('Candidates retrieved:', results);
+
+    // Ensure that candidate_id is part of the result
+    if (results && results.length > 0) {
+      res.json(results); // Return the results to the client
+    } else {
+      res.status(404).json({ message: 'No candidates found for this interviewer' });
+    }
+  });
+};
+
+// exports.submitFeedback = (req, res) => {
+//   const { feedback_json, status_id, template_id } = req.body;
+
+// // Check if required fields are provided
+// if (!feedback_json || !status_id || !template_id) {
+//   return res.status(400).json({ message: 'Missing required fields' });
+// }
+
+// const query = `
+//   INSERT INTO feedback_tbl (feedback_json, status_id, template_id, created_at)
+//   VALUES (?, ?, ?, NOW())
+// `;
+
+// db.query(query, [JSON.stringify(feedback_json), status_id, template_id], (err, result) => {
+//   if (err) {
+//     console.error('Error saving feedback:', err);
+//     return res.status(500).json({ message: 'Error saving feedback', error: err });
+//   }
+
+//   res.status(200).json({
+//     message: 'Feedback submitted successfully',
+//     feedbackId: result.insertId,
+//   });
+// });
+
+// };
+exports.submitFeedback = (req, res) => {
+  const { feedback_json, status_id, template_id, candidate_id, interviewer_id, round_id } = req.body;
+
+  // Step 1: Insert feedback into feedback_tbl
+  const insertFeedbackQuery = `
+    INSERT INTO feedback_tbl (feedback_json, status_id, template_id, created_at, updated_at)
+    VALUES (?, ?, ?, NOW(), NOW())`;
+
+  db.query(insertFeedbackQuery, [JSON.stringify(feedback_json), status_id, template_id], (err, feedbackResult) => {
+    if (err) {
+      console.error('Error inserting feedback:', err);
+      return res.status(500).json({ message: 'Error inserting feedback', error: err });
+    }
+
+    const feedbackId = feedbackResult.insertId; // Get the feedback_id of the inserted feedback
+
+    // Step 2: Insert new interview round into trans_interview_rounds
+    const insertRoundQuery = `
+      INSERT INTO trans_interview_rounds (candidate_id, interviewer_id, interview_date, status_id, feedback_id, round_id, created_at, updated_at)
+      VALUES (?, ?, NOW(), ?, ?, ?, NOW(), NOW())`;
+
+    db.query(insertRoundQuery, [candidate_id, interviewer_id, status_id, feedbackId, round_id], (err, roundResult) => {
+      if (err) {
+        console.error('Error inserting interview round:', err);
+        return res.status(500).json({ message: 'Error inserting interview round', error: err });
+      }
+
+      res.status(200).json({
+        message: 'Feedback submitted and new round created successfully',
+        feedbackId: feedbackId,
+        roundId: roundResult.insertId,
+      });
+    });
+  });
+};

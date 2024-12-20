@@ -1,0 +1,139 @@
+
+<div class="navbar-main">
+  <img src="credenca-logo.png" alt="Logo" class="navbar-logo" />
+  <p class="navbar-center"> &nbsp;</p>
+  <div class="navbar-right">
+    <p>Welcome, {{ loggedInInterviewer }}</p>
+    <button class="change-password-button" >Change Password</button>
+    <button class="logout-button" (click)="logout()">Logout</button>
+  </div>
+</div>
+
+
+
+
+<!-- Interviewer Name and Candidate Dropdown -->
+<!-- Interviewer Name and Candidate Dropdown -->
+
+
+<!-- Rest of the code remains the same -->
+
+
+<div class="table-container">
+  <div class="interviewer-section">
+    <h2>Interviewer Name: {{ loggedInInterviewer }}</h2>
+    
+    <label for="candidateSelect">Select Candidate:</label>
+    <select id="candidateSelect" [(ngModel)]="selectedCandidateId" (change)="onCandidateSelect(selectedCandidateId)">
+      <option value="" disabled selected>Select a Candidate</option>
+      <option *ngFor="let candidate of candidates" [value]="candidate.candidate_id">
+        {{ candidate.candidate_name }}
+      </option>
+    </select>
+    
+    
+    <!-- Display the Interview Date -->
+    <div *ngIf="selectedInterviewDate; else noInterviewDate">
+      <p>Interview Date: {{ selectedInterviewDate }}</p>
+    </div>
+    <ng-template #noInterviewDate>
+      <p>No interview date selected yet.</p>
+    </ng-template>
+    
+        <!-- Duration of Interview -->
+        <div class="duration-section">
+          <label for="durationInput">Duration of Interview (approx):</label>
+          <input id="durationInput" type="text" [(ngModel)]="interviewDuration" placeholder="Enter duration in minutes" />
+        </div>
+        
+        <!-- Mode of Interview -->
+        <div class="mode-section">
+          <label for="modeSelect">Mode:</label>
+          <select id="modeSelect" [(ngModel)]="interviewMode">
+            <option value="" disabled selected>Select Mode</option>
+            <option value="Online">Online</option>
+            <option value="Offline">Offline</option>
+          </select>
+        </div>
+  </div>
+    <h2>Interview Templates</h2>
+
+    <table class="criteria-table">
+      <tr>
+        <th>Criteria</th>
+        <th>Points</th>
+        <th>Out Of</th>
+        <th>Comments (Optional)</th>
+        <th>Actions</th>
+      </tr>
+
+      <!-- Loop through templates and sections -->
+      <ng-container *ngFor="let template of templates">
+        <ng-container *ngFor="let section of template.sections">
+          <!-- Section Header -->
+          <tr class="section-header">
+            <td colspan="5"><strong>{{ section.section_name }}</strong></td>
+          </tr>
+
+          <!-- Special Section: How is candidate overall? -->
+          <tr *ngIf="section.section_name === 'How is candidate overall?'">
+            <td colspan="5">
+              <label for="overallEvaluation">Evaluation</label>
+              <select id="overallEvaluation" [(ngModel)]="section.evaluation">
+                <option value="" disabled selected>-- Select --</option>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Average">Average</option>
+                <option value="Poor">Poor</option>
+              </select>
+            </td>
+          </tr>
+
+          <!-- Special Section: Candidate Feedback -->
+          <tr *ngIf="section.section_name === 'Candidate Feedback'">
+            <td colspan="5">
+              <textarea placeholder="Add feedback..." 
+                        [(ngModel)]="section.comments"
+                        rows="4"
+                        cols="50">
+              </textarea>
+            </td>
+          </tr>
+
+          <!-- Regular Sections -->
+          <ng-container *ngIf="section.section_name !== 'How is candidate overall?' && section.section_name !== 'Candidate Feedback'">
+            <ng-container *ngFor="let criteria of section.criteria; let i = index">
+              <tr>
+                <td><input type="text" placeholder="Sub Criteria" [(ngModel)]="criteria.sub_criteria" /></td>
+                <td><input type="number" placeholder="Points" min="0" [(ngModel)]="criteria.points" /></td>
+                <td><input type="number" placeholder="Out Of" min="0" [(ngModel)]="criteria.out_of" /></td>
+                <td><input type="text" placeholder="Add Comments" [(ngModel)]="criteria.comments" /></td>
+                <td><button (click)="removeCriteriaRow(section, i)">Remove</button></td>
+              </tr>
+            </ng-container>
+
+            <!-- Add Row Button -->
+            <tr>
+              <td colspan="5" style="text-align: left;">
+                <button (click)="addCriteriaRow(section)">Add Row</button>
+              </td>
+            </tr>
+          </ng-container>
+
+        </ng-container>
+      </ng-container>
+
+    </table>
+    <!-- Decision -->
+    <div class="decision-section">
+      <label for="decisionSelect">Decision:</label>
+      <select id="decisionSelect" [(ngModel)]="interviewDecision">
+        <option value="" disabled selected>Select Decision</option>
+        <option value="1">Selected</option>
+        <option value="2">Rejected</option>
+        <option value="12">On Hold</option>
+      </select>
+    </div>
+    <!-- Submit Button -->
+    <button (click)="submitFeedback()">Submit Feedback</button>
+</div>

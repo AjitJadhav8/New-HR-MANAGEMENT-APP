@@ -145,6 +145,21 @@ getAllCandidatesHrAdmin() {
 }
 
 
+//phase 2 templates
+
+getTemplates() {
+  return this.http.get<any>(`${this.apiUrl}/api/templates`);
+}
+
+
+getCandidatesByInterviewerId(interviewerId: string): Observable<any[]> {
+  return this.http.get<any[]>(`${this.apiUrl}/api/candidates/${interviewerId}`);
+}
+
+submitFeedback(feedback: any): Observable<any> {
+  return this.http.post<any>(`${this.apiUrl}/api/submitFeedback`, feedback);
+}
+
 
 
 

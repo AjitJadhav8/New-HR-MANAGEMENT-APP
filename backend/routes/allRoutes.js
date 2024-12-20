@@ -59,4 +59,15 @@ router.put('/interview-rounds/:id', allController.updateInterviewRound);
 router.get('/getAllCandidatesHrAdmin', allController.getAllCandidatesHrAdmin);
 
 
+// phase 2 templates
+
+router.get('/templates', allController.getAllTemplates);
+
+router.get('/candidates/:interviewer_id', allController.getCandidatesByInterviewerId);
+
+router.post('/submitFeedback', allController.submitFeedback);
+
+
+
+
 module.exports = router;

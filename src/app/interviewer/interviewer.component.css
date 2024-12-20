@@ -1,0 +1,65 @@
+
+/* General Styles */
+:host {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    background-color: rgba(240, 240, 240, 0.9);
+    color: #333;
+    padding: 0;
+  }
+  
+  /* Navbar Main Styling */
+  .navbar-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-logo {
+    height: 40px;
+  }
+  
+  .navbar-center {
+    font-size: 24px;
+    font-weight: bold;
+    color: #026faa;
+    flex-grow: 1;
+    text-align: center;
+  }
+  
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logout-button, .change-password-button {
+    background-color: #026faa;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .logout-button:hover {
+    background-color: #003f73;
+  }
+  
+  h1, h2 {
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  p {
+    color: #555;
+  }
+  
+  

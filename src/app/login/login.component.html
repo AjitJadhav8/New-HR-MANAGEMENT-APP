@@ -1,4 +1,12 @@
 <div class="login-container">
+
+  <div>
+    <label for="userType">Login As:</label>
+    <select id="userType" [(ngModel)]="userType">
+      <option value="user">User</option>
+      <option value="interviewer">Interviewer</option>
+    </select>
+  </div>
   <h2>Login</h2>
   <form (ngSubmit)="login()">
     <div class="form-group">
