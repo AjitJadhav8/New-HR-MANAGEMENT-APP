@@ -11,35 +11,44 @@
 
 
 
+<!-- Candidates List Section -->
+<!-- Candidates List Section -->
+<div class="candidates-list-section">
+  <h2>Candidates List</h2>
+  <table class="candidates-table">
+    <thead>
+      <tr>
+        <th>Candidate Name</th>
+        <th>Interview Date</th>
+        
+        <th>Action</th> <!-- New column for button -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let candidate of candidates">
+        <td>{{ candidate.candidate_name }}</td>
+        <td>{{ formatDate(candidate.interview_date) }}</td>
+        <td>
+          <!-- Button to select candidate -->
+          <button (click)="onCandidateSelect(candidate.candidate_id)">Give Feedback</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
 
 <!-- Interviewer Name and Candidate Dropdown -->
-<!-- Interviewer Name and Candidate Dropdown -->
 
 
-<!-- Rest of the code remains the same -->
-
-
-<div class="table-container">
+<div class="table-container" *ngIf="selectedCandidateId">
   <div class="interviewer-section">
     <h2>Interviewer Name: {{ loggedInInterviewer }}</h2>
-    
-    <label for="candidateSelect">Select Candidate:</label>
-    <select id="candidateSelect" [(ngModel)]="selectedCandidateId" (change)="onCandidateSelect(selectedCandidateId)">
-      <option value="" disabled selected>Select a Candidate</option>
-      <option *ngFor="let candidate of candidates" [value]="candidate.candidate_id">
-        {{ candidate.candidate_name }}
-      </option>
-    </select>
-    
-    
-    <!-- Display the Interview Date -->
-    <div *ngIf="selectedInterviewDate; else noInterviewDate">
-      <p>Interview Date: {{ selectedInterviewDate }}</p>
-    </div>
-    <ng-template #noInterviewDate>
-      <p>No interview date selected yet.</p>
-    </ng-template>
-    
+
+    <p>Selected Candidate: {{ selectedCandidateName }}</p>
+    <p>Interview Date: {{ selectedInterviewDate }}</p>
+
         <!-- Duration of Interview -->
         <div class="duration-section">
           <label for="durationInput">Duration of Interview (approx):</label>
@@ -102,7 +111,7 @@
 
           <!-- Regular Sections -->
           <ng-container *ngIf="section.section_name !== 'How is candidate overall?' && section.section_name !== 'Candidate Feedback'">
-            <ng-container *ngFor="let criteria of section.criteria; let i = index">
+            <!-- <ng-container *ngFor="let criteria of section.criteria; let i = index">
               <tr>
                 <td><input type="text" placeholder="Sub Criteria" [(ngModel)]="criteria.sub_criteria" /></td>
                 <td><input type="number" placeholder="Points" min="0" [(ngModel)]="criteria.points" /></td>
@@ -110,7 +119,41 @@
                 <td><input type="text" placeholder="Add Comments" [(ngModel)]="criteria.comments" /></td>
                 <td><button (click)="removeCriteriaRow(section, i)">Remove</button></td>
               </tr>
+            </ng-container> -->
+            <ng-container *ngFor="let criteria of section.criteria; let i = index">
+              <tr>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="Sub Criteria"
+                    [(ngModel)]="criteria.sub_criteria"
+                  />
+                </td>
+                <td>
+                  <!-- Dropdown for Points -->
+                  <select [(ngModel)]="criteria.points">
+                    <option *ngFor="let point of pointsDropdown" [value]="point">
+                      {{ point }}
+                    </option>
+                  </select>
+                </td>
+                <td>
+                  <!-- Non-editable 'Out Of' column -->
+                  <input type="number" [value]="5" readonly />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    placeholder="Add Comments"
+                    [(ngModel)]="criteria.comments"
+                  />
+                </td>
+                <td>
+                  <button (click)="removeCriteriaRow(section, i)">Remove</button>
+                </td>
+              </tr>
             </ng-container>
+  
 
             <!-- Add Row Button -->
             <tr>

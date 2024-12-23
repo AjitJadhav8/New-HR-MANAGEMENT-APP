@@ -29,6 +29,18 @@ interviewDecision: any;
     this.interviewerId = localStorage.getItem('loggedInHRId') || ''; // Get interviewer ID
     this.getCandidatesForInterviewer(); // Fetch candidates
     this.getTemplates(); // Fetch templates
+    this.pointsDropdown = this.generatePointsDropdown(1, 5, 0.5);
+
+  
+  }
+  pointsDropdown: number[] = []; // Define the pointsDropdown property
+
+  generatePointsDropdown(start: number, end: number, step: number): number[] {
+    const dropdownValues = [];
+    for (let value = start; value <= end; value += step) {
+      dropdownValues.push(value);
+    }
+    return dropdownValues;
   }
 
   interviewerId: string = '';
@@ -48,30 +60,46 @@ interviewDecision: any;
   }
   
 
+  selectedCandidateName: string = ''; // Store the selected candidate's name
 
   selectedInterviewDate: any = null;  // Store selected interview date as null initially
 
   // Handle candidate selection and update interview date
     // Method to handle candidate selection
    // Method to handle candidate selection
-   onCandidateSelect(candidateId: string) {
-    console.log('Selected Candidate ID:', candidateId); // Log the ID
-    console.log('Candidates array:', this.candidates); // Log all candidates
+  //  onCandidateSelect(candidateId: string) {
+  //   console.log('Selected Candidate ID:', candidateId); // Log the ID
+  //   console.log('Candidates array:', this.candidates); // Log all candidates
   
-    const selectedCandidate = this.candidates.find(candidate => candidate.candidate_id === parseInt(candidateId));
+  //   const selectedCandidate = this.candidates.find(candidate => candidate.candidate_id === parseInt(candidateId));
   
-    if (selectedCandidate) {
-      this.selectedRoundId = selectedCandidate.round_id; // Set the round_id
+  //   if (selectedCandidate) {
+  //     this.selectedRoundId = selectedCandidate.round_id; // Set the round_id
 
+  //     this.selectedInterviewDate = this.formatDate(selectedCandidate.interview_date);
+  //     console.log('Selected Candidate:', selectedCandidate);
+  //     console.log('Formatted Interview Date:', this.selectedInterviewDate);
+  //   } else {
+  //     console.error('Candidate not found');
+  //   }
+  // }
+  
+  onCandidateSelect(candidateId: string) {
+    console.log('Selected Candidate ID:', candidateId); // Log the ID
+    const selectedCandidate = this.candidates.find(candidate => candidate.candidate_id === parseInt(candidateId));
+
+    if (selectedCandidate) {
+      this.selectedCandidateId = selectedCandidate.candidate_id;
+      this.selectedCandidateName = selectedCandidate.candidate_name;
+      this.selectedRoundId = selectedCandidate.round_id;
       this.selectedInterviewDate = this.formatDate(selectedCandidate.interview_date);
+      
       console.log('Selected Candidate:', selectedCandidate);
       console.log('Formatted Interview Date:', this.selectedInterviewDate);
     } else {
       console.error('Candidate not found');
     }
   }
-  
-
 
 formatDate(dateString: string): string {
   if (!dateString) {
@@ -141,61 +169,7 @@ formatDate(dateString: string): string {
     this.router.navigate(['/login']); // Redirect to HR dashboard for other users
   }
 
-  
 
-
-  // submitFeedback() {
-  //   // Construct the feedback JSON
-  //   const feedbackData = {
-  //     interviewer: this.loggedInInterviewer,
-  //     interviewDuration: this.interviewDuration,
-  //     interviewMode: this.interviewMode,
-  //     interviewDate: this.selectedInterviewDate,
-  //     templates: this.templates?.map(template => ({
-  //       sections: template.sections?.map((section: { section_name: any; evaluation: any; comments: any; criteria: any[]; }) => ({
-  //         section_name: section.section_name,
-  //         evaluation: section.evaluation, // Include evaluation
-  //         comments: section.comments,    // Include comments for feedback
-  //         criteria: section.criteria?.map((criteria: any) => ({
-  //           sub_criteria: criteria.sub_criteria,
-  //           points: criteria.points,
-  //           out_of: criteria.out_of,
-  //           comments: criteria.comments,
-  //         })) || [], // Fallback to an empty array if criteria is undefined
-  //       })) || [], // Fallback to an empty array if sections is undefined
-  //     })) || [], // Fallback to an empty array if templates is undefined
-  //   };
-  
-  //   // Map interviewDecision to status_id
-  //   const statusId = this.interviewDecision; // This directly maps to the status_id
-  
-  //   // Assuming the template_id is from the selected template (you can modify this if needed)
-  //   const templateId = this.templates?.[0]?.template_id;  // Select the first template_id or modify as needed
-  
-  //   // Construct the request body
-  //   const requestBody = {
-  //     feedback_json: feedbackData, // Feedback JSON
-  //     status_id: statusId,         // The status_id mapped from interviewDecision
-  //     template_id: templateId      // Add template_id here outside of feedback_json
-  //   };
-  
-  //   // Log the request body for debugging
-  //   console.log('Request Body:', JSON.stringify(requestBody));
-  
-  //   // Call the DataService to submit feedback
-  //   this.dataService.submitFeedback(requestBody).subscribe({
-  //     next: (response) => {
-  //       console.log('Feedback submitted successfully:', response);
-  //       alert('Feedback submitted successfully!');
-  //       // Clear the form or reset state if needed
-  //     },
-  //     error: (err) => {
-  //       console.error('Error submitting feedback:', err);
-  //       alert('Failed to submit feedback.');
-  //     },
-  //   });
-  // }
-  
 
   submitFeedback() {
     console.log('Selected Round ID:', this.selectedRoundId); // Debug the round_id value
