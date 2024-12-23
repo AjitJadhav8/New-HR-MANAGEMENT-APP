@@ -46,6 +46,8 @@ interviewDecision: any;
     this.getTemplates(); // Fetch templates
     this.pointsDropdown = this.generatePointsDropdown(1, 5, 0.5);
     this.getAllCandidatesForInterviewer(); // Fetch candidate
+    this.getSubmittedFeedback();
+
   
   }
 
@@ -283,7 +285,47 @@ formatDate(dateString: string): string {
       },
     });
   }
-  
-  
 
+  submittedFeedback: any[] = [];
+
+
+
+  getSubmittedFeedback(): void {
+    const interviewerId = localStorage.getItem('loggedInHRId'); // Get the logged-in interviewer's ID
+
+    if (!interviewerId) {
+      console.error('Interviewer ID not found');
+      return;
+    }
+
+    this.dataService.getFeedbackForInterviewer(interviewerId).subscribe({
+      next: data => {
+        console.log('Fetched submitted feedback:', data);
+        this.submittedFeedback = data.map((item: {
+          status_id: number;
+          interviewMode: any;
+          position: any;
+          feedback_json: any;
+          interview_date: string;
+          mode: string;
+          candidate_name: string;
+          interviewer_name: string;
+          decision: string;
+        }) => ({
+          feedback_json: item.feedback_json.templates?.[0]?.sections ?? [],
+        }));
+      },
+      error: err => console.error('Backend API error fetching feedback', err)
+    });
+  }
+
+
+
+
+
+
+
+
+
+  
 }

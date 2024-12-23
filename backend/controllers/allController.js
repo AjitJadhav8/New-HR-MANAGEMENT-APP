@@ -1966,3 +1966,25 @@ exports.getAllCandidatesForInterviewer = (req, res) => {
     res.json(results);
   });
 };
+
+
+// Controller method to get feedback for a specific interviewer
+exports.getFeedbackForInterviewer = (req, res) => {
+    const interviewerId = req.params.interviewerId; // Get interviewerId from URL parameter
+
+    db.query(
+        `SELECT * 
+         FROM feedback_tbl f
+         JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
+         WHERE r.interviewer_id = ?`, 
+        [interviewerId],
+        (err, results) => {
+            if (err) {
+                console.error('Database Error:', err.message);  // Log error message
+                return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
+            }
+            res.status(200).json(results);
+        }
+    );
+};
+

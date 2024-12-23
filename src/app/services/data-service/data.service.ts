@@ -166,5 +166,8 @@ getAllCandidatesForInterviewer(interviewerId: string) {
 
 
 
-
+ // Method to fetch feedback for the logged-in interviewer
+ getFeedbackForInterviewer(interviewerId: string): Observable<any> {
+  return this.http.get<any>(`${this.apiUrl}/api/feedback/${interviewerId}`);
+}
 }

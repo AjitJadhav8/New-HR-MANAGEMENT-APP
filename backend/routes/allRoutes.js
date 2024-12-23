@@ -70,5 +70,6 @@ router.post('/submitFeedback', allController.submitFeedback);
 router.get('/interviewer/candidates', allController.getAllCandidatesForInterviewer);
 
 
-
+// Define the route to get feedback by interviewerId
+router.get('/feedback/:interviewerId', allController.getFeedbackForInterviewer);
 module.exports = router;
