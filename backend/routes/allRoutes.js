@@ -67,6 +67,7 @@ router.get('/candidates/:interviewer_id', allController.getCandidatesByInterview
 
 router.post('/submitFeedback', allController.submitFeedback);
 
+router.get('/interviewer/candidates', allController.getAllCandidatesForInterviewer);
 
 
 

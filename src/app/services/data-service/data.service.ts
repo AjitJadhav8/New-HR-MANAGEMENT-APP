@@ -160,6 +160,10 @@ submitFeedback(feedback: any): Observable<any> {
   return this.http.post<any>(`${this.apiUrl}/api/submitFeedback`, feedback);
 }
 
+getAllCandidatesForInterviewer(interviewerId: string) {
+  return this.http.get<any[]>(`${this.apiUrl}/api/interviewer/candidates?interviewerId=${interviewerId}`);
+}
+
 
 
 

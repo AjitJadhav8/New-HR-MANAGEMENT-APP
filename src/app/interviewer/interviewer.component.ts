@@ -12,6 +12,21 @@ import { Router } from '@angular/router';
   styleUrl: './interviewer.component.css'
 })
 export class InterviewerComponent {
+
+  showDetail = false; // Initially set to false (hidden)
+
+  // Function to toggle candidate details visibility
+  toggleCandidateDetails() {
+    this.showDetail = !this.showDetail; // Toggle between true/false
+  }
+
+  closeCandidateDetails() {
+    this.selectedCandidateId = ""; // Reset selected candidate
+  }
+  
+
+
+
   loggedInInterviewer: string = '';
   showChangePasswordForm: boolean = false;
   templates: any[] = [];
@@ -30,9 +45,68 @@ interviewDecision: any;
     this.getCandidatesForInterviewer(); // Fetch candidates
     this.getTemplates(); // Fetch templates
     this.pointsDropdown = this.generatePointsDropdown(1, 5, 0.5);
-
+    this.getAllCandidatesForInterviewer(); // Fetch candidate
   
   }
+
+
+  filteredCandidatesAll: any[] = [];
+  paginatedCandidatesAll: any[] = [];
+  totalCandidatesAll: number = 0;
+  currentPage: number = 1;
+  pageSize: number = 10;
+
+  candidatesAll: any[] = []; // Store all candidates
+
+
+  getAllCandidatesForInterviewer() {
+    this.dataService.getAllCandidatesForInterviewer(this.interviewerId).subscribe(
+      (data) => {
+        this.candidatesAll = data.map(candidate => ({
+          ...candidate,
+          Interview_Date: candidate.Interview_Date
+            ? this.formatDate(candidate.Interview_Date)
+            : 'N/A',
+          Updated_At: candidate.Updated_At
+            ? this.formatDate(candidate.Updated_At)
+            : 'N/A',
+          Status: candidate.Status || 'N/A',
+          Remarks: candidate.Remarks,
+          HR_Name: candidate.HR_Name || 'N/A'  // HR Name is added here
+
+        }));
+        this.filteredCandidatesAll = [...this.candidatesAll]; // Initially show all candidates
+        this.totalCandidatesAll = this.filteredCandidatesAll.length;
+        this.updatePageCandidatesAll();
+      },
+      (error) => {
+        console.error('There was an error fetching the candidates!', error.message || error);
+      }
+    );
+  }
+
+  updatePageCandidatesAll() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedCandidatesAll = this.filteredCandidatesAll.slice(startIndex, endIndex);
+  }
+
+
+
+  expandedCandidates: Set<string> = new Set(); // To track candidates whose rounds are shown
+
+
+
+
+
+
+
+
+
+
+
+
+  
   pointsDropdown: number[] = []; // Define the pointsDropdown property
 
   generatePointsDropdown(start: number, end: number, step: number): number[] {
@@ -58,31 +132,12 @@ interviewDecision: any;
       }
     });
   }
-  
 
   selectedCandidateName: string = ''; // Store the selected candidate's name
 
   selectedInterviewDate: any = null;  // Store selected interview date as null initially
 
-  // Handle candidate selection and update interview date
-    // Method to handle candidate selection
-   // Method to handle candidate selection
-  //  onCandidateSelect(candidateId: string) {
-  //   console.log('Selected Candidate ID:', candidateId); // Log the ID
-  //   console.log('Candidates array:', this.candidates); // Log all candidates
-  
-  //   const selectedCandidate = this.candidates.find(candidate => candidate.candidate_id === parseInt(candidateId));
-  
-  //   if (selectedCandidate) {
-  //     this.selectedRoundId = selectedCandidate.round_id; // Set the round_id
 
-  //     this.selectedInterviewDate = this.formatDate(selectedCandidate.interview_date);
-  //     console.log('Selected Candidate:', selectedCandidate);
-  //     console.log('Formatted Interview Date:', this.selectedInterviewDate);
-  //   } else {
-  //     console.error('Candidate not found');
-  //   }
-  // }
   
   onCandidateSelect(candidateId: string) {
     console.log('Selected Candidate ID:', candidateId); // Log the ID

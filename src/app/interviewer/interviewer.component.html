@@ -4,8 +4,12 @@
   <p class="navbar-center"> &nbsp;</p>
   <div class="navbar-right">
     <p>Welcome, {{ loggedInInterviewer }}</p>
-    <button class="change-password-button" >Change Password</button>
-    <button class="logout-button" (click)="logout()">Logout</button>
+    <button class="nav-button" >Change Password</button>
+    <button class="nav-button" (click)="toggleCandidateDetails()">
+      Show Candidate Details
+    </button>
+    <button class="nav-button" (click)="logout()">Logout</button>
+    
   </div>
 </div>
 
@@ -13,7 +17,7 @@
 
 <!-- Candidates List Section -->
 <!-- Candidates List Section -->
-<div class="candidates-list-section">
+<div class="candidates-list-section"  *ngIf="!showDetail && !selectedCandidateId">
   <h2>Candidates List</h2>
   <table class="candidates-table">
     <thead>
@@ -44,6 +48,11 @@
 
 <div class="table-container" *ngIf="selectedCandidateId">
   <div class="interviewer-section">
+
+    <button class="close-section-button" (click)="closeCandidateDetails()">Close</button>
+
+
+    
     <h2>Interviewer Name: {{ loggedInInterviewer }}</h2>
 
     <p>Selected Candidate: {{ selectedCandidateName }}</p>
@@ -180,3 +189,53 @@
     <!-- Submit Button -->
     <button (click)="submitFeedback()">Submit Feedback</button>
 </div>
+
+
+
+<div class="table-container-detail" *ngIf="showDetail">
+  <button class="close-detail-button" (click)="toggleCandidateDetails()">Close</button>
+
+  <table class="candidate-table-detail">
+    <thead>
+      <tr>
+        <th>Sr No.</th>
+        <th>Name</th>
+        <th>Position</th>
+        <th>Round</th>
+        <th>HR Name</th> <!-- Added HR Name column -->
+
+        <th>Activity Date</th>
+        <th>Update Date</th>
+        <th>Status</th>
+        <th>Remarks</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let candidateAll of paginatedCandidatesAll; let i = index">
+        <td>{{ (currentPage - 1) * pageSize + (i + 1) }}</td> <!-- Display correct serial number -->
+        <td>{{ candidateAll.Candidate_Name }}</td>
+        <td>{{ candidateAll.Position }}</td>
+        <td>{{ candidateAll.Round_Number || 'N/A' }}</td>
+        <td>{{ candidateAll.HR_Name || 'N/A' }}</td> <!-- Display HR Name -->
+
+        <td>{{ candidateAll.Interview_Date || 'N/A' }}</td>
+        <td>{{ candidateAll.Updated_At || 'N/A' }}</td>
+
+        <td [ngClass]="{
+          'status-selected': candidateAll.Status === 'Selected',
+          'status-rejected': candidateAll.Status === 'Rejected',
+          'status-other': candidateAll.Status !== 'Selected' && candidateAll.Status !== 'Rejected'
+        }">
+          {{ candidateAll.Status || 'N/A' }}
+        </td>
+
+        <td class="remarks" [title]="candidateAll.Remarks || 'N/A'">{{ candidateAll.Remarks }}</td>
+
+      </tr>
+
+    </tbody>
+  </table>
+</div>
+
+

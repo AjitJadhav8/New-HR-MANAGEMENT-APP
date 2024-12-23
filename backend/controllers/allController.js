@@ -1917,3 +1917,52 @@ exports.submitFeedback = (req, res) => {
     });
   });
 };
+// Change the route handler to look for a query parameter, not a route parameter
+exports.getAllCandidatesForInterviewer = (req, res) => {
+  const { interviewerId } = req.query; // Access query parameter
+
+  const query = `
+    SELECT 
+      c.candidate_id AS Candidate_ID,
+      c.candidate_name AS Candidate_Name,
+      p.position_name AS Position,
+      r.round_number AS Round_Number,
+      iv.interviewer_name AS Interviewer,
+      ir.interview_date AS Interview_Date,
+      ir.updated_at AS Updated_At,
+      s.status_name AS Status,
+      ir.remarks AS Remarks,
+      u.user_name AS HR_Name
+    FROM 
+      trans_candidates c
+    LEFT JOIN 
+      trans_interview_rounds ir ON c.candidate_id = ir.candidate_id AND ir.is_deleted = 0
+    LEFT JOIN 
+      master_rounds r ON ir.round_id = r.round_id
+    LEFT JOIN 
+      master_positions p ON c.position_id = p.position_id
+    LEFT JOIN 
+      master_interviewers iv ON ir.interviewer_id = iv.interviewer_id
+    LEFT JOIN 
+      master_statuses s ON ir.status_id = s.status_id
+    LEFT JOIN 
+      trans_users u ON c.user_id = u.user_id
+    WHERE 
+      ir.ir_id = (
+        SELECT MAX(sub_ir.ir_id)
+        FROM trans_interview_rounds sub_ir
+        WHERE sub_ir.candidate_id = c.candidate_id AND sub_ir.is_deleted = 0
+      )
+      AND ir.interviewer_id = ?
+    ORDER BY 
+      ir.ir_id;
+  `;
+
+  db.query(query, [interviewerId], (err, results) => {
+    if (err) {
+      console.error('Database query error:', err);
+      return res.status(500).json({ error: 'Database query error' });
+    }
+    res.json(results);
+  });
+};
