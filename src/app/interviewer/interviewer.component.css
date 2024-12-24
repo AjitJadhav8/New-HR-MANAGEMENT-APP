@@ -12,6 +12,35 @@
     padding: 0;
   }
   
+
+  .feedback-container {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .feedback-container .table th,
+  .feedback-container .table td {
+    vertical-align: top;
+  }
+  .feedback-container {
+    font-size: 0.85rem; /* Smaller text for compact layout */
+  }
+  
+  .feedback-container .table {
+    margin-bottom: 0; /* Remove extra space below table */
+  }
+  
+  .feedback-container .border {
+    padding: 6px; /* Reduce padding inside feedback sections */
+  }
+  
+
+
+
+
+
   /* Navbar Main Styling */
   .navbar-main {
     display: flex;

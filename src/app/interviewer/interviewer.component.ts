@@ -97,17 +97,6 @@ interviewDecision: any;
 
   expandedCandidates: Set<string> = new Set(); // To track candidates whose rounds are shown
 
-
-
-
-
-
-
-
-
-
-
-
   
   pointsDropdown: number[] = []; // Define the pointsDropdown property
 
@@ -292,33 +281,37 @@ formatDate(dateString: string): string {
 
   getSubmittedFeedback(): void {
     const interviewerId = localStorage.getItem('loggedInHRId'); // Get the logged-in interviewer's ID
-
+  
     if (!interviewerId) {
       console.error('Interviewer ID not found');
       return;
     }
-
+  
     this.dataService.getFeedbackForInterviewer(interviewerId).subscribe({
       next: data => {
         console.log('Fetched submitted feedback:', data);
         this.submittedFeedback = data.map((item: {
           status_id: number;
-          interviewMode: any;
-          position: any;
           feedback_json: any;
           interview_date: string;
-          mode: string;
-          candidate_name: string;
-          interviewer_name: string;
-          decision: string;
-        }) => ({
-          feedback_json: item.feedback_json.templates?.[0]?.sections ?? [],
-        }));
+          interviewer_id: string;
+        }) => {
+          const feedbackJson = item.feedback_json || {};
+          const templates = feedbackJson.templates?.[0] || {};
+  
+          return {
+            feedback_json: templates.sections || [], // Extract sections from the first template
+            interviewDate: feedbackJson.interviewDate || 'N/A', // Extract from feedback_json
+            interviewMode: feedbackJson.interviewMode || 'N/A', // Extract from feedback_json
+            interviewDuration: feedbackJson.interviewDuration || 'N/A', // Extract from feedback_json
+            interviewer: feedbackJson.interviewer || 'N/A' // Extract from feedback_json
+          };
+        });
       },
       error: err => console.error('Backend API error fetching feedback', err)
     });
   }
-
+  
 
 
 
