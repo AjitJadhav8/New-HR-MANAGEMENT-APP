@@ -1969,25 +1969,32 @@ exports.getAllCandidatesForInterviewer = (req, res) => {
 
 
 // Controller method to get feedback for a specific interviewer
+// Controller method to get feedback for a specific interviewer
 exports.getFeedbackForInterviewer = (req, res) => {
   const interviewerId = req.params.interviewerId; // Get interviewerId from URL parameter
 
   db.query(
-      `SELECT f.feedback_id, f.feedback_json, f.status_id, f.template_id, f.created_at, f.updated_at, 
-              f.is_deleted, r.ir_id, r.candidate_id, r.interviewer_id, r.interview_date, r.remarks, 
-              r.round_id, c.candidate_name
-       FROM feedback_tbl f
-       JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
-       JOIN trans_candidates c ON r.candidate_id = c.candidate_id
-       WHERE r.interviewer_id = ?`, 
-      [interviewerId],
-      (err, results) => {
-          if (err) {
-              console.error('Database Error:', err.message);
-              return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
-          }
-          res.status(200).json(results);
+    `SELECT f.feedback_id, f.feedback_json, f.status_id, fs.status_name, f.template_id, f.created_at, f.updated_at, 
+            f.is_deleted, r.ir_id, r.candidate_id, r.interviewer_id, r.interview_date, r.remarks, 
+            r.round_id, c.candidate_name, i.interviewer_name AS interviewer_name 
+     FROM feedback_tbl f
+     JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
+     JOIN trans_candidates c ON r.candidate_id = c.candidate_id
+     JOIN master_interviewers i ON r.interviewer_id = i.interviewer_id
+     JOIN master_statuses fs ON f.status_id = fs.status_id
+     WHERE r.interviewer_id = ?`, 
+    [interviewerId],
+    (err, results) => {
+      if (err) {
+        console.error('Database Error:', err.message);
+        return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
       }
+
+      // Return the results with status_name included
+      res.status(200).json(results);
+    }
   );
 };
+
+
 

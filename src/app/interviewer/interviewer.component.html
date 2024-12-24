@@ -229,11 +229,8 @@
         }">
           {{ candidateAll.Status || 'N/A' }}
         </td>
-
         <td class="remarks" [title]="candidateAll.Remarks || 'N/A'">{{ candidateAll.Remarks }}</td>
-
       </tr>
-
     </tbody>
   </table>
 </div>
@@ -243,21 +240,21 @@
   <table class="feedback-table" *ngIf="submittedFeedback.length > 0">
     <thead>
       <tr>
-        <th>Candidate Name</th>
         <th>Interview Details</th>
         <th>Feedback</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let feedback of submittedFeedback">
-        <td>{{ feedback.candidateName }}</td> <!-- Display candidate name -->
         <td>
           <!-- Interview Details Section -->
           <div class="interview-details">
-            <div><strong>Interview Date:</strong> {{ feedback.interviewDate | date:'shortDate' }}</div>
-            <div><strong>Interview Mode:</strong> {{ feedback.interviewMode }}</div>
+            <div><strong>Interviewer's Name :</strong> {{ feedback.interviewer  }}</div>
+            <div><strong>Candidate's Name :</strong> {{ feedback.candidateName  }}</div>
+            <div><strong>Date of Interview :</strong> {{ feedback.interviewDate  }}</div>
+            <div><strong>Mode:</strong> {{ feedback.interviewMode }}</div>
             <div><strong>Interview Duration:</strong> {{ feedback.interviewDuration }} minutes</div>
-            <div><strong>Interviewer:</strong> {{ feedback.interviewer }}</div>
+            <div><strong>Decision :</strong> {{ feedback.statusName }} </div>
           </div>
         </td>
         <td>
