@@ -298,6 +298,7 @@ formatDate(dateString: string): string {
           interviewer_name: string;  // Include interviewer_name
           candidate_name: string; // Include candidate_name
           status_name: string;
+          round_number: string;
         }) => {
           const feedbackJson = item.feedback_json || {};
           const templates = feedbackJson.templates?.[0] || {};
@@ -309,8 +310,8 @@ formatDate(dateString: string): string {
             interviewDuration: feedbackJson.interviewDuration || 'N/A',
             interviewer: item.interviewer_name || 'N/A', // Use the interviewer's name
             candidateName: item.candidate_name || 'N/A', // Extract candidate name
-            statusName: item.status_name || 'N/A'  // Now using status_name from backend
-
+            statusName: item.status_name || 'N/A', // Now using status_name from backend
+            roundNumber : item.round_number
           };
         });
       },
@@ -324,7 +325,55 @@ formatDate(dateString: string): string {
 
 
 
+  selectedCandidateFeedback: any = null; // Store feedback for the selected candidate
 
+  fetchCandidateFeedback(candidate: any): void {
+    if (!candidate || !candidate.Candidate_ID) {
+      console.error('Candidate ID is missing');
+      return;
+    }
+  
+    this.dataService.getFeedbackForCandidate(candidate.Candidate_ID).subscribe({
+      next: data => {
+        if (data && data.length > 0) {
+          // Map all feedbacks into an array
+          this.selectedCandidateFeedback = data.map((item: {
+            feedback_json: any;
+            interview_date: string;
+            interviewer_name: string;
+            candidate_name: string;
+            status_name: string;
+            round_number: string;
+
+          }) => {
+            const feedbackJson = item.feedback_json || {};
+            const templates = feedbackJson.templates?.[0] || {};
+  
+            return {
+              feedback_json: templates.sections || [],
+              interviewDate: feedbackJson.interviewDate || item.interview_date || 'N/A',
+              interviewMode: feedbackJson.interviewMode || 'N/A',
+              interviewDuration: feedbackJson.interviewDuration || 'N/A',
+              interviewer: item.interviewer_name || 'N/A',
+              candidateName: item.candidate_name || 'N/A',
+              statusName: item.status_name || 'N/A',
+              roundNumber : item.round_number
+
+            };
+          });
+        } else {
+          console.error('No feedback found for the selected candidate');
+          this.selectedCandidateFeedback = [];
+        }
+      },
+      error: err => {
+        console.error('Error fetching candidate feedback', err);
+        this.selectedCandidateFeedback = [];
+      }
+    });
+  }
+  
+  
 
 
 

@@ -1922,41 +1922,38 @@ exports.getAllCandidatesForInterviewer = (req, res) => {
   const { interviewerId } = req.query; // Access query parameter
 
   const query = `
-    SELECT 
-      c.candidate_id AS Candidate_ID,
-      c.candidate_name AS Candidate_Name,
-      p.position_name AS Position,
-      r.round_number AS Round_Number,
-      iv.interviewer_name AS Interviewer,
-      ir.interview_date AS Interview_Date,
-      ir.updated_at AS Updated_At,
-      s.status_name AS Status,
-      ir.remarks AS Remarks,
-      u.user_name AS HR_Name
-    FROM 
-      trans_candidates c
-    LEFT JOIN 
-      trans_interview_rounds ir ON c.candidate_id = ir.candidate_id AND ir.is_deleted = 0
-    LEFT JOIN 
-      master_rounds r ON ir.round_id = r.round_id
-    LEFT JOIN 
-      master_positions p ON c.position_id = p.position_id
-    LEFT JOIN 
-      master_interviewers iv ON ir.interviewer_id = iv.interviewer_id
-    LEFT JOIN 
-      master_statuses s ON ir.status_id = s.status_id
-    LEFT JOIN 
-      trans_users u ON c.user_id = u.user_id
-    WHERE 
-      ir.ir_id = (
-        SELECT MAX(sub_ir.ir_id)
-        FROM trans_interview_rounds sub_ir
-        WHERE sub_ir.candidate_id = c.candidate_id AND sub_ir.is_deleted = 0
-      )
-      AND ir.interviewer_id = ?
-    ORDER BY 
-      ir.ir_id;
-  `;
+  SELECT 
+    c.candidate_id AS Candidate_ID,
+    c.candidate_name AS Candidate_Name,
+    p.position_name AS Position,
+    r.round_number AS Round_Number,
+    iv.interviewer_name AS Interviewer,
+    ir.interview_date AS Interview_Date,
+    ir.updated_at AS Updated_At,
+    s.status_name AS Status,
+    ir.remarks AS Remarks,
+    u.user_name AS HR_Name
+  FROM 
+    trans_candidates c
+  LEFT JOIN 
+    trans_interview_rounds ir ON c.candidate_id = ir.candidate_id AND ir.is_deleted = 0
+  LEFT JOIN 
+    master_rounds r ON ir.round_id = r.round_id
+  LEFT JOIN 
+    master_positions p ON c.position_id = p.position_id
+  LEFT JOIN 
+    master_interviewers iv ON ir.interviewer_id = iv.interviewer_id
+  LEFT JOIN 
+    master_statuses s ON ir.status_id = s.status_id
+  LEFT JOIN 
+    trans_users u ON c.user_id = u.user_id
+  WHERE 
+    ir.interviewer_id = ? -- Fetch rounds for the current interviewer
+    AND ir.status_id IN (1, 2, 12) -- Only include Selected, Rejected, and On Hold statuses
+
+  ORDER BY 
+    ir.candidate_id, ir.ir_id; -- Order by candidate and round ID
+`;
 
   db.query(query, [interviewerId], (err, results) => {
     if (err) {
@@ -1970,18 +1967,20 @@ exports.getAllCandidatesForInterviewer = (req, res) => {
 
 // Controller method to get feedback for a specific interviewer
 // Controller method to get feedback for a specific interviewer
+// Controller method to get feedback for a specific interviewer
 exports.getFeedbackForInterviewer = (req, res) => {
   const interviewerId = req.params.interviewerId; // Get interviewerId from URL parameter
 
   db.query(
     `SELECT f.feedback_id, f.feedback_json, f.status_id, fs.status_name, f.template_id, f.created_at, f.updated_at, 
             f.is_deleted, r.ir_id, r.candidate_id, r.interviewer_id, r.interview_date, r.remarks, 
-            r.round_id, c.candidate_name, i.interviewer_name AS interviewer_name 
+            r.round_id, mr.round_number, c.candidate_name, i.interviewer_name AS interviewer_name 
      FROM feedback_tbl f
      JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
      JOIN trans_candidates c ON r.candidate_id = c.candidate_id
      JOIN master_interviewers i ON r.interviewer_id = i.interviewer_id
      JOIN master_statuses fs ON f.status_id = fs.status_id
+     JOIN master_rounds mr ON r.round_id = mr.round_id
      WHERE r.interviewer_id = ?`, 
     [interviewerId],
     (err, results) => {
@@ -1990,11 +1989,39 @@ exports.getFeedbackForInterviewer = (req, res) => {
         return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
       }
 
-      // Return the results with status_name included
+      // Return the results with round_number and status_name included
       res.status(200).json(results);
     }
   );
 };
 
 
+
+// Controller method to get feedback for a specific candidate
+exports.getFeedbackForCandidate = (req, res) => {
+  const candidateId = req.params.candidateId;
+
+  db.query(
+    `SELECT f.feedback_id, f.feedback_json, f.status_id, fs.status_name, f.template_id, f.created_at, f.updated_at, 
+            f.is_deleted, r.ir_id, r.candidate_id, r.interviewer_id, r.interview_date, r.remarks, 
+            r.round_id, mr.round_number, c.candidate_name, i.interviewer_name AS interviewer_name 
+     FROM feedback_tbl f
+     JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
+     JOIN trans_candidates c ON r.candidate_id = c.candidate_id
+     JOIN master_interviewers i ON r.interviewer_id = i.interviewer_id
+     JOIN master_statuses fs ON f.status_id = fs.status_id
+     JOIN master_rounds mr ON r.round_id = mr.round_id
+     WHERE r.candidate_id = ? 
+     ORDER BY r.round_id ASC`, // Ensure ordered feedback by round
+    [candidateId],
+    (err, results) => {
+      if (err) {
+        console.error('Database Error:', err.message);
+        return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
+      }
+
+      res.status(200).json(results); // Return all rounds of feedback
+    }
+  );
+};
 

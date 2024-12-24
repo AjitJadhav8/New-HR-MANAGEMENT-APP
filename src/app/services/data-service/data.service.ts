@@ -170,4 +170,20 @@ getAllCandidatesForInterviewer(interviewerId: string) {
  getFeedbackForInterviewer(interviewerId: string): Observable<any> {
   return this.http.get<any>(`${this.apiUrl}/api/feedback/${interviewerId}`);
 }
+
+
+
+
+
+
+
+getFeedbackForCandidate(candidateId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/feedback/candidate/${candidateId}`);
+}
+
+
+
+
+
+
 }
