@@ -281,12 +281,12 @@ formatDate(dateString: string): string {
 
   getSubmittedFeedback(): void {
     const interviewerId = localStorage.getItem('loggedInHRId'); // Get the logged-in interviewer's ID
-  
+
     if (!interviewerId) {
       console.error('Interviewer ID not found');
       return;
     }
-  
+
     this.dataService.getFeedbackForInterviewer(interviewerId).subscribe({
       next: data => {
         console.log('Fetched submitted feedback:', data);
@@ -295,28 +295,26 @@ formatDate(dateString: string): string {
           feedback_json: any;
           interview_date: string;
           interviewer_id: string;
+          candidate_name: string; // Add candidate_name to the response
         }) => {
           const feedbackJson = item.feedback_json || {};
           const templates = feedbackJson.templates?.[0] || {};
-  
+
           return {
             feedback_json: templates.sections || [], // Extract sections from the first template
-            interviewDate: feedbackJson.interviewDate || 'N/A', // Extract from feedback_json
-            interviewMode: feedbackJson.interviewMode || 'N/A', // Extract from feedback_json
-            interviewDuration: feedbackJson.interviewDuration || 'N/A', // Extract from feedback_json
-            interviewer: feedbackJson.interviewer || 'N/A' // Extract from feedback_json
+            interviewDate: feedbackJson.interviewDate || 'N/A',
+            interviewMode: feedbackJson.interviewMode || 'N/A',
+            interviewDuration: feedbackJson.interviewDuration || 'N/A',
+            interviewer: feedbackJson.interviewer || 'N/A',
+            candidateName: item.candidate_name || 'N/A' // Extract candidate name
           };
         });
       },
       error: err => console.error('Backend API error fetching feedback', err)
     });
-  }
+}
+
   
-
-
-
-
-
 
 
 

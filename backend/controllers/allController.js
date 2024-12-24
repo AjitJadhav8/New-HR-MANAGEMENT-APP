@@ -1970,21 +1970,24 @@ exports.getAllCandidatesForInterviewer = (req, res) => {
 
 // Controller method to get feedback for a specific interviewer
 exports.getFeedbackForInterviewer = (req, res) => {
-    const interviewerId = req.params.interviewerId; // Get interviewerId from URL parameter
+  const interviewerId = req.params.interviewerId; // Get interviewerId from URL parameter
 
-    db.query(
-        `SELECT * 
-         FROM feedback_tbl f
-         JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
-         WHERE r.interviewer_id = ?`, 
-        [interviewerId],
-        (err, results) => {
-            if (err) {
-                console.error('Database Error:', err.message);  // Log error message
-                return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
-            }
-            res.status(200).json(results);
-        }
-    );
+  db.query(
+      `SELECT f.feedback_id, f.feedback_json, f.status_id, f.template_id, f.created_at, f.updated_at, 
+              f.is_deleted, r.ir_id, r.candidate_id, r.interviewer_id, r.interview_date, r.remarks, 
+              r.round_id, c.candidate_name
+       FROM feedback_tbl f
+       JOIN trans_interview_rounds r ON f.feedback_id = r.feedback_id
+       JOIN trans_candidates c ON r.candidate_id = c.candidate_id
+       WHERE r.interviewer_id = ?`, 
+      [interviewerId],
+      (err, results) => {
+          if (err) {
+              console.error('Database Error:', err.message);
+              return res.status(500).json({ error: 'Unable to fetch feedback', details: err.message });
+          }
+          res.status(200).json(results);
+      }
+  );
 };
 

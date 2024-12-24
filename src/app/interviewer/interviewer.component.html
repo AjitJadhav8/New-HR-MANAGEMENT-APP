@@ -239,52 +239,52 @@
 </div>
 
 
-
-<div class="container mt-4 feedback-container" style="max-width: 600px;">
-  <div class="table-responsive">
-    <table class="table table-bordered table-sm">
-      <thead class="thead-dark">
-        <tr>
-          <th>Feedback Details</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let feedback of submittedFeedback">
-          <td>
-            <!-- Compact Interview Details in One Line -->
-            <div class="d-flex flex-wrap small text-muted">
-              <span class="me-3"><strong>Date:</strong> {{ feedback.interviewDate | date:'short' }}</span>
-              <span class="me-3"><strong>Mode:</strong> {{ feedback.interviewMode }}</span>
-              <span class="me-3"><strong>Duration:</strong> {{ feedback.interviewDuration }} mins</span>
-              <span><strong>Interviewer:</strong> {{ feedback.interviewer }}</span>
-            </div>
-
-            <!-- Feedback JSON Below -->
-            <div class="mt-2">
-              <div *ngFor="let section of feedback.feedback_json" class="mb-2 p-2 border rounded bg-light">
-                <h6 class="font-weight-bold">{{ section.section_name }}</h6>
-                <ul class="list-unstyled mb-1">
-                  <li *ngFor="let criterion of section.criteria" class="mb-1">
-                    <strong>{{ criterion.sub_criteria }}</strong>: 
-                    {{ criterion.points }} / {{ criterion.out_of }}
-                    <div *ngIf="criterion.comments" class="text-muted small">Comments: {{ criterion.comments }}</div>
-                  </li>
-                </ul>
-                <div *ngIf="section.evaluation" class="small mt-1">
-                  <strong>Evaluation:</strong> {{ section.evaluation }}
-                </div>
-                <div *ngIf="section.comments" class="small mt-1">
-                  <strong>Comments:</strong> {{ section.comments }}
+<div class="feedback-container">
+  <table class="feedback-table" *ngIf="submittedFeedback.length > 0">
+    <thead>
+      <tr>
+        <th>Candidate Name</th>
+        <th>Interview Details</th>
+        <th>Feedback</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let feedback of submittedFeedback">
+        <td>{{ feedback.candidateName }}</td> <!-- Display candidate name -->
+        <td>
+          <!-- Interview Details Section -->
+          <div class="interview-details">
+            <div><strong>Interview Date:</strong> {{ feedback.interviewDate | date:'shortDate' }}</div>
+            <div><strong>Interview Mode:</strong> {{ feedback.interviewMode }}</div>
+            <div><strong>Interview Duration:</strong> {{ feedback.interviewDuration }} minutes</div>
+            <div><strong>Interviewer:</strong> {{ feedback.interviewer }}</div>
+          </div>
+        </td>
+        <td>
+          <!-- Feedback JSON Section -->
+          <div *ngFor="let section of feedback.feedback_json">
+            <div class="section">
+              <h4>{{ section.section_name }}</h4>
+              <div *ngFor="let criterion of section.criteria">
+                <div class="criterion">
+                  <strong>{{ criterion.sub_criteria }}</strong>: 
+                  {{ criterion.points }} / {{ criterion.out_of }}
+                  <div *ngIf="criterion.comments">Comments: {{ criterion.comments }}</div>
                 </div>
               </div>
+              <div *ngIf="section.evaluation">
+                <p><strong>Evaluation:</strong> {{ section.evaluation }}</p>
+              </div>
+              <div *ngIf="section.comments">
+                <p><strong>Comments:</strong> {{ section.comments }}</p>
+              </div>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-  <p *ngIf="submittedFeedback.length === 0" class="text-center text-muted mt-3">
-    No feedback available.
-  </p>
+  <p *ngIf="submittedFeedback.length === 0">No feedback available.</p>
 </div>
+
